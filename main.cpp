@@ -10,11 +10,13 @@
 #define PORT 12345
 
 int main(int argc, char **argv) {
+	(void)argc;
+	(void)argv;
 	int sd;
 	int new_socket;
 	int read_ret;
 	struct sockaddr_in address;
-	int opt = 1;
+	//int opt = 1;
 	int addrlen = sizeof(address);
 	char buf[1024] = {0};
 	std::string hello = "Hello from server!\n";

@@ -3,15 +3,20 @@
 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <cstdio>
+#include <cstdlib>
+#include <unistd.h>
+#include <string>
+
 
 //#define PORT 12345
 
 class socketRun {
 private:
-	struct sockaddr_in _address;
-	int _sd;
-	int _addrlen; //= sizeof(address);
-	int _port;
+	struct sockaddr_in	_address;
+	int					_sd;
+	int					_addrlen; //= sizeof(address);
+	int					_port;
 	socketRun();
 public:
 	socketRun(int port);

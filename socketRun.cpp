@@ -2,7 +2,7 @@
 
 socketRun::socketRun(int port, std::string pwd) :_port(port), _pwd(pwd) {
 	_on = 1;
-	_nfds = 1;
+	//_nfds = 1;
 	_addrlen = sizeof(_address);
 	if ((_sd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket() failed");
@@ -39,50 +39,124 @@ void socketRun::selectLoop() {
 
 	struct timeval ltime;
 	ltime.tv_usec = 0;
-	time_t startListen = time(NULL);
-	ltime.tv_sec = 120;
-	while (true) {
-		fd_set rfds;
+	//time_t startListen = time(NULL);
+	ltime.tv_sec = 3 * 60;
+	//do {
+		int ret;
+		int end_serv = 0;
+		//int close_conn = 0;
+		fd_set rfds, copyFds;
+		int maxSd = _sd;
+		int newSd;
+	do {
 		FD_ZERO(&rfds);
 		FD_SET(_sd, &rfds);
-		int selectRet = select(_sd + 1, &rfds, NULL, NULL, &ltime);
-		if (selectRet == 0) {
+		memcpy(&copyFds, &rfds, sizeof(rfds));
+		int ret = select(_sd + 1, &rfds, NULL, NULL, &ltime);
+		if (ret == 0) {
 			perror("select() timed out. End program.\n");
 			break;
 		}
-		else if (selectRet < 0) {
+		else if (ret < 0) {
 			perror("select() failed.\n");
 			break;
 		}
-		else {
-			int retRec = recv()
-			if ()
+		int ret_copy = ret;
+		for (int i = 0; i <= maxSd && ret_copy > 0; i++) {
+			if (FD_ISSET(i, &copyFds)) {
+				ret_copy--;
+				if (i == _sd) {
+					do {
+						newSd = accept(_sd, NULL, NULL);
+						if (newSd < 0) {
+							if (errno != EWOULDBLOCK) {
+								perror("accept() failed.\n");
+								end_serv = 1;
+							}
+							break;
+						}
+						FD_SET(newSd, &rfds);
+						if (newSd > maxSd)
+							maxSd = newSd;
+					} while (newSd != -1);
+				}
+				else {
+					int close_conn = 0;
+					do {
+						int ret = recv(i, buf, sizeof(buf), 0);
+						if (ret < 0) {
+							if (errno != EWOULDBLOCK) {
+								perror("recv() failed.\n");
+								close_conn = 1;
+							}
+							break;
+						}
+						if (ret == 0) {
+							close_conn = 1;
+							break;
+						}
+						ret = send(i, buf, ret, 0);
+						if (ret < 0) {
+							perror("send() failed.\n");
+							close_conn = 1;
+							break;
+						}
+					} while (1);
+					if (close_conn) {
+						close(i);
+						FD_CLR(i, &rfds);
+						if (i == maxSd) {
+							while (FD_ISSET(maxSd, &rfds) == 0)
+								maxSd--;
+						}
+					}
+				}
+			}
 		}
+		
+	} while (end_serv == 0);
+	for (int i = 0; i <= maxSd; ++i) {
+		if (FD_ISSET(i, &rfds))
+			close(i);
 	}
 }
 
-void socketRun::pollLoop() {
-	do {
-		std::cout << "Waiting on poll()...\n";
-		int ret = poll(_pfd, _nfds, _timeOut);
-		if ( ret < 0) {
-			perror("poll() failed");
-			break;
-		}
-		if (ret == 0) {
-			perror("poll() timed out. End program.\n");
-			break;
-		}
-		int current = _nfds;
-		for (int i = 0; i < current; i++) {
+// void socketRun::pollLoop() {
+// 	do {
+// 		std::cout << "Waiting on poll()...\n";
+// 		int ret = poll(_pfd, _nfds, _timeOut);
+// 		if ( ret < 0) {
+// 			perror("poll() failed");
+// 			break;
+// 		}
+// 		if (ret == 0) {
+// 			perror("poll() timed out. End program.\n");
+// 			break;
+// 		}
+// 		int current = _nfds;
+// 		for (int i = 0; i < current; i++) {
 
-		}
-	}
-	//while ()
-}
+// 		}
+// 	}
+// 	//while ()
+// }
 
 void socketRun::socketError(std::string str) {
 	perror(str.c_str());
 	close(_sd);
 	exit(EXIT_FAILURE);
+}
+
+const int socketRun::getPort() const {
+	return _port;
+}
+
+const std::string &socketRun::getPwd() const {
+	return _pwd;
+}
+
+std::ostream &operator<<(std::ostream output, const socketRun &sock) {
+	output << "port = " << sock.getPort() << std::endl;
+	output << "password = " << sock.getPwd() << std::endl;
+	return (output);
 }

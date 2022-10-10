@@ -21,10 +21,10 @@ private:
 	int					_addrlen; //= sizeof(address);
 	int					_port;
 	int					_on;
-	int					_timeOut;
-	int					_nfds;
+	//int					_timeOut;
+	//int					_nfds;
 	std::string			_pwd;
-	struct pollfd		_pfd[200];
+	//struct pollfd		_pfd[200];
 	socketRun();
 public:
 	socketRun(int port, std::string pwd);
@@ -33,7 +33,11 @@ public:
 	void pollLoop();
 	void selectLoop();
 	void socketError(std::string str);
+	const int getPort() const;
+	const std::string &getPwd() const;
 
 };
+
+std::ostream &operator<<(std::ostream output, const socketRun &sock);
 
 #endif

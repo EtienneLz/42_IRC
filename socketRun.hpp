@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <iostream>
+#include <cerrno>
 
 
 //#define PORT 12345
@@ -33,11 +34,11 @@ public:
 	void pollLoop();
 	void selectLoop();
 	void socketError(std::string str);
-	const int getPort() const;
+	int getPort() const;
 	const std::string &getPwd() const;
 
 };
 
-std::ostream &operator<<(std::ostream output, const socketRun &sock);
+std::ostream& operator<<(std::ostream& output, const socketRun &sock);
 
 #endif

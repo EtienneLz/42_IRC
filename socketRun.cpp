@@ -21,6 +21,7 @@ socketRun::socketRun(int port, std::string pwd) :_port(port), _pwd(pwd) {
 		socketError("bind() failed");
 	if (listen(_sd, 30) < 0)
 		socketError("listen() failed");
+	std::cout << "Listening...\n";
 	//initialize pollfd struct
 	// memset(_pfd, 0, sizeof(_pfd));
 	// _pfd[0].fd = _sd;
@@ -40,9 +41,9 @@ void socketRun::selectLoop() {
 	struct timeval ltime;
 	ltime.tv_usec = 0;
 	//time_t startListen = time(NULL);
-	ltime.tv_sec = 3 * 60;
+	ltime.tv_sec = 60;
 	//do {
-		int ret;
+		//int ret;
 		int end_serv = 0;
 		//int close_conn = 0;
 		fd_set rfds, copyFds;
@@ -52,6 +53,7 @@ void socketRun::selectLoop() {
 		FD_ZERO(&rfds);
 		FD_SET(_sd, &rfds);
 		memcpy(&copyFds, &rfds, sizeof(rfds));
+		std::cout << "Waiting on select()...\n";
 		int ret = select(_sd + 1, &rfds, NULL, NULL, &ltime);
 		if (ret == 0) {
 			perror("select() timed out. End program.\n");
@@ -62,10 +64,11 @@ void socketRun::selectLoop() {
 			break;
 		}
 		int ret_copy = ret;
-		for (int i = 0; i <= maxSd && ret_copy > 0; i++) {
+		for (int i = 0; i <= maxSd && ret_copy > 0; ++i) {
 			if (FD_ISSET(i, &copyFds)) {
 				ret_copy--;
 				if (i == _sd) {
+					std::cout << "Listening socket is readable\n";
 					do {
 						newSd = accept(_sd, NULL, NULL);
 						if (newSd < 0) {
@@ -75,14 +78,18 @@ void socketRun::selectLoop() {
 							}
 							break;
 						}
+						write(newSd, "Hello from server\n", strlen("Hello from server\n"));
+						std::cout << "New incoming connection - " << newSd << std::endl;
 						FD_SET(newSd, &rfds);
 						if (newSd > maxSd)
 							maxSd = newSd;
 					} while (newSd != -1);
 				}
 				else {
+					std::cout << "Descriptor is readable\n";
 					int close_conn = 0;
 					do {
+						std::cout << "Waiting to read...\n";
 						int ret = recv(i, buf, sizeof(buf), 0);
 						if (ret < 0) {
 							if (errno != EWOULDBLOCK) {
@@ -92,6 +99,7 @@ void socketRun::selectLoop() {
 							break;
 						}
 						if (ret == 0) {
+							std::cout << "Connection closed.\n";
 							close_conn = 1;
 							break;
 						}
@@ -147,7 +155,7 @@ void socketRun::socketError(std::string str) {
 	exit(EXIT_FAILURE);
 }
 
-const int socketRun::getPort() const {
+int socketRun::getPort() const {
 	return _port;
 }
 
@@ -155,7 +163,7 @@ const std::string &socketRun::getPwd() const {
 	return _pwd;
 }
 
-std::ostream &operator<<(std::ostream output, const socketRun &sock) {
+std::ostream& operator<<(std::ostream& output, const socketRun &sock) {
 	output << "port = " << sock.getPort() << std::endl;
 	output << "password = " << sock.getPwd() << std::endl;
 	return (output);

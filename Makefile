@@ -1,6 +1,7 @@
 NAME = ircserv
 
-SRCS = main.cpp
+SRCS = main1.cpp \
+		socketRun.cpp
 
 OBJS = ${SRCS:.cpp=.o}
 

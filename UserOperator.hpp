@@ -1,12 +1,11 @@
 #ifndef USEROPERATOR_HPP
 # define USEROPERATOR_HPP
 
-class User;
 
-class UserOperator : public User {
+class UserOperator : public AUsers {
 
 };
 
-#include "User.hpp"
+#include "AUsers.hpp"
 
 #endif

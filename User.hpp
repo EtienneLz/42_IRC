@@ -2,8 +2,10 @@
 # define USER_HPP
 
 
-class User {
+class User : public AUsers{
 
 };
+
+#include "AUsers.hpp"
 
 #endif

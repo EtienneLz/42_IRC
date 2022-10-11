@@ -12,6 +12,8 @@
 #include <cstring>
 #include <iostream>
 #include <cerrno>
+#include <vector>
+#include "AUsers.hpp"
 
 
 //#define PORT 12345
@@ -26,15 +28,22 @@ private:
 	//int					_timeOut;
 	//int					_nfds;
 	std::string			_pwd;
+	std::vector<AUsers> _client;
 	
 	socketRun();
 public:
 	socketRun(int port, std::string pwd);
 	~socketRun();
 
-	
+	// CREATE SOCKET
+	void setSocket();
+	void bindSocket();
+	void listenSocket();
+
 	void selectLoop();
 	void socketError(std::string str);
+
+	// GET
 	int getPort() const;
 	const std::string &getPwd() const;
 

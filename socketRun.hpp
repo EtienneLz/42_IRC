@@ -2,6 +2,7 @@
 # define SOCKETRUN_HPP
 
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <sys/poll.h>
 #include <netinet/in.h>
 #include <fcntl.h>
@@ -25,13 +26,13 @@ private:
 	//int					_timeOut;
 	//int					_nfds;
 	std::string			_pwd;
-	//struct pollfd		_pfd[200];
+	
 	socketRun();
 public:
 	socketRun(int port, std::string pwd);
 	~socketRun();
 
-	void pollLoop();
+	
 	void selectLoop();
 	void socketError(std::string str);
 	int getPort() const;

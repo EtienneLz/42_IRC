@@ -14,7 +14,7 @@ int main(int argc, char const* argv[])
     int PORT = atoi(argv[1]);
     int sock = 0, valread, client_fd;
     struct sockaddr_in serv_addr;
-    std::string hello = "Hello from client 1\n";
+    std::string hello = "Hello from client 2\n";
     char buffer[1024] = { 0 };
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("\n Socket creation error \n");
@@ -35,7 +35,7 @@ int main(int argc, char const* argv[])
         return -1;
     }
     send(sock, hello.c_str(), hello.length(), 0);
-    printf("Hello message sent 1\n");
+    printf("Hello message sent 2\nsock = %d\n", sock);
     valread = read(sock, buffer, 1024);
     printf("%s\n", buffer);
   

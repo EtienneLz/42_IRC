@@ -17,6 +17,9 @@
 
 
 //#define PORT 12345
+#define TRUE 1
+#define FALSE 0
+#define INACTIVE -1
 
 class socketRun {
 private:
@@ -25,6 +28,7 @@ private:
 	int					_addrlen; //= sizeof(address);
 	int					_port;
 	int					_on;
+	int					_count;
 	//int					_timeOut;
 	//int					_nfds;
 	std::string			_pwd;

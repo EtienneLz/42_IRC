@@ -2,6 +2,7 @@
 
 socketRun::socketRun(int port, std::string pwd) :_port(port), _pwd(pwd) {
 	_on = 1;
+	_count = 0;
 	//_nfds = 1;
 	_addrlen = sizeof(_address);
 	if ((_sd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -39,167 +40,135 @@ void socketRun::selectLoop() {
 	fd_set rfds;
 	struct timeval tv;
 	int retval;
-	int nb_conn;
+	int sd_max;
+	int curr_sd;
+	int i = 0;
+	std::string welcome = "Welcome on our IRC server!\n"; 
+	//int nb_conn;
+
+	// select() loop
+	while (TRUE) {
 
 	tv.tv_sec = 10;
 	tv.tv_usec = 0;
-	// select() loop
-	while (retval > 0) {
 	FD_ZERO(&rfds);
 	FD_SET(_sd,&rfds);
+	sd_max = _sd;
 
-	retval = select(_sd + 1, &rfds, NULL, NULL, &tv);
+	for (std::vector<User*>::iterator it = _client.begin(); it != _client.end(); it++) {
+		curr_sd = (*it)->fd;
+		if (curr_sd > 0)
+			FD_SET(curr_sd, &rfds);
+		if (curr_sd > sd_max)
+			sd_max = curr_sd;
+	}
 
-	if (retval == -1)
-        perror("select() failed\n");
-	else if (retval) {
-	    printf("Data is available now\nsd prev = %d\n", _sd);
-		if (FD_ISSET(_sd, &rfds)) {
-			retval--;
-			_client.push_back(new User());
-		    printf("fd is set\n");
+	retval = select(sd_max + 1, &rfds, NULL, NULL, &tv);
 
-			for (std::vector<User*>::iterator it = _client.begin(); it != _client.end(); it++) {
-				if ((*it)->fd == -1) {
-					int fdcl;
-					fdcl = accept(_sd, NULL, NULL);
-					if (fdcl < 0) {
-						perror("accept() failed");
-						exit(EXIT_FAILURE);
-					}
-					printf("accept = %d\n", fdcl);
-					(*it)->fd = fdcl;
-					(*it)->num_conn = ++nb_conn;
-					(*it)->count = 0;
-					break;
-				}
+	if (retval < 0 && errno != EINTR)
+		perror("select() failed\n");
+	else if (retval == 0) {
+		printf("No data within 10 seconds\n");
+		break;
+	}
+	if (FD_ISSET(_sd, &rfds)) {
+		int fdcl;
+		if ((fdcl = accept(_sd, (struct sockaddr *)&_address, (socklen_t*)&_addrlen)) < 0)
+			socketError("accept() failed\n");
+		if (send(fdcl, welcome.c_str(), welcome.length(), 0) != (ssize_t)welcome.length())
+			perror("send() failed\n");
+		_client.push_back(new User);
+		for (std::vector<User*>::iterator it = _client.begin(); it != _client.end(); it++) {
+			if ((*it)->fd == INACTIVE) {
+				(*it)->fd = fdcl;
+				(*it)->num_conn = i;
+				_count++;
+				printf("Adding new user with fd: %d at %d pos\n", (*it)->fd, (*it)->num_conn);
+				printf("Number of users: %d\n", _count);
+				break;
 			}
-
-			char buf[1000];
-			int lus;
-			lus = read(fdcl, buf, sizeof(buf));
-			printf("lus = %d\nsd = %d\n", lus, _sd);
-			if (lus > 0) {
-				printf("Data received\n");
-				printf("%s\n", buf);
+			i++;
+		}
+		i = 0;
+	}
+	printf("ok 1\n");
+	for (std::vector<User*>::iterator it = _client.begin(); it != _client.end(); it++) {
+		curr_sd = (*it)->fd;
+		char buf[1025];
+		if (FD_ISSET(curr_sd, &rfds)) {
+			int valread;
+			if ((valread = read(curr_sd, buf, 1024)) == 0) {
+				_count--;
+				printf("User disconnected, pos: %d\n", (*it)->num_conn);
+				printf("Number of users: %d\n", _count);
+				close(curr_sd);
+				(*it)->fd = INACTIVE;
 			}
-			std::string hello;
-			hello = "Hello from server! : " + static_cast<std::string>(buf);
-			int ret;
-			ret = send(fdcl, hello.c_str(), strlen(hello.c_str()), 0);
-			printf("ret = %d\n", ret);
+			else {
+				buf[valread] = '\0';
+				//sending msg back
+				printf("\n%s\n", buf);
+				send(curr_sd, buf, strlen(buf), 0);
+			}
 		}
 	}
-	else
-	    printf("No data within 10 seconds\n");
+	printf("ok 2\n");
 	}
+
+
+	// if (retval == -1)
+    //     perror("select() failed\n");
+	// else if (retval) {
+	//     printf("Data is available now\nsd prev = %d\n", _sd);
+	// 	if (FD_ISSET(_sd, &rfds)) {
+	// 		//retval--;
+	// 		//_client.push_back(new User());
+	// 	    printf("fd is set\n");
+
+	// 		// for (std::vector<User*>::iterator it = _client.begin(); it != _client.end(); it++) {
+	// 		// 	if ((*it)->fd == -1) {
+	// 				int fdcl;
+	// 				fdcl = accept(_sd, NULL, NULL);
+	// 				if (fdcl < 0) {
+	// 					perror("accept() failed");
+	// 					exit(EXIT_FAILURE);
+	// 				}
+	// 				printf("accept = %d\n", fdcl);
+	// 		// 		(*it)->fd = fdcl;
+	// 		// 		(*it)->num_conn = ++nb_conn;
+	// 		// 		(*it)->count = 0;
+	// 		// 		break;
+	// 		// 	}
+	// 		// }
+
+	// 		char buf[1025];
+			
+	// 		int lus;
+	// 		lus = read(fdcl, buf, sizeof(buf));
+	// 		printf("lus = %d\nsd = %d\n", lus, _sd);
+	// 		if (lus > 0) {
+	// 			buf[lus] = '\0';
+	// 			printf("Data received\n");
+	// 			printf("%s\n", buf);
+	// 		}
+	// 		std::string hello;
+	// 		hello = "Hello from server! : " + static_cast<std::string>(buf);
+	// 		int ret;
+	// 		ret = send(fdcl, hello.c_str(), strlen(hello.c_str()), 0);
+	// 		printf("ret = %d\n", ret);
+	// 	}
+	// }
+	// else {
+	//     printf("No data within 10 seconds\n");
+	// 	break;
+	// }
+	// }
 	
 }
 
 void socketRun::readData() {
 
 }
-
-// void socketRun::selectLoop() {
-// 	char buf[1024];
-
-// 	struct timeval ltime; 
-// 	ltime.tv_usec = 0;
-// 	//time_t startListen = time(NULL);
-// 	ltime.tv_sec = 60;
-// 	//do {
-// 		//int ret;
-// 		int end_serv = 0;
-// 		//int close_conn = 0;
-// 		fd_set rfds, copyFds;
-// 		int maxSd = _sd;
-// 		int newSd;
-// 	do {
-// 		FD_ZERO(&rfds);
-// 		FD_SET(_sd, &rfds);
-// 		memcpy(&copyFds, &rfds, sizeof(rfds));
-// 		std::cout << "Waiting on select()...\n";
-// 		int ret = select(_sd + 1, &rfds, NULL, NULL, &ltime);
-// 		if (ret == 0) {
-// 			perror("select() timed out. End program.\n");
-// 			break;
-// 		}
-// 		else if (ret < 0) {
-// 			perror("select() failed.\n");
-// 			break;
-// 		}
-// 		int ret_copy = ret;
-// 		for (int i = 0; i <= maxSd && ret_copy > 0; ++i) {
-// 			if (FD_ISSET(i, &copyFds)) {
-// 				ret_copy--;
-// 				if (i == _sd) {
-// 					std::cout << "Listening socket is readable\n";
-// 					do {
-// 						newSd = accept(_sd, NULL, NULL);
-// 						if (newSd < 0) {
-// 							if (errno != EWOULDBLOCK) {
-// 								perror("accept() failed.\n");
-// 								end_serv = 1;
-// 							}
-// 							break;
-// 						}
-// 						if (fcntl(newSd, F_SETFL, O_NONBLOCK) < 0)
-// 	                        socketError("fcntl() failed");
-// 						write(newSd, "Hello from server\n", strlen("Hello from server\n"));
-// 						std::cout << "New incoming connection - " << newSd << std::endl;
-// 						FD_SET(newSd, &rfds);
-// 						if (newSd > maxSd)
-// 							maxSd = newSd;
-// 					} while (newSd != -1);
-// 				}
-// 				else {
-// 					std::cout << "Descriptor is readable\n";
-// 					int close_conn = 0;
-// 					do {
-// 						std::cout << "Waiting to read...\n";
-// 						int ret = recv(i, buf, sizeof(buf), 0);
-// 						if (ret < 0) {
-// 							if (errno != EWOULDBLOCK) {
-// 								perror("recv() failed.\n");
-// 								close_conn = 1;
-// 							}
-// 							break;
-// 						}
-// 						if (ret == 0) {
-// 							std::cout << "Connection closed.\n";
-// 							close_conn = 1;
-// 							break;
-// 						}
-// 						int len = ret;
-// 						printf("%s\n", buf);
-// 						//write(newSd, buf, strlen(buf)); //TEST
-// 						ret = send(i, buf, len, 0);
-// 						if (ret < 0) {
-// 							perror("send() failed.\n");
-// 							close_conn = 1;
-// 							break;
-// 						}
-// 					} while (1);
-// 					if (close_conn) {
-// 						close(i);
-// 						FD_CLR(i, &rfds);
-// 						if (i == maxSd) {
-// 							while (FD_ISSET(maxSd, &rfds) == 0)
-// 								maxSd--;
-// 						}
-// 					}
-// 				}
-// 			}
-// 		}
-		
-// 	} while (end_serv == 0);
-// 	for (int i = 0; i <= maxSd; ++i) {
-// 		if (FD_ISSET(i, &rfds))
-// 			close(i);
-// 	}
-// }
-
-
 
 void socketRun::socketError(std::string str) {
 	perror(str.c_str());

@@ -35,7 +35,7 @@ int main(int argc, char const* argv[])
         return -1;
     }
     send(sock, hello.c_str(), hello.length(), 0);
-    printf("Hello message sent 1\n");
+    printf("Hello message sent 1\nsock = %d\n", sock);
     valread = read(sock, buffer, 1024);
     printf("%s\n", buffer);
   

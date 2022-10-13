@@ -39,12 +39,14 @@ void socketRun::selectLoop() {
 	fd_set rfds;
 	struct timeval tv;
 	int retval;
-
-	FD_ZERO(&rfds);
-	FD_SET(_sd,&rfds);
+	int nb_conn;
 
 	tv.tv_sec = 10;
 	tv.tv_usec = 0;
+	// select() loop
+	while (retval > 0) {
+	FD_ZERO(&rfds);
+	FD_SET(_sd,&rfds);
 
 	retval = select(_sd + 1, &rfds, NULL, NULL, &tv);
 
@@ -53,13 +55,29 @@ void socketRun::selectLoop() {
 	else if (retval) {
 	    printf("Data is available now\nsd prev = %d\n", _sd);
 		if (FD_ISSET(_sd, &rfds)) {
+			retval--;
+			_client.push_back(new User());
 		    printf("fd is set\n");
+
+			for (std::vector<User*>::iterator it = _client.begin(); it != _client.end(); it++) {
+				if ((*it)->fd == -1) {
+					int fdcl;
+					fdcl = accept(_sd, NULL, NULL);
+					if (fdcl < 0) {
+						perror("accept() failed");
+						exit(EXIT_FAILURE);
+					}
+					printf("accept = %d\n", fdcl);
+					(*it)->fd = fdcl;
+					(*it)->num_conn = ++nb_conn;
+					(*it)->count = 0;
+					break;
+				}
+			}
+
 			char buf[1000];
 			int lus;
-			int client;
-			client = accept(_sd, NULL, NULL);
-			printf("accept = %d\n", client);
-			lus = read(client, buf, sizeof(buf));
+			lus = read(fdcl, buf, sizeof(buf));
 			printf("lus = %d\nsd = %d\n", lus, _sd);
 			if (lus > 0) {
 				printf("Data received\n");
@@ -68,13 +86,18 @@ void socketRun::selectLoop() {
 			std::string hello;
 			hello = "Hello from server! : " + static_cast<std::string>(buf);
 			int ret;
-			ret = send(client, hello.c_str(), strlen(hello.c_str()), 0);
+			ret = send(fdcl, hello.c_str(), strlen(hello.c_str()), 0);
 			printf("ret = %d\n", ret);
 		}
 	}
 	else
 	    printf("No data within 10 seconds\n");
+	}
 	
+}
+
+void socketRun::readData() {
+
 }
 
 // void socketRun::selectLoop() {

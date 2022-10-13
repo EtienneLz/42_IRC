@@ -13,7 +13,7 @@
 #include <iostream>
 #include <cerrno>
 #include <vector>
-#include "AUsers.hpp"
+#include "User.hpp"
 
 
 //#define PORT 12345
@@ -28,7 +28,7 @@ private:
 	//int					_timeOut;
 	//int					_nfds;
 	std::string			_pwd;
-	std::vector<AUsers> _client;
+	std::vector<User*> _client;
 	
 	socketRun();
 public:
@@ -36,11 +36,12 @@ public:
 	~socketRun();
 
 	// CREATE SOCKET
-	void setSocket();
-	void bindSocket();
-	void listenSocket();
+	// void setSocket();
+	// void bindSocket();
+	// void listenSocket();
 
 	void selectLoop();
+	void readData();
 	void socketError(std::string str);
 
 	// GET

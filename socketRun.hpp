@@ -27,7 +27,6 @@ private:
 	int					_sd;		// server socket descriptor
 	int					_addrlen;	//= sizeof(_address);
 	int					_port;		// port used for connection
-	//int					_on;
 	int					_count;		// number of users
 	std::string			_pwd;		// password
 	std::vector<User*> _client;		// array of users

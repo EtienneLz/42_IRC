@@ -23,16 +23,14 @@
 
 class socketRun {
 private:
-	struct sockaddr_in	_address;
-	int					_sd;
-	int					_addrlen; //= sizeof(address);
-	int					_port;
-	int					_on;
-	int					_count;
-	//int					_timeOut;
-	//int					_nfds;
-	std::string			_pwd;
-	std::vector<User*> _client;
+	struct sockaddr_in	_address;	// sd address
+	int					_sd;		// server socket descriptor
+	int					_addrlen;	//= sizeof(_address);
+	int					_port;		// port used for connection
+	//int					_on;
+	int					_count;		// number of users
+	std::string			_pwd;		// password
+	std::vector<User*> _client;		// array of users
 	
 	socketRun();
 public:

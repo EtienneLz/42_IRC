@@ -1,34 +1,37 @@
 #include "socketRun.hpp"
 
-socketRun::socketRun(int port, std::string pwd) :_port(port), _pwd(pwd) {
-	_on = 1;
-	_count = 0;
-	//_nfds = 1;
+socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd) {
+	int on = 1;
 	_addrlen = sizeof(_address);
+
+	// Create a communication endpoint in TCP IPv4
 	if ((_sd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket() failed");
 		exit(EXIT_FAILURE);
 	}
-	if (setsockopt(_sd, SOL_SOCKET, SO_REUSEADDR, (char*)&_on, sizeof(_on)) < 0)
+
+	// Once the listening sd is bound to a port, no other local address can bind to the port
+	if (setsockopt(_sd, SOL_SOCKET, SO_REUSEADDR, (char*)&on, sizeof(on)) < 0)
 		socketError("setsockopt() failed");
+
+	// Sets the non_blocking option on the sd and all of which will derived from it
 	if (fcntl(_sd, F_SETFL, O_NONBLOCK) < 0)
 		socketError("fcntl() failed");
-	//initialize sockaddr_in struct
+
+	// Initialize sockaddr_in struct
 	memset((char*)&_address, 0, _addrlen);
 	_address.sin_family = AF_INET;
 	_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	_address.sin_port = htons(_port);
+
+	// Bind the sd to an address
 	if (bind(_sd, (struct sockaddr *)&_address, _addrlen) < 0)
 		socketError("bind() failed");
+
+	// Sets the sd in a passive mode where it can accept incoming connections requests
 	if (listen(_sd, 3) < 0)
 		socketError("listen() failed");
 	std::cout << "Listening...\n";
-	//initialize pollfd struct
-	// memset(_pfd, 0, sizeof(_pfd));
-	// _pfd[0].fd = _sd;
-	// _pfd[0].events = POLLIN;
-	/// set time to wait until the program will end if no activity
-	//_timeOut = (3 * 60 * 1000);
 
 }
 
@@ -44,12 +47,11 @@ void socketRun::selectLoop() {
 	int curr_sd;
 	int i = 0;
 	std::string welcome = "Welcome on our IRC server!\n"; 
-	//int nb_conn;
 
 	// select() loop
 	while (TRUE) {
 
-	tv.tv_sec = 10;
+	tv.tv_sec = 20;
 	tv.tv_usec = 0;
 	FD_ZERO(&rfds);
 	FD_SET(_sd,&rfds);
@@ -68,7 +70,7 @@ void socketRun::selectLoop() {
 	if (retval < 0 && errno != EINTR)
 		perror("select() failed\n");
 	else if (retval == 0) {
-		printf("No data within 10 seconds\n");
+		printf("No data within 20 seconds\n");
 		break;
 	}
 	if (FD_ISSET(_sd, &rfds)) {
@@ -83,7 +85,7 @@ void socketRun::selectLoop() {
 				(*it)->fd = fdcl;
 				(*it)->num_conn = i;
 				_count++;
-				printf("Adding new user with fd: %d at %d pos\n", (*it)->fd, (*it)->num_conn);
+				printf("Adding new user with fd: %d at pos %d\n", (*it)->fd, (*it)->num_conn);
 				printf("Number of users: %d\n", _count);
 				break;
 			}
@@ -91,7 +93,7 @@ void socketRun::selectLoop() {
 		}
 		i = 0;
 	}
-	printf("ok 1\n");
+	//printf("ok 1\n");
 	for (std::vector<User*>::iterator it = _client.begin(); it != _client.end(); it++) {
 		curr_sd = (*it)->fd;
 		char buf[1025];
@@ -109,10 +111,11 @@ void socketRun::selectLoop() {
 				//sending msg back
 				printf("\n%s\n", buf);
 				send(curr_sd, buf, strlen(buf), 0);
+				//send(curr_sd, buf, strlen(buf), MSG_DONTWAIT);
 			}
 		}
 	}
-	printf("ok 2\n");
+	//printf("ok 2\n");
 	}
 
 

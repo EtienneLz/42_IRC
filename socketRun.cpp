@@ -68,6 +68,7 @@ void socketRun::selectLoop() {
 	retval = select(sd_max + 1, &rfds, NULL, NULL, &tv);
 
 	if (retval < 0 && errno != EINTR)
+		perror("select() failed\n");
 		std::cerr << "select() failed\n";
 	else if (retval == 0) {
 		std::cout << "No data within 20 seconds\n";

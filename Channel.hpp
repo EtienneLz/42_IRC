@@ -3,6 +3,7 @@
 
 
 class Channel {
+
 };
 
 #endif

@@ -29,7 +29,7 @@ private:
 	int					_port;		// port used for connection
 	int					_count;		// number of users
 	std::string			_pwd;		// password
-	std::vector<User*>	_client;		// array of users
+	std::vector<User*> _client;		// array of users
 
 	socketRun();
 public:

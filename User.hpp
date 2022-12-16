@@ -3,12 +3,14 @@
 
 //#include "socketRun.hpp"
 //#include "Channel.hpp"
+#include <string>
 
 // ABSTRACT USERS CLASS
 class User {
 protected:
-    // std::string _nickname;
-	// std::string _username;
+    std::string _nickname;
+	std::string _username;
+    bool        _operator;
 	// std::vector<Channel> _chan;
 	
 public:

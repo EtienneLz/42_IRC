@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 //#define PORT 12345
-  
+
 int main(int argc, char const* argv[])
 {
     (void)argc;
@@ -20,10 +20,10 @@ int main(int argc, char const* argv[])
         printf("\n Socket creation error \n");
         return -1;
     }
-  
+
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
-  
+
     // Convert IPv4 and IPv6 addresses from text to binary
     // form
     if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
@@ -38,7 +38,7 @@ int main(int argc, char const* argv[])
     printf("Hello message sent 2\nsock = %d\n", sock);
     valread = read(sock, buffer, 1024);
     printf("%s\n", buffer);
-  
+
     // closing the connected socket
     close(client_fd);
     return 0;

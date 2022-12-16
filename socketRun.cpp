@@ -6,7 +6,7 @@ socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pw
 
 	// Create a communication endpoint in TCP IPv4
 	if ((_sd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		perror("socket() failed");
+		std::cerr << "socket() failed";
 		exit(EXIT_FAILURE);
 	}
 
@@ -46,7 +46,7 @@ void socketRun::selectLoop() {
 	int sd_max;
 	int curr_sd;
 	int i = 0;
-	std::string welcome = "Welcome on our IRC server!\n"; 
+	std::string welcome = "Welcome on our IRC server!\n";
 
 	// select() loop
 	while (TRUE) {
@@ -68,9 +68,9 @@ void socketRun::selectLoop() {
 	retval = select(sd_max + 1, &rfds, NULL, NULL, &tv);
 
 	if (retval < 0 && errno != EINTR)
-		perror("select() failed\n");
+		std::cerr << "select() failed\n";
 	else if (retval == 0) {
-		printf("No data within 20 seconds\n");
+		std::cout << "No data within 20 seconds\n";
 		break;
 	}
 	if (FD_ISSET(_sd, &rfds)) {
@@ -78,15 +78,16 @@ void socketRun::selectLoop() {
 		if ((fdcl = accept(_sd, (struct sockaddr *)&_address, (socklen_t*)&_addrlen)) < 0)
 			socketError("accept() failed\n");
 		if (send(fdcl, welcome.c_str(), welcome.length(), 0) != (ssize_t)welcome.length())
-			perror("send() failed\n");
+			std::cerr << "send() failed\n";
 		_client.push_back(new User);
 		for (std::vector<User*>::iterator it = _client.begin(); it != _client.end(); it++) {
 			if ((*it)->fd == INACTIVE) {
 				(*it)->fd = fdcl;
 				(*it)->num_conn = i;
 				_count++;
-				printf("Adding new user with fd: %d at pos %d\n", (*it)->fd, (*it)->num_conn);
-				printf("Number of users: %d\n", _count);
+				std::cout << "Adding new user with fd: " << (*it)->fd <<
+					" at pos n" << (*it)->num_conn << std::endl;
+				std::cout << "Number of users: " << _count << std::endl;
 				break;
 			}
 			i++;
@@ -101,14 +102,14 @@ void socketRun::selectLoop() {
 			int valread;
 			if ((valread = read(curr_sd, buf, 1024)) == 0) {
 				_count--;
-				printf("User disconnected, pos: %d\n", (*it)->num_conn);
-				printf("Number of users: %d\n", _count);
+				std::cout << "User disconnected, pos: " << (*it)->num_conn << std::endl;
+				std::cout << "Number of users: " << _count << std::endl;
 				close(curr_sd);
 				(*it)->fd = INACTIVE;
 			}
 			else {
 				buf[valread] = '\0';
-				printf("\n%s\n", buf);
+				std::cout << "\n" << buf << std::endl;
 				//sending msg back
 				send(curr_sd, buf, strlen(buf), 0);
 				//send(curr_sd, buf, strlen(buf), MSG_DONTWAIT);

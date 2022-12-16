@@ -69,10 +69,6 @@ void socketRun::selectLoop() {
 
 	if (retval < 0 && errno != EINTR)
 		perror("select() failed\n");
-	else if (retval == 0) {
-		printf("No data within 20 seconds\n");
-		break;
-	}
 	if (FD_ISSET(_sd, &rfds)) {
 		int fdcl;
 		if ((fdcl = accept(_sd, (struct sockaddr *)&_address, (socklen_t*)&_addrlen)) < 0)

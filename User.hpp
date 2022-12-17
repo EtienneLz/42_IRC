@@ -22,6 +22,8 @@ public:
 	int num_conn;
 	int count;
 
+    std::string getUsername();
+
 };
 
 #endif

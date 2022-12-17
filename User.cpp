@@ -9,3 +9,7 @@ User::User() {
 User::~User() {
 
 }
+
+std::string User::getUsername() {
+	return _username;
+}

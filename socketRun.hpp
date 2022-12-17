@@ -23,7 +23,7 @@
 
 class socketRun {
 public:
-	typedef std::map<int, User*> mClient;
+	typedef std::map<int, User*>	mClient;
 	typedef std::pair<int, User*>	pClient;
 	typedef mClient::iterator		iterator;
 

@@ -142,13 +142,13 @@ void socketRun::selectLoop() {
 // 	}
 // }
 
-bool send_message(int sockfd, const std::string& str, int replyCode) {
-	std::string	message;
-	message = ":OurIrc";
-	
-  	ssize_t num_bytes = send(sockfd, message.c_str(), message.size(), 0);
-  	return num_bytes == message.size();
-}
+// bool send_message(int sockfd, const std::string& str, int replyCode) {
+// 	std::string	message;
+// 	message = ":OurIrc";
+
+//   	ssize_t num_bytes = send(sockfd, message.c_str(), message.size(), 0);
+//   	return num_bytes == message.size();
+// }
 
 void socketRun::readData() {
 

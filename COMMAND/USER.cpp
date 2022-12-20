@@ -1,6 +1,4 @@
-#include <vector>
-#include "../socketRun.hpp"
-#include "../Replies_Code_Def.hpp"
+#include "command.hpp"
 
 void    user_cmd(std::map<int, User*> clients, const std::string &params, int id) {
     std::vector<std::string> parts;
@@ -20,7 +18,7 @@ void    user_cmd(std::map<int, User*> clients, const std::string &params, int id
     std::string username = parts[1];
     std::string realname = parts[4];
 
-    clients.setUsername(username);
-    clients.setRealname(realname);
+    clients[id]->setUsername(username);
+    clients[id]->setRealname(realname);
 
 }

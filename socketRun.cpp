@@ -45,7 +45,6 @@ void socketRun::selectLoop() {
 	int retval;
 	int sd_max;
 	int curr_sd;
-	int i = 0;
 	std::string welcome = "Welcome on our IRC server!\n"; 
 
 	// select() loop
@@ -58,7 +57,7 @@ void socketRun::selectLoop() {
 	sd_max = _sd;
 
 	for (iterator it = _clients.begin(); it != _clients.end(); it++) {
-		curr_sd = it->second->fd;
+		curr_sd = it->first;
 		if (curr_sd > 0)
 			FD_SET(curr_sd, &rfds);
 		if (curr_sd > sd_max)
@@ -77,24 +76,26 @@ void socketRun::selectLoop() {
 			perror("send() failed\n");
 		
 		_clients[fdcl] = new User;
+		_count++;
+		std::cout << "\nAdding new user with fd: " << fdcl << "\nNumber of users: " << _count << std::endl;
 
-		for (iterator it = _clients.begin(); it != _clients.end(); it++) {
-			if (it->second->fd == INACTIVE) {
-				it->second->fd = fdcl;
-				it->second->num_conn = i;
-				_count++;
-				std::cout << "\nAdding new user with fd: " << _clients[fdcl]->fd << "\nNumber of users: " << _count << std::endl;
-				// printf("Adding new user with fd: %d at pos %d\n", (*it)->fd, (*it)->num_conn);
-				// printf("Number of users: %d\n", _count);
-				break;
-			}
-			i++;
-		}
-		i = 0;
+		// for (iterator it = _clients.begin(); it != _clients.end(); it++) {
+		// 	if (it->second->fd == INACTIVE) {
+		// 		it->second->fd = fdcl;
+		// 		it->second->num_conn = i;
+		// 		_count++;
+		// 		std::cout << "\nAdding new user with fd: " << _clients[fdcl]->fd << "\nNumber of users: " << _count << std::endl;
+		// 		// printf("Adding new user with fd: %d at pos %d\n", (*it)->fd, (*it)->num_conn);
+		// 		// printf("Number of users: %d\n", _count);
+		// 		break;
+		// 	}
+		// 	i++;
+		// }
+		// i = 0;
 	}
 	//printf("ok 1\n");
 	for (iterator it = _clients.begin(); it != _clients.end(); it++) {
-		curr_sd = it->second->fd;
+		curr_sd = it->first;
 		char buf[1025];
 		if (FD_ISSET(curr_sd, &rfds)) {
 			int valread;
@@ -103,7 +104,8 @@ void socketRun::selectLoop() {
 				std::cout << "User " << it->second->getUsername() << " with fd " << curr_sd << " disconnected\n";
 				printf("Number of users: %d\n", _count);
 				close(curr_sd);
-				it->second->fd = INACTIVE;
+				_clients.erase(curr_sd);
+				// it->second->fd = INACTIVE;
 			}
 			else {
 				buf[valread] = '\0';
@@ -142,14 +144,6 @@ void socketRun::selectLoop() {
 // 	}
 // }
 
-// bool send_message(int sockfd, const std::string& str, int replyCode) {
-// 	std::string	message;
-// 	message = ":OurIrc";
-
-//   	ssize_t num_bytes = send(sockfd, message.c_str(), message.size(), 0);
-//   	return num_bytes == message.size();
-// }
-
 void socketRun::readData() {
 
 }
@@ -166,6 +160,22 @@ int socketRun::getPort() const {
 
 const std::string &socketRun::getPwd() const {
 	return _pwd;
+}
+
+std::string	socketRun::getHostname() {
+	return _hostname;
+}
+
+void	socketRun::setHostname(std::string name) {
+	_hostname = name;
+}
+
+int		socketRun::getCount() {
+	return _count;
+}
+
+std::map<int, User*> socketRun::getUserMap() {
+	return _clients;
 }
 
 std::ostream& operator<<(std::ostream& output, const socketRun &sock) {

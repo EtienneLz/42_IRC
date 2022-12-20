@@ -1,9 +1,7 @@
-#include <vector>
-#include "../User.hpp"
+#include "command.hpp"
 
 void    cap(std::string params) {
     if (params != "LS")
         return;
     
-    send_message("CAP * LS :")
 }

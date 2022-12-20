@@ -23,7 +23,7 @@
 
 class socketRun {
 public:
-	typedef std::map<int, User*>	mClient;
+	typedef std::map<int, User*> 	mClient;
 	typedef std::pair<int, User*>	pClient;
 	typedef mClient::iterator		iterator;
 
@@ -35,6 +35,7 @@ private:
 	int					_count;		// number of users
 	std::string			_pwd;		// password
 	mClient				_clients;		// array of users
+	std::string			_hostname;	//name of server
 	
 	socketRun();
 public:
@@ -56,6 +57,11 @@ public:
 	// GET
 	int getPort() const;
 	const std::string &getPwd() const;
+
+	std::string	getHostname();
+	void	setHostname(std::string name);
+	int		getCount();
+	mClient getUserMap();
 
 };
 

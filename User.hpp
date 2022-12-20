@@ -23,6 +23,10 @@ public:
 	int count;
 
     std::string getUsername();
+    void        setUsername(std::string str);
+
+    std::string getRealname();
+    void        setRealname(std::string str);
 
 };
 

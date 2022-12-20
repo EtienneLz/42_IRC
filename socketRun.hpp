@@ -12,7 +12,7 @@
 #include <cstring>
 #include <iostream>
 #include <cerrno>
-#include <vector>
+#include <map>
 #include "User.hpp"
 
 
@@ -22,6 +22,11 @@
 #define INACTIVE -1
 
 class socketRun {
+public:
+	typedef std::map<int, User*> mClient;
+	typedef std::pair<int, User*>	pClient;
+	typedef mClient::iterator		iterator;
+
 private:
 	struct sockaddr_in	_address;	// sd address
 	int					_sd;		// server socket descriptor
@@ -29,7 +34,7 @@ private:
 	int					_port;		// port used for connection
 	int					_count;		// number of users
 	std::string			_pwd;		// password
-	std::vector<User*> _client;		// array of users
+	mClient				_clients;		// array of users
 	
 	socketRun();
 public:
@@ -42,8 +47,11 @@ public:
 	// void listenSocket();
 
 	void selectLoop();
+	// void newUser(int fdcl);
 	void readData();
 	void socketError(std::string str);
+
+	void checkCmd();
 
 	// GET
 	int getPort() const;

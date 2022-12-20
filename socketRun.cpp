@@ -15,8 +15,8 @@ socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pw
 		socketError("setsockopt() failed");
 
 	// Sets the non_blocking option on the sd and all of which will derived from it
-	if (fcntl(_sd, F_SETFL, O_NONBLOCK) < 0)
-		socketError("fcntl() failed");
+	// if (fcntl(_sd, F_SETFL, O_NONBLOCK) < 0)
+	// 	socketError("fcntl() failed");
 
 	// Initialize sockaddr_in struct
 	memset((char*)&_address, 0, _addrlen);
@@ -57,8 +57,8 @@ void socketRun::selectLoop() {
 	FD_SET(_sd,&rfds);
 	sd_max = _sd;
 
-	for (std::vector<User*>::iterator it = _client.begin(); it != _client.end(); it++) {
-		curr_sd = (*it)->fd;
+	for (iterator it = _clients.begin(); it != _clients.end(); it++) {
+		curr_sd = it->first;
 		if (curr_sd > 0)
 			FD_SET(curr_sd, &rfds);
 		if (curr_sd > sd_max)
@@ -69,38 +69,33 @@ void socketRun::selectLoop() {
 
 	if (retval < 0 && errno != EINTR)
 		perror("select() failed\n");
+	//check if fds are register and so, active
 	if (FD_ISSET(_sd, &rfds)) {
 		int fdcl;
 		if ((fdcl = accept(_sd, (struct sockaddr *)&_address, (socklen_t*)&_addrlen)) < 0)
 			socketError("accept() failed\n");
+
+		//welcoming message from the server
 		if (send(fdcl, welcome.c_str(), welcome.length(), 0) != (ssize_t)welcome.length())
 			perror("send() failed\n");
-		_client.push_back(new User);
-		for (std::vector<User*>::iterator it = _client.begin(); it != _client.end(); it++) {
-			if ((*it)->fd == INACTIVE) {
-				(*it)->fd = fdcl;
-				(*it)->num_conn = i;
-				_count++;
-				printf("Adding new user with fd: %d at pos %d\n", (*it)->fd, (*it)->num_conn);
-				printf("Number of users: %d\n", _count);
-				break;
-			}
-			i++;
-		}
-		i = 0;
+
+		//adding a new user
+		_clients[fdcl] = new User;
+		_count++;
+		std::cout << "\nAdding new user with fd: " << fdcl << "\nNumber of users: " << _count << std::endl;
 	}
-	//printf("ok 1\n");
-	for (std::vector<User*>::iterator it = _client.begin(); it != _client.end(); it++) {
-		curr_sd = (*it)->fd;
+
+	for (iterator it = _clients.begin(); it != _clients.end(); it++) {
+		curr_sd = it->first;
 		char buf[1025];
 		if (FD_ISSET(curr_sd, &rfds)) {
 			int valread;
 			if ((valread = read(curr_sd, buf, 1024)) == 0) {
 				_count--;
-				printf("User disconnected, pos: %d\n", (*it)->num_conn);
+				std::cout << "User " << it->second->getUsername() << " with fd " << curr_sd << " disconnected\n";
 				printf("Number of users: %d\n", _count);
 				close(curr_sd);
-				(*it)->fd = INACTIVE;
+				_clients.erase(curr_sd);
 			}
 			else {
 				buf[valread] = '\0';
@@ -111,9 +106,9 @@ void socketRun::selectLoop() {
 			}
 		}
 	}
-	//printf("ok 2\n");
 	}
 }
+
 
 void socketRun::readData() {
 

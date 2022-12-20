@@ -25,3 +25,11 @@ std::string User::getRealname() {
 void        User::setRealname(std::string str) {
 	_realname = str;
 }
+
+std::string User::getNick() {
+	return _nickname;
+}
+
+void        User::setNick(std::string str) {
+	_nickname = str;
+}

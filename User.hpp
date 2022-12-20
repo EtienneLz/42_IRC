@@ -28,6 +28,9 @@ public:
     std::string getRealname();
     void        setRealname(std::string str);
 
+    std::string getNick();
+    void        setNick(std::string str);
+
 };
 
 #endif

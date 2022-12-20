@@ -1,6 +1,6 @@
 #include "command.hpp"
 
-void    user_cmd(std::map<int, User*> clients, const std::string &params, int id) {
+void    user_cmd(socketRun server, const std::string &params, int id) {
     std::vector<std::string> parts;
     std::stringstream ss(params);
     std::string s;
@@ -18,7 +18,7 @@ void    user_cmd(std::map<int, User*> clients, const std::string &params, int id
     std::string username = parts[1];
     std::string realname = parts[4];
 
-    clients[id]->setUsername(username);
-    clients[id]->setRealname(realname);
+    server.getUserMap()[id]->setUsername(username);
+    server.getUserMap()[id]->setRealname(realname);
 
 }

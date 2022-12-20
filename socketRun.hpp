@@ -62,6 +62,7 @@ public:
 	void	setHostname(std::string name);
 	int		getCount();
 	mClient getUserMap();
+	std::string	getPassword();
 
 };
 

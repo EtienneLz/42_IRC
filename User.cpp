@@ -1,35 +1,27 @@
 #include "User.hpp"
 
-User::User() {
+User::User():_register(false) {
 	fd = -1;
 	num_conn = 0;
 	count = -1;
 }
 
-User::~User() {
+User::~User() {}
 
-}
+std::string User::getUsername() {return _username;}
 
-std::string User::getUsername() {
-	return _username;
-}
+void        User::setUsername(std::string str) {_username = str;}
 
-void        User::setUsername(std::string str) {
-	_username = str;
-}
+std::string User::getRealname() {return _realname;}
 
-std::string User::getRealname() {
-	return _realname;
-}
+void        User::setRealname(std::string str) {_realname = str;}
 
-void        User::setRealname(std::string str) {
-	_realname = str;
-}
+std::string const &User::getNick(void) const {return (_nickname);}
 
-std::string User::getNick() {
-	return _nickname;
-}
+bool const &User::getRegister(void) const {return (_register);}
 
-void        User::setNick(std::string str) {
-	_nickname = str;
-}
+void		User::setNick(std::string nick) {_nickname = nick;}
+
+void		User::setRegister(void) {_register = true;}
+
+

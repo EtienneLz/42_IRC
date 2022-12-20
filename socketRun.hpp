@@ -1,6 +1,8 @@
 #ifndef SOCKETRUN_HPP
 # define SOCKETRUN_HPP
 
+
+
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/poll.h>
@@ -14,6 +16,7 @@
 #include <cerrno>
 #include <map>
 #include "User.hpp"
+// #include "COMMAND/command.hpp"
 
 
 //#define PORT 12345
@@ -58,12 +61,10 @@ public:
 	int getPort() const;
 	const std::string &getPwd() const;
 
-	std::string	getHostname();
-	void	setHostname(std::string name);
-	int		getCount();
-	mClient getUserMap();
-	std::string	getPassword();
-
+	const std::string		&getHostname();
+	void			setHostname(std::string name);
+	const int		&getCount();
+	mClient 	&getUserMap();
 };
 
 std::ostream& operator<<(std::ostream& output, const socketRun &sock);

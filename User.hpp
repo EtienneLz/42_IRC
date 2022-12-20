@@ -1,8 +1,6 @@
 #ifndef USER_HPP
 # define USER_HPP
 
-//#include "socketRun.hpp"
-//#include "Channel.hpp"
 #include <string>
 
 // ABSTRACT USERS CLASS
@@ -12,11 +10,10 @@ protected:
 	std::string _username;
     std::string _realname;
     bool        _operator;
-	// std::vector<Channel> _chan;
+    bool        _register;
 	
 public:
     User();
-    //virtual ~User();
     ~User();
     int fd;
 	int num_conn;
@@ -28,9 +25,11 @@ public:
     std::string getRealname();
     void        setRealname(std::string str);
 
-    std::string getNick();
+    std::string const &getNick(void) const;
     void        setNick(std::string str);
 
+    void        setRegister(void);
+    bool const &getRegister(void) const;
 };
 
 #endif

@@ -127,7 +127,7 @@ const std::string &socketRun::getPwd() const {
 	return _pwd;
 }
 
-std::string	socketRun::getHostname() {
+const std::string	&socketRun::getHostname() {
 	return _hostname;
 }
 
@@ -135,16 +135,12 @@ void	socketRun::setHostname(std::string name) {
 	_hostname = name;
 }
 
-int		socketRun::getCount() {
+const int		&socketRun::getCount() {
 	return _count;
 }
 
-std::map<int, User*> socketRun::getUserMap() {
+std::map<int, User*> &socketRun::getUserMap() {
 	return _clients;
-}
-
-std::string	socketRun::getPassword() {
-	return _pwd;
 }
 
 std::ostream& operator<<(std::ostream& output, const socketRun &sock) {

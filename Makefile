@@ -4,8 +4,8 @@ SRCS = main1.cpp \
 		socketRun.cpp \
 		User.cpp \
 		COMMAND/USER.cpp \
-		COMMAND/CAP.cpp \
-		utils.cpp
+		utils.cpp \
+		
 
 OBJS = ${SRCS:.cpp=.o}
 
@@ -29,5 +29,3 @@ fclean: clean
 	rm -f ${NAME}
 
 re: fclean all
-
-PHONY.: all clean fclean re

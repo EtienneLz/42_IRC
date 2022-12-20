@@ -2,7 +2,10 @@ NAME = ircserv
 
 SRCS = main1.cpp \
 		socketRun.cpp \
-		User.cpp
+		User.cpp \
+		COMMAND/USER.cpp \
+		COMMAND/CAP.cpp \
+		utils.cpp
 
 OBJS = ${SRCS:.cpp=.o}
 

@@ -45,7 +45,6 @@ void socketRun::selectLoop() {
 	int retval;
 	int sd_max;
 	int curr_sd;
-	int i = 0;
 	std::string welcome = "Welcome on our IRC server!\n"; 
 
 	// select() loop
@@ -125,6 +124,26 @@ int socketRun::getPort() const {
 }
 
 const std::string &socketRun::getPwd() const {
+	return _pwd;
+}
+
+std::string	socketRun::getHostname() {
+	return _hostname;
+}
+
+void	socketRun::setHostname(std::string name) {
+	_hostname = name;
+}
+
+int		socketRun::getCount() {
+	return _count;
+}
+
+std::map<int, User*> socketRun::getUserMap() {
+	return _clients;
+}
+
+std::string	socketRun::getPassword() {
 	return _pwd;
 }
 

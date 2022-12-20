@@ -15,8 +15,9 @@
 #include <iostream>
 #include <cerrno>
 #include <map>
+#include <vector>
 #include "User.hpp"
-// #include "COMMAND/command.hpp"
+#include "COMMAND/command.hpp"
 
 
 //#define PORT 12345
@@ -39,6 +40,7 @@ private:
 	std::string			_pwd;		// password
 	mClient				_clients;	// array of users
 	std::string			_hostname;	//name of server
+	std::map<std::string, void*> _commands;
 	
 	socketRun();
 public:
@@ -54,7 +56,7 @@ public:
 	// void newUser(int fdcl);
 	void readData();
 	void socketError(std::string str);
-
+	void receiveMessage(std::string buf, int id, socketRun &server);
 	void checkCmd();
 
 	// GET

@@ -1,6 +1,18 @@
 #include "socketRun.hpp"
 
 socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd) {
+	_commands["KICK"] = &KICK();
+	_commands["KILL"] = &KILL();
+	_commands["QUIT"] = &QUIT();
+	_commands["MODE"] = &MODE;
+	_commands["OPER"] = &OPER;
+	_commands["CAP"] = &CAP;
+	_commands["JOIN"] = &JOIN;
+	_commands["NICK"] = &NICK;
+	_commands["PASS"] = &PASS;
+	_commands["USER"] = &USER;
+	_commands["PRIVMSG"] = &PRIVMSG;
+
 	int on = 1;
 	_addrlen = sizeof(_address);
 
@@ -99,6 +111,7 @@ void socketRun::selectLoop() {
 			else {
 				buf[valread] = '\0';
 				printf("\n%s\n", buf);
+				receiveMessage(buf, curr_sd, *this);
 				//sending msg back
 				send(curr_sd, buf, strlen(buf), 0);
 				//send(curr_sd, buf, strlen(buf), MSG_DONTWAIT);
@@ -108,6 +121,21 @@ void socketRun::selectLoop() {
 	}
 }
 
+void socketRun::receiveMessage(std::string buf, int id, socketRun &server) {
+	std::string cmd;
+	std::string args;
+	std::size_t pos;
+
+	pos = buf.find(' ');
+	cmd = buf.substr(0, pos - 1);
+	args = buf.substr(pos);
+
+	if (_commands[cmd])
+		_commands->second(server, args, id);
+	else
+		//message d'erreur
+
+}
 
 void socketRun::readData() {
 

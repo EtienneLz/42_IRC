@@ -15,8 +15,8 @@ socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pw
 		socketError("setsockopt() failed");
 
 	// Sets the non_blocking option on the sd and all of which will derived from it
-	if (fcntl(_sd, F_SETFL, O_NONBLOCK) < 0)
-		socketError("fcntl() failed");
+	// if (fcntl(_sd, F_SETFL, O_NONBLOCK) < 0)
+	// 	socketError("fcntl() failed");
 
 	// Initialize sockaddr_in struct
 	memset((char*)&_address, 0, _addrlen);
@@ -69,32 +69,22 @@ void socketRun::selectLoop() {
 
 	if (retval < 0 && errno != EINTR)
 		perror("select() failed\n");
+	//check if fds are register and so, active
 	if (FD_ISSET(_sd, &rfds)) {
 		int fdcl;
 		if ((fdcl = accept(_sd, (struct sockaddr *)&_address, (socklen_t*)&_addrlen)) < 0)
 			socketError("accept() failed\n");
+
+		//welcoming message from the server
 		if (send(fdcl, welcome.c_str(), welcome.length(), 0) != (ssize_t)welcome.length())
 			perror("send() failed\n");
-		
+
+		//adding a new user
 		_clients[fdcl] = new User;
 		_count++;
 		std::cout << "\nAdding new user with fd: " << fdcl << "\nNumber of users: " << _count << std::endl;
-
-		// for (iterator it = _clients.begin(); it != _clients.end(); it++) {
-		// 	if (it->second->fd == INACTIVE) {
-		// 		it->second->fd = fdcl;
-		// 		it->second->num_conn = i;
-		// 		_count++;
-		// 		std::cout << "\nAdding new user with fd: " << _clients[fdcl]->fd << "\nNumber of users: " << _count << std::endl;
-		// 		// printf("Adding new user with fd: %d at pos %d\n", (*it)->fd, (*it)->num_conn);
-		// 		// printf("Number of users: %d\n", _count);
-		// 		break;
-		// 	}
-		// 	i++;
-		// }
-		// i = 0;
 	}
-	//printf("ok 1\n");
+
 	for (iterator it = _clients.begin(); it != _clients.end(); it++) {
 		curr_sd = it->first;
 		char buf[1025];
@@ -106,7 +96,6 @@ void socketRun::selectLoop() {
 				printf("Number of users: %d\n", _count);
 				close(curr_sd);
 				_clients.erase(curr_sd);
-				// it->second->fd = INACTIVE;
 			}
 			else {
 				buf[valread] = '\0';
@@ -117,33 +106,9 @@ void socketRun::selectLoop() {
 			}
 		}
 	}
-	//printf("ok 2\n");
 	}
 }
 
-// void socketRun::newUser(int fdcl) {
-// 	int i = 0;
-// 	std::string welcome = "Welcome on our IRC server!\n"; 
-
-// 	if (send(fdcl, welcome.c_str(), welcome.length(), 0) != (ssize_t)welcome.length())
-// 			perror("send() failed\n");
-// 	_clients.insert(pClient(fdcl,new User));
-// 	// it = _clientss.find(fd);
-// 	// it->second.fdh
-// 	_clients[fdcl] = new User;
-// 	_clients.push_back(new User);
-// 	for (std::vector<User*>::iterator it = _clients.begin(); it != _clients.end(); it++) {
-// 		if ((*it)->fd == INACTIVE) {
-// 			(*it)->fd = fdcl;
-// 			(*it)->num_conn = i;
-// 			_count++;
-// 			printf("Adding new user with fd: %d at pos %d\n", (*it)->fd, (*it)->num_conn);
-// 			printf("Number of users: %d\n", _count);
-// 			break;
-// 		}
-// 		i++;
-// 	}
-// }
 
 void socketRun::readData() {
 

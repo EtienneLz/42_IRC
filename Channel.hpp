@@ -3,7 +3,10 @@
 
 
 class Channel {
-
+public:
+private:
+	std::string	_topic;
+	
 };
 
 #endif

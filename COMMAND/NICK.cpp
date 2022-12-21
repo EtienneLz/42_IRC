@@ -1,33 +1,24 @@
-#include <map>
-#include <string>
-#include <cctype>
-#include "User.hpp"
-#define ERR_NICKNAMEINUSE 433
-#define ERR_NONICKNAMEGIVEN 431
-#define ERR_ERRONEUSNICKNAME 432
+#include "command.hpp"
 
-static bool	isSpecial(char c) {
-	if (c == '[' || c == ']' || c == '\\' || c == '`' || c == '_' || c == '^' ||
-		c == '{' || c == '|' || c == '}')
-		return (true);
-	return (false);
-}
 
-int	NICK(std::map<int, User*> &clients, std::string nick, int id) {
-	
+void	NICK(socketRun server, std::string nick, int id) {
+
+	std::map<int, User*> clients = server.getUserMap();
+
+	if (clients[id]->getRegister() == false)
+		return (send_message(server, id, ERR_RESTRICTED, NULL));
 
 	if (!nick.size())
-		return (ERR_NONICKNAMEGIVEN);
-	else if (nick.length() > 9 || (!isalpha(nick[0]) && !isSpecial(nick[0])))
-		return (ERR_ERRONEUSNICKNAME);
+		return (send_message(server, id, ERR_NONICKNAMEGIVEN, NULL));
+	else if (nick.length() > 9 || (!isalpha(nick[0]) && !isspecial(nick[0])))
+		return (send_message(server, id, ERR_ERRONEUSNICKNAME, nick));
 
 	for (size_t i = 0; i < nick.size(); i++)
-		if (!isalnum(nick[i]) && !isSpecial(nick[i]) && nick[i] != '-')
-			return (ERR_ERRONEUSNICKNAME);
+		if (!isalnum(nick[i]) && !isspecial(nick[i]) && nick[i] != '-')
+			return (send_message(server, id, ERR_ERRONEUSNICKNAME, nick));
 
 	for (std::map<int, User*>::iterator it = clients.begin(); it != clients.end(); ++it)
 		if ((*it->second).getNick() == nick)
-			return (ERR_NICKNAMEINUSE);
-	clients[id]->setNick(nick);
-	return (0);
+			return (send_message(server, id, ERR_NICKNAMEINUSE, nick));
+	server.getUserMap()[id]->setNick(nick);
 }

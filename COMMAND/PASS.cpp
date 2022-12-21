@@ -1,13 +1,14 @@
 #include "command.hpp"
 
-void	PASS(std::map<int, User*> &clients, socketRun serv, std::string pass, int id)
-{
+void	PASS(socketRun server, std::string pass, int id) {
+	std::map<int, User*> clients = server.getUserMap();
+
 	if (clients[id]->getRegister() == true)
-		return (ERR_ALREADYREGISTRED);
+		return (send_message(server,id, ERR_ALREADYREGISTRED, NULL));
 	else if (!pass.size())
-		return (ERR_NEEDMOREPARAMS);
-	else if (pass == serv.getPwd())
-		clients[id]->setRegister();
+		return (send_message(server, id, ERR_NEEDMOREPARAMS, pass));
+	else if (pass == server.getPwd())
+		server.getUserMap()[id]->setRegister();
 	else
-		return (send_message(serv, id, ERR_PASSWDMISMATCH));
+		return (send_message(server, id, ERR_PASSWDMISMATCH, NULL));
 }

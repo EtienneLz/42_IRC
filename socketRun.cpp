@@ -1,6 +1,7 @@
 #include "socketRun.hpp"
 
-socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd) {
+socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("CHAT") {
+
 	// _commands["KICK"] = &KICK();
 	// _commands["KILL"] = &KILL();
 	// _commands["QUIT"] = &QUIT();
@@ -8,7 +9,7 @@ socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pw
 	// _commands["OPER"] = &OPER;
 	// _commands["CAP"] = &CAP;
 	// _commands["JOIN"] = &JOIN;
-	// _commands["NICK"] = NICK;
+	_commands["NICK"] = NICK;
 	_commands["PASS"] = PASS;
 	_commands["USER"] = user_cmd;
 	// _commands["PRIVMSG"] = &PRIVMSG;
@@ -107,6 +108,7 @@ void socketRun::selectLoop() {
 				printf("Number of users: %d\n", _count);
 				close(curr_sd);
 				_clients.erase(curr_sd);
+				break;
 			}
 			else {
 				buf[valread] = '\0';

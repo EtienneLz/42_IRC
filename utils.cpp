@@ -14,7 +14,7 @@ bool    isforbidenuser(char c)
     return (false);
 }
 
-void    send_message(socketRun server, int id_cli, int code, std::string str = NULL) {
+void    send_message(socketRun server, int id_cli, int code, std::string str) {
     std::string realCode;
     std::stringstream ss;
     ss << code;

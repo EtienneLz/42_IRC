@@ -6,10 +6,10 @@ void	NICK(socketRun server, std::string nick, int id) {
 	std::map<int, User*> clients = server.getUserMap();
 
 	if (clients[id]->getRegister() == false)
-		return (send_message(server, id, ERR_RESTRICTED, NULL));
+		return (send_message(server, id, ERR_RESTRICTED, ""));
 
 	if (!nick.size())
-		return (send_message(server, id, ERR_NONICKNAMEGIVEN, NULL));
+		return (send_message(server, id, ERR_NONICKNAMEGIVEN, ""));
 	else if (nick.length() > 9 || (!isalpha(nick[0]) && !isspecial(nick[0])))
 		return (send_message(server, id, ERR_ERRONEUSNICKNAME, nick));
 

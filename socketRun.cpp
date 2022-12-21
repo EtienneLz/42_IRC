@@ -8,7 +8,7 @@ socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pw
 	// _commands["OPER"] = &OPER;
 	// _commands["CAP"] = &CAP;
 	// _commands["JOIN"] = &JOIN;
-	_commands["NICK"] = NICK;
+	// _commands["NICK"] = NICK;
 	_commands["PASS"] = PASS;
 	_commands["USER"] = user_cmd;
 	// _commands["PRIVMSG"] = &PRIVMSG;
@@ -133,15 +133,17 @@ void socketRun::receiveMessage(std::string buf, int id) {
 		buf.erase(0, pos + 2);
 		if ((poscmd = s.find(' ')) != std::string::npos) {
 			cmd = s.substr(0, poscmd);
-			args = s.substr(poscmd);
+			args = s.substr(poscmd + 1);
 		}
-		else
+		else {
+			args = "";
 			cmd = s;
+		}
+		std::cout << cmd << " " << args << std::endl;
 		if (_commands[cmd])
 			_commands[cmd](*this, args, id);
-		else {
+		else 
 			std::cout << "Command does not exist...\n";
-		}
 	}
 
 }

@@ -16,7 +16,7 @@ OBJS = ${SRCS:.cpp=.o}
 CXX = c++
 #CC = cc
 
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g3
 #CFLAGS = -Wall -Wextra -Werror
 
 all: ${NAME}

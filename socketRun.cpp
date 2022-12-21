@@ -1,6 +1,18 @@
 #include "socketRun.hpp"
 
 socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd) {
+	// _commands["KICK"] = &KICK();
+	// _commands["KILL"] = &KILL();
+	// _commands["QUIT"] = &QUIT();
+	// _commands["MODE"] = &MODE;
+	// _commands["OPER"] = &OPER;
+	// _commands["CAP"] = &CAP;
+	// _commands["JOIN"] = &JOIN;
+	_commands["NICK"] = NICK;
+	_commands["PASS"] = PASS;
+	_commands["USER"] = user_cmd;
+	// _commands["PRIVMSG"] = &PRIVMSG;
+
 	int on = 1;
 	_addrlen = sizeof(_address);
 
@@ -99,8 +111,9 @@ void socketRun::selectLoop() {
 			else {
 				buf[valread] = '\0';
 				printf("\n%s\n", buf);
+				receiveMessage(buf, curr_sd);
 				//sending msg back
-				send(curr_sd, buf, strlen(buf), 0);
+				// send(curr_sd, buf, strlen(buf), 0);
 				//send(curr_sd, buf, strlen(buf), MSG_DONTWAIT);
 			}
 		}
@@ -108,6 +121,30 @@ void socketRun::selectLoop() {
 	}
 }
 
+void socketRun::receiveMessage(std::string buf, int id) {
+	std::string s;
+	std::string cmd;
+	std::string args;
+	std::size_t pos;
+	std::size_t poscmd;
+
+	while ((pos = buf.find("\r\n")) != std::string::npos) {
+		s = buf.substr(0, pos);
+		buf.erase(0, pos + 2);
+		if ((poscmd = s.find(' ')) != std::string::npos) {
+			cmd = s.substr(0, poscmd);
+			args = s.substr(poscmd);
+		}
+		else
+			cmd = s;
+		if (_commands[cmd])
+			_commands[cmd](*this, args, id);
+		else {
+			std::cout << "Command does not exist...\n";
+		}
+	}
+
+}
 
 void socketRun::readData() {
 

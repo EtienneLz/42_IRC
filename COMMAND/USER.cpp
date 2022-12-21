@@ -1,6 +1,6 @@
 #include "command.hpp"
 
-void    user_cmd(socketRun server, const std::string &params, int id) {
+void    user_cmd(socketRun server, std::string params, int id) {
     std::vector<std::string> parts;
     std::stringstream ss(params);
     std::string s;

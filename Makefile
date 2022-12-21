@@ -4,6 +4,8 @@ SRCS = main1.cpp \
 		socketRun.cpp \
 		User.cpp \
 		COMMAND/USER.cpp \
+		COMMAND/PASS.cpp \
+		COMMAND/NICK.cpp \
 		utils.cpp \
 		
 

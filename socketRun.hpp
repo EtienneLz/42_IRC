@@ -15,8 +15,9 @@
 #include <iostream>
 #include <cerrno>
 #include <map>
+#include <vector>
 #include "User.hpp"
-// #include "COMMAND/command.hpp"
+#include "COMMAND/command.hpp"
 
 
 //#define PORT 12345
@@ -29,6 +30,7 @@ public:
 	typedef std::map<int, User*> 	mClient;
 	typedef std::pair<int, User*>	pClient;
 	typedef mClient::iterator		iterator;
+	// typedef void (*FPTR)(socketRun, std::string, int);
 
 private:
 	struct sockaddr_in	_address;	// sd address
@@ -39,6 +41,7 @@ private:
 	std::string			_pwd;		// password
 	mClient				_clients;	// array of users
 	std::string			_hostname;	//name of server
+	std::map<std::string, void(*)(socketRun, std::string, int)> _commands;
 	
 	socketRun();
 public:
@@ -54,7 +57,7 @@ public:
 	// void newUser(int fdcl);
 	void readData();
 	void socketError(std::string str);
-
+	void receiveMessage(std::string buf, int id);
 	void checkCmd();
 
 	// GET

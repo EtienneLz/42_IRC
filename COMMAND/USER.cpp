@@ -13,7 +13,7 @@ void    user_cmd(socketRun server, std::string params, int id) {
         return ;
     }
     std::string name;
-    for (std::vector<std::string>::iterator it = parts[4]; it++; it = parts.end()) {
+    for (std::vector<std::string>::iterator it = parts[4]; it != parts.end(); it++) {
         name += (*)it;
     }
     std::string username = parts[1];

@@ -23,13 +23,13 @@ void    send_message(socketRun server, int id_cli, int code, std::string str = N
         realCode = std::string(2, '0').append(codeStr);
     else if (code < 100)
         realCode = std::string(1, '0').append(codeStr);
-    
+
     std::string message = ":" + server.getHostname() + " " + realCode;
     if (server.getUserMap()[id_cli]->getNick().empty())
         message += " * ";
     else
         message += server.getUserMap()[id_cli]->getNick() + " ";
-    
+
     switch (code) {
         // REPLIES
         case RPL_WELCOME:
@@ -56,6 +56,8 @@ void    send_message(socketRun server, int id_cli, int code, std::string str = N
             message += ":Unauthorized command (already registered)";
         case ERR_PASSWDMISMATCH:
             message += ":Password incorrect";
+        case ERR_RESTRICTED:
+            message += ":Your connection is restricted!";
     }
 
     message += "\r\n";

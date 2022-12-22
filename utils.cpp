@@ -30,16 +30,16 @@ void    send_message(socketRun server, int id_cli, int code, std::string str) {
     if (server.getUserMap()[id_cli]->getNick().empty())
         message += " * ";
     else
-        message += server.getUserMap()[id_cli]->getNick() + " ";
+        message += " " + server.getUserMap()[id_cli]->getNick() + " ";
 
     switch (code) {
         // REPLIES
         case RPL_WELCOME:
-            message += "Welcome to our IRC server " + server.getUserMap()[id_cli]->getNick(); break;
+            message += ":Welcome to our IRC server " + server.getUserMap()[id_cli]->getNick(); break;
         case RPL_YOURHOST:
-            message += "Your host is " + server.getHostname() + ", running version Alpha 0.1"; break;
+            message += ":Your host is " + server.getHostname() + ", running version Alpha 0.1"; break;
         case RPL_CREATED:
-            message += "This server was created \"coder temps ecoule\""; break;
+            message += ":This server was created \"coder temps ecoule\""; break;
         case RPL_MYINFO:
             message += server.getHostname() + " Alpha 0.1 " + " Trucs a rajouter"; break;
 
@@ -63,5 +63,6 @@ void    send_message(socketRun server, int id_cli, int code, std::string str) {
     }
 
     message += "\r\n";
+    std::cout << "REPLY --- " << message << std::endl;
     send(id_cli, message.c_str(), message.length(), MSG_DONTWAIT);
 }

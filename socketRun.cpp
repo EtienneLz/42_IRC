@@ -86,10 +86,6 @@ void socketRun::selectLoop() {
 		if ((fdcl = accept(_sd, (struct sockaddr *)&_address, (socklen_t*)&_addrlen)) < 0)
 			socketError("accept() failed\n");
 
-		//welcoming message from the server
-		if (send(fdcl, welcome.c_str(), welcome.length(), 0) != (ssize_t)welcome.length())
-			perror("send() failed\n");
-
 		//adding a new user
 		_clients[fdcl] = new User;
 		_count++;
@@ -104,15 +100,15 @@ void socketRun::selectLoop() {
 			if ((valread = read(curr_sd, buf, 1024)) == 0) {
 				_count--;
 				std::cout << "User " << it->second->getUsername() << " with fd " << curr_sd << " disconnected\n";
-				printf("Number of users: %d\n", _count);
+				std::cout << "Number of users: " << _count << std::endl;
 				close(curr_sd);
 				_clients.erase(curr_sd);
 				break;
 			}
 			else {
 				buf[valread] = '\0';
-				printf("\n%s\n", buf);
 				receiveMessage(buf, curr_sd);
+				std::cout << *_clients[curr_sd];
 				//sending msg back
 				// send(curr_sd, buf, strlen(buf), 0);
 				//send(curr_sd, buf, strlen(buf), MSG_DONTWAIT);
@@ -140,7 +136,7 @@ void socketRun::receiveMessage(std::string buf, int id) {
 			args = "";
 			cmd = s;
 		}
-		std::cout << cmd << " " << args << std::endl;
+		std::cout << "COMMAND RECEPTION --- "<< cmd << " " << args << std::endl;
 		if (_commands[cmd])
 			_commands[cmd](*this, args, id);
 		else 

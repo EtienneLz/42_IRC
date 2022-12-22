@@ -4,22 +4,31 @@ void    user_cmd(socketRun server, std::string params, int id) {
     std::vector<std::string> parts;
     std::stringstream ss(params);
     std::string s;
+
+    if (server.getUserMap()[id]->getRegister() == false)
+		return (send_message(server, id, ERR_RESTRICTED, ""));
+
     while (std::getline(ss, s, ' '))
         parts.push_back(s);
 
-    if (parts.size() < 4) {
-        std::cout << "LEL" << std::endl;
+    if (parts.size() < 5 || parts[3][0] != ':') {
         send_message(server, id, ERR_NEEDMOREPARAMS, "");
         return ;
     }
     std::string name;
-    for (std::vector<std::string>::iterator it = parts[4]; it != parts.end(); it++) {
-        name += (*)it;
+    std::vector<std::string>::iterator it = parts.begin() + 3;
+    for (int i = 0; i < 2; i++) {
+        name += *it;
+        if (i == 0) {
+            name += " ";
+            name = name.substr(1);
+        }
+        it++;
     }
-    std::string username = parts[1];
+    std::string username = parts[0];
+    std::string host = parts[2];
     std::string realname = name;
 
-    std::cout << "KEK" << std::endl;
     server.getUserMap()[id]->setUsername(username);
     server.getUserMap()[id]->setRealname(realname);
     send_message(server, id, RPL_WELCOME, "");

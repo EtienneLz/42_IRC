@@ -1,6 +1,6 @@
 #include "User.hpp"
 
-User::User():_register(false) {
+User::User():_register(false), _userCmdDone(false) {
 	fd = -1;
 	num_conn = 0;
 	count = -1;
@@ -27,6 +27,10 @@ bool const &User::getRegister(void) const {return (_register);}
 void		User::setNick(std::string nick) {_nickname = nick;}
 
 void		User::setRegister(void) {_register = true;}
+
+bool const &User::getUserCmd(void) const {return (_userCmdDone);}
+
+void		User::setUserCmd(void) {_userCmdDone = true;}
 
 std::ostream& operator<<(std::ostream& output, const User &user) {
 	output << "\n******************************INFO*********************************\n";

@@ -13,6 +13,7 @@ protected:
     std::string _host;
     bool        _operator;
     bool        _register;
+    bool        _useCmdDone;
 	
 public:
     User();
@@ -35,6 +36,9 @@ public:
 
     void        setRegister(void);
     bool const &getRegister(void) const;
+
+    void        setUserCmd(void);
+    bool const &getUserCmd(void) const;
 };
 
 std::ostream& operator<<(std::ostream& output, const User &user);

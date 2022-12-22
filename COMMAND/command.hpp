@@ -11,5 +11,7 @@ void	NICK(socketRun server, std::string nick, int id);
 void	user_cmd(socketRun server, std::string params, int id);
 void	PASS(socketRun serv, std::string pass, int id);
 
+// void	EXIT(socketRun server, std::string params, int id) { QUIT(socketRun server, std::string params, int id); }
+
 #include "../socketRun.hpp"
 #endif

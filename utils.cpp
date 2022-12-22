@@ -19,6 +19,7 @@ void    send_message(socketRun server, int id_cli, int code, std::string str) {
     std::stringstream ss;
     ss << code;
     std::string codeStr = ss.str();
+ 
     if (code < 10)
         realCode = std::string(2, '0').append(codeStr);
     else if (code < 100)

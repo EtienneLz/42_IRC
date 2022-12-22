@@ -4,21 +4,35 @@ void    user_cmd(socketRun server, std::string params, int id) {
     std::vector<std::string> parts;
     std::stringstream ss(params);
     std::string s;
+
+    if (server.getUserMap()[id]->getRegister() == false)
+		return (send_message(server, id, ERR_RESTRICTED, ""));
+
     while (std::getline(ss, s, ' '))
         parts.push_back(s);
 
-    std::string message;
-    message = ":OurIRC ";
-    if (parts.size() < 4) {
-        message += "461";
-        message += " * :Not enough parameters\r\n";
-        send(id, message.c_str(), message.length(), MSG_DONTWAIT);
+    if (parts.size() < 5 || parts[3][0] != ':') {
+        send_message(server, id, ERR_NEEDMOREPARAMS, "");
         return ;
     }
-    std::string username = parts[1];
-    std::string realname = parts[4];
+    std::string name;
+    std::vector<std::string>::iterator it = parts.begin() + 3;
+    for (int i = 0; i < 2; i++) {
+        name += *it;
+        if (i == 0) {
+            name += " ";
+            name = name.substr(1);
+        }
+        it++;
+    }
+    std::string username = parts[0];
+    std::string host = parts[2];
+    std::string realname = name;
 
     server.getUserMap()[id]->setUsername(username);
     server.getUserMap()[id]->setRealname(realname);
-
+    send_message(server, id, RPL_WELCOME, "");
+    send_message(server, id, RPL_YOURHOST, "");
+    send_message(server, id, RPL_CREATED, "");
+    send_message(server, id, RPL_MYINFO, "");
 }

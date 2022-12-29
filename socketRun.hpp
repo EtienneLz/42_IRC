@@ -42,6 +42,7 @@ private:
 	mClient				_clients;	// array of users
 	std::string			_hostname;	//name of server
 	std::map<std::string, void(*)(socketRun, std::string, int)> _commands;
+	std::map<std::string, Channel*> _channels;
 	
 	socketRun();
 public:

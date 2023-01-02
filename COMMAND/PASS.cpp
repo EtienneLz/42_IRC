@@ -8,7 +8,7 @@ void	PASS(socketRun server, std::string pass, int id) {
 	else if (!pass.size())
 		return (send_message(server, id, ERR_NEEDMOREPARAMS, pass));
 	else if (pass == server.getPwd())
-		server.getUserMap()[id]->setRegister();
+		server.getUserMap()[id]->setMode('r', false);
 	else {
 		send_message(server, id, ERR_PASSWDMISMATCH, "");
 		return ;

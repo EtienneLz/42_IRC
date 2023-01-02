@@ -5,7 +5,7 @@ void    user_cmd(socketRun server, std::string params, int id) {
     std::stringstream ss(params);
     std::string s;
 
-    if (server.getUserMap()[id]->getRegister() == false)
+    if (server.getUserMap()[id]->getMode('r') == true)
 		return (send_message(server, id, ERR_RESTRICTED, ""));
     
     if (server.getUserMap()[id]->getUserCmd() == true)
@@ -20,7 +20,7 @@ void    user_cmd(socketRun server, std::string params, int id) {
     }
     std::string name;
     std::vector<std::string>::iterator it = parts.begin() + 3;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; it != parts.end(); i++) {
         name += *it;
         if (i == 0) {
             name += " ";

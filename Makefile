@@ -6,6 +6,8 @@ SRCS = main1.cpp \
 		COMMAND/USER.cpp \
 		COMMAND/PASS.cpp \
 		COMMAND/NICK.cpp \
+		COMMAND/OP_CMD/MODE.cpp \
+		COMMAND/OP_CMD/OPER.cpp \
 		utils.cpp \
 		
 

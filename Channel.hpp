@@ -6,15 +6,15 @@
 
 class Channel {
 	
-	typedef std::vector<std::string>::iterator iter;
+	typedef std::vector<User *>::iterator iter;
 public:
 	Channel(User &creator, std::string name, socketRun &server);
 	~Channel();
 
 	// GETTER
-	std::vector<std::string> getUsers();
-	std::vector<std::string> getChanops();
-	std::vector<std::string> getBanned();
+	std::vector<User *> getUsers();
+	std::vector<User *> getChanops();
+
 	std::string				 getName();
 	std::string				 getTopic();
 
@@ -24,10 +24,10 @@ public:
 private:
 	const std::string			_name;
 	std::string					_topic;
+	User						_owner;
 
-	std::vector<std::string>	_banned;
-	std::vector<std::string>	_chanops;
-	std::vector<std::string>	_users;
+	std::vector<User *>	_chanops;
+	std::vector<User *>	_users;
 	// std::vector<char>			_modes;
 	
 };

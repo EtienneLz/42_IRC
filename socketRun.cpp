@@ -179,6 +179,10 @@ std::map<int, User*> &socketRun::getUserMap() {
 	return _clients;
 }
 
+std::map<std::string, Channel*> &socketRun::getChannelMap() {
+	return _channels;
+}
+
 std::ostream& operator<<(std::ostream& output, const socketRun &sock) {
 	output << "port = " << sock.getPort() << std::endl;
 	output << "password = " << sock.getPwd() << std::endl;

@@ -2,7 +2,8 @@
 # define CHANNEL_HPP
 
 # include "User.hpp"
-# include "socketRun.hpp"
+# include <vector>
+class socketRun;
 
 class Channel {
 	
@@ -31,5 +32,7 @@ private:
 	// std::vector<char>			_modes;
 	
 };
+
+# include "socketRun.hpp"
 
 #endif

@@ -2,6 +2,7 @@
 
 Channel::Channel (User &creator, std::string name, socketRun &server) :_name(name) {
 	_owner = creator;
+	(void)server;
 }
 
 Channel::~Channel () {

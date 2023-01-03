@@ -28,6 +28,8 @@ void		User::setNick(std::string nick) {_nickname = nick;}
 
 void		User::setRegister(void) {_register = true;}
 
+bool const &User::getOperator(void) const {return (_operator);}
+
 std::ostream& operator<<(std::ostream& output, const User &user) {
 	output << "\n******************************INFO*********************************\n";
 	output << "USERNAME: " << user.getUsername() << "\nNICKNAME: " << user.getNick() << std::endl;

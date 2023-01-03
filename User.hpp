@@ -35,6 +35,10 @@ public:
 
     void        setRegister(void);
     bool const &getRegister(void) const;
+
+    //void        setOperator(void);
+    bool const &getOperator(void) const;
+
 };
 
 std::ostream& operator<<(std::ostream& output, const User &user);

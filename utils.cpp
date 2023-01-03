@@ -61,6 +61,16 @@ void    send_message(socketRun server, int id_cli, int code, std::string str) {
             message += ":Password incorrect"; break;
         case ERR_RESTRICTED:
             message += ":Your connection is restricted!"; break;
+        case ERR_NOTONCHANNEL:
+            message += ":The user is not on the channel"; break;
+        case ERR_CHANOPRIVSNEEDED:
+            message += ":You need channel operator privileges to use this command"; break;
+        case ERR_NOSUCHCHANNEL:
+            message += ":This channel doesn't exist"; break;
+        case ERR_NOPRIVILEGES:
+            message += ":You need operator privileges to use this command"; break;
+        case ERR_NOSUCHNICK:
+            message += ":This nickname doesn exist"; break;
     }
 
     message += "\r\n";

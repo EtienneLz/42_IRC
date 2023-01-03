@@ -8,7 +8,7 @@ void    user_cmd(socketRun server, std::string params, int id) {
     if (server.getUserMap()[id]->getMode('r') == true)
 		return (send_message(server, id, ERR_RESTRICTED, ""));
     
-    if (server.getUserMap()[id]->getUserCmd() == true)
+    if (server.getUserMap()[id]->getRegistered() == true)
 		return (send_message(server, id, ERR_ALREADYREGISTRED, ""));
 
     while (std::getline(ss, s, ' '))
@@ -36,7 +36,7 @@ void    user_cmd(socketRun server, std::string params, int id) {
     server.getUserMap()[id]->setHost(host);
     server.getUserMap()[id]->setRealname(realname);
 
-    server.getUserMap()[id]->setUserCmd();
+    server.getUserMap()[id]->setRegistered();
     send_message(server, id, RPL_WELCOME, "");
     send_message(server, id, RPL_YOURHOST, "");
     send_message(server, id, RPL_CREATED, "");

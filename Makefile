@@ -7,11 +7,14 @@ SRCS = main1.cpp \
 		COMMAND/PASS.cpp \
 		COMMAND/NICK.cpp \
 		COMMAND/PING.cpp \
+		COMMAND/PRIVMSG.cpp \
 		COMMAND/OP_CMD/MODE.cpp \
 		COMMAND/OP_CMD/OPER.cpp \
-		COMMAND/PRIVMSG.cpp \
+		COMMAND/OP_CMD/KICK.cpp \
+		COMMAND/OP_CMD/KILL.cpp \
 		utils.cpp \
-
+		Channel.cpp
+		
 
 OBJS = ${SRCS:.cpp=.o}
 

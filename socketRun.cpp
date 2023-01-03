@@ -1,8 +1,8 @@
 #include "socketRun.hpp"
 
 socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP") {
-	// _commands["KICK"] = &KICK();
-	// _commands["KILL"] = &KILL();
+	_commands["KICK"] = KICK;
+	// _commands["KILL"] = &KILL;
 	// _commands["QUIT"] = &QUIT();
 	_commands["MODE"] = MODE;
 	_commands["OPER"] = OPER;
@@ -182,6 +182,10 @@ std::map<int, User*> 	&socketRun::getUserMap() {
 
 const std::string		&socketRun::getOpPwd() {
 	return _opPwd;
+}
+
+std::map<std::string, Channel*> &socketRun::getChannelMap() {
+	return _channels;
 }
 
 std::ostream& operator<<(std::ostream& output, const socketRun &sock) {

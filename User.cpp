@@ -1,6 +1,6 @@
 #include "User.hpp"
 
-User::User(): _userCmdDone(false) {
+User::User(): _registered(false) {
 	fd = -1;
 	num_conn = 0;
 	count = -1;
@@ -27,13 +27,9 @@ std::string const &User::getNick(void) const {return (_nickname);}
 
 void		User::setNick(std::string nick) {_nickname = nick;}
 
-bool const &User::getUserCmd(void) const {return (_userCmdDone);}
+bool const &User::getRegistered(void) const {return (_registered);}
 
-void		User::setUserCmd(void) {_userCmdDone = true;}
-
-bool const &User::getOperator(void) const {return (_operator);}
-
-void		User::setOperator(void) {_operator = true;}
+void		User::setRegistered(void) {_registered = true;}
 
 void        User::setMode(char flag, bool add){
 	if (add) {
@@ -65,6 +61,8 @@ bool const	&User::getMode(char flag) const {
 			return _mode.r;
 	}
 
+bool const &User::getOperator(void) const {return (_operator);}
+
 std::ostream& operator<<(std::ostream& output, const User &user) {
 	output << "\n******************************INFO*********************************\n";
 	output << "USERNAME: " << user.getUsername() << "\nNICKNAME: " << user.getNick() << std::endl;
@@ -72,7 +70,7 @@ std::ostream& operator<<(std::ostream& output, const User &user) {
 		output << "Is restricted = yes" << std::endl;
 	else
 		output << "Is restricted = no" << std::endl;
-	if (user.getUserCmd())
+	if (user.getRegistered())
 		output << "Is registered = yes";
 	else
 		output << "Is registered = no";

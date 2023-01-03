@@ -18,6 +18,7 @@
 #include <vector>
 #include "User.hpp"
 #include "COMMAND/command.hpp"
+#include "Channel.hpp"
 
 
 //#define PORT 12345
@@ -30,6 +31,8 @@ public:
 	typedef std::map<int, User*> 	mClient;
 	typedef std::pair<int, User*>	pClient;
 	typedef mClient::iterator		iterator;
+	typedef std::pair<std::string, Channel*>	pChannel;
+	typedef std::map<std::string, Channel*> mChannel;
 	// typedef void (*FPTR)(socketRun, std::string, int);
 
 private:
@@ -43,6 +46,7 @@ private:
 	std::string			_hostname;	//name of server
 	std::string			_opPwd;
 	std::map<std::string, void(*)(socketRun, std::string, int)> _commands;
+	mChannel			_channels;
 	
 	socketRun();
 public:
@@ -70,6 +74,7 @@ public:
 	const int			&getCount();
 	mClient 			&getUserMap();
 	const std::string	&getOpPwd();
+	mChannel			&getChannelMap();
 };
 
 std::ostream& operator<<(std::ostream& output, const socketRun &sock);

@@ -18,7 +18,7 @@ protected:
     std::string _realname;
     std::string _host;
     bool        _operator;
-    bool        _userCmdDone;
+    bool        _registered;
     t_mode      _mode;
 	
 public:
@@ -40,8 +40,8 @@ public:
     std::string const &getNick(void) const;
     void        setNick(std::string str);
 
-    void        setUserCmd(void);
-    bool const &getUserCmd(void) const;
+    void        setRegistered(void);
+    bool const &getRegistered(void) const;
 
     void        setOperator(void);
     bool const &getOperator(void) const;

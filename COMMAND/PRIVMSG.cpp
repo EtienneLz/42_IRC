@@ -6,75 +6,56 @@ void	PRIVMSG(socketRun server, std::string params, int id) {
 	else if (!params.size())
 		return (send_message(server, id, ERR_NEEDMOREPARAMS, params));
 
-	std::vector<std::string> parts;
-	std::stringstream ss(params);
-	std::string s;
+	std::string targets;
+	std::string message;
 
-	while (std::getline(ss, s, ':'))
-		parts.push_back(s);
-	parts[0].erase(parts[0].end() - 1);
+	size_t pos = params.find_first_of(':');
+	targets = params.substr(0, pos - 1);
+	message = params.substr(pos);
 
-	if (parts.size() == 0)
+	if (targets.size() == 0)
 		return (send_message(server, id, ERR_NORECIPIENT, params));
-	else if (parts.size() == 1)
+	else if (message.size() == 1)
 		return (send_message(server, id, ERR_NOTEXTTOSEND, params));
 
 	else
 	{
 		std::vector<std::string> msgTargets;
-		std::stringstream ss(parts[0]);
+		std::stringstream ss(targets);
 		std::string s;
 
-		if (parts[0].find(',') != std::string::npos)
+		if (targets.find(',') != std::string::npos)
 			while (std::getline(ss, s, ','))
 				msgTargets.push_back(s);
 		else
-			msgTargets.push_back(parts[0]);
+			msgTargets.push_back(targets);
 
 		size_t users = 0;
 		size_t messages = 0;
 		for (std::vector<std::string>::iterator itm = msgTargets.begin(); itm != msgTargets.end(); itm++)
 		{
 			++users;
-			std::map<int, User*>::iterator it = server.getUserMap().begin();
-			if (parts[0][0] == '#' && parts[0].find('.') != std::string::npos)
+			if (targets[0] == '#' && targets.find('.') != std::string::npos)
 			{
 				size_t pos = msgTargets[0].find('.');
 				msgTargets[0] = msgTargets[0].substr(pos + 1);
-				{
-					for (; it != server.getUserMap().end(); it++)
-					{
-						if (it->second->getNick() == *itm)
-						{
-							if (parts[1][0] == ':')
-							{
-								send(it->first, parts[1].c_str(), parts[1].size(), MSG_DONTWAIT);
-								++messages;
-							}
-							else
-								++messages;//error no ':' in the message text
-						}
-					}
-					//do the same for Channel
-					// std::cout << "message = " << messages << std::endl;
-				}
 			}
-			else
+			std::map<int, User*>::iterator it = server.getUserMap().begin();
+			for (; it != server.getUserMap().end(); it++)
 			{
-				for (it = server.getUserMap().begin(); it != server.getUserMap().end(); it++)
+				if (it->second->getNick() == *itm)
 				{
-					if (it->second->getNick() == *itm)
+					if (message[0] == ':')
 					{
-						if (parts[1][0] == ':')
-						{
-							send(it->first, parts[1].c_str(), parts[1].size(), MSG_DONTWAIT);
-							++messages;
-						}
-						else
-							++messages;//error no ':' in the message text
+						send(it->first, message.c_str(), message.size(), MSG_DONTWAIT);
+						++messages;
 					}
+					else
+						++messages;//error no ':' in the message text
 				}
 			}
+			//do the same for Channel
+			// std::cout << "message = " << messages << std::endl;
 			if (users != messages)
 				return (send_message(server, id, ERR_NOSUCHNICK, *itm));
 		}

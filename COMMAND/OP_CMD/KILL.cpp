@@ -5,8 +5,9 @@ bool	isUser (socketRun serv, std::string user) {
 	for (std::map<int, User*>::iterator it = serv.getUserMap().begin(); it!= serv.getUserMap().end(); it++) {
 		if (user.compare(it->second->getNick()) == 0) {
 			// send_message() to user killed and operator ?
-			close(it->first);
-			serv.getUserMap().erase(it);
+			int sd = it->first;
+			close(sd);
+			serv.getUserMap().erase(sd);
 			return TRUE;
 		}
 	}

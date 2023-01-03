@@ -2,7 +2,7 @@
 
 socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("CHAT") {
 	_commands["KICK"] = &KICK;
-	_commands["KILL"] = &KILL;
+	// _commands["KILL"] = &KILL;
 	// _commands["QUIT"] = &QUIT();
 	// _commands["MODE"] = &MODE;
 	// _commands["OPER"] = &OPER;

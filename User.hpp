@@ -4,6 +4,12 @@
 #include <string>
 #include <iostream>
 
+typedef struct      s_mode {
+    bool    o;
+    bool    r;
+    bool    i;
+}           t_mode;
+
 // ABSTRACT USERS CLASS
 class User {
 protected:
@@ -12,7 +18,8 @@ protected:
     std::string _realname;
     std::string _host;
     bool        _operator;
-    bool        _register;
+    bool        _userCmdDone;
+    t_mode      _mode;
 	
 public:
     User();
@@ -33,8 +40,14 @@ public:
     std::string const &getNick(void) const;
     void        setNick(std::string str);
 
-    void        setRegister(void);
-    bool const &getRegister(void) const;
+    void        setUserCmd(void);
+    bool const &getUserCmd(void) const;
+
+    void        setOperator(void);
+    bool const &getOperator(void) const;
+
+    void        setMode(char flag, bool add);
+    bool const  &getMode(char flag) const;
 };
 
 std::ostream& operator<<(std::ostream& output, const User &user);

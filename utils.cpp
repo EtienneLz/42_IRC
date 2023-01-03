@@ -14,6 +14,25 @@ bool    isforbidenuser(char c)
     return (false);
 }
 
+int     searchUsername(socketRun server, std::string name) {
+    for (std::map<int, User*>::iterator it = server.getUserMap().begin(); it != server.getUserMap().end(); it ++) {
+        if (name == (*it).second->getUsername())
+            return (*it).first;
+    }
+    return -1;
+}
+
+std::string mode_str(socketRun server, int id_cli) {
+    std::string ret = "";
+    if (server.getUserMap()[id_cli]->getMode('r'))
+        ret += "r";
+    if (server.getUserMap()[id_cli]->getMode('o'))
+        ret += "o";
+    if (server.getUserMap()[id_cli]->getMode('i'))
+        ret += "i";
+    return ret;
+}
+
 void    send_message(socketRun server, int id_cli, int code, std::string str) {
     std::string realCode;
     std::stringstream ss;
@@ -43,6 +62,10 @@ void    send_message(socketRun server, int id_cli, int code, std::string str) {
             message += ":This server was created \"coder temps ecoule\""; break;
         case RPL_MYINFO:
             message += server.getHostname() + " Alpha 0.1 " + " Trucs a rajouter"; break;
+        case RPL_UMODEIS:
+            message += mode_str(server, id_cli); break;
+        case RPL_YOUREOPER:
+            message += ":You are now an IRC operator"; break;
 
         // ERRORS
         case ERR_NONICKNAMEGIVEN:
@@ -61,6 +84,10 @@ void    send_message(socketRun server, int id_cli, int code, std::string str) {
             message += ":Password incorrect"; break;
         case ERR_RESTRICTED:
             message += ":Your connection is restricted!"; break;
+        case ERR_UMODEUNKNOWNFLAG:
+            message += ":Unknown MODE flag"; break;
+        case ERR_USERSDONTMATCH:
+            message += ":Cannot change mode for other users"; break;
     }
 
     message += "\r\n";

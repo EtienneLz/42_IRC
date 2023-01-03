@@ -41,6 +41,7 @@ private:
 	std::string			_pwd;		// password
 	mClient				_clients;	// array of users
 	std::string			_hostname;	//name of server
+	std::string			_opPwd;
 	std::map<std::string, void(*)(socketRun, std::string, int)> _commands;
 	
 	socketRun();
@@ -62,12 +63,13 @@ public:
 
 	// GET
 	int getPort() const;
-	const std::string &getPwd() const;
+	const std::string 	&getPwd() const;
 
-	const std::string		&getHostname();
-	void			setHostname(std::string name);
-	const int		&getCount();
-	mClient 	&getUserMap();
+	const std::string	&getHostname();
+	void				setHostname(std::string name);
+	const int			&getCount();
+	mClient 			&getUserMap();
+	const std::string	&getOpPwd();
 };
 
 std::ostream& operator<<(std::ostream& output, const socketRun &sock);

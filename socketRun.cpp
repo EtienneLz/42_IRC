@@ -1,16 +1,17 @@
 #include "socketRun.hpp"
 
-socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("CHAT") {
+socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP") {
 	// _commands["KICK"] = &KICK();
 	// _commands["KILL"] = &KILL();
 	// _commands["QUIT"] = &QUIT();
-	// _commands["MODE"] = &MODE;
-	// _commands["OPER"] = &OPER;
+	_commands["MODE"] = MODE;
+	_commands["OPER"] = OPER;
 	// _commands["CAP"] = &CAP;
 	// _commands["JOIN"] = &JOIN;
 	_commands["NICK"] = NICK;
 	_commands["PASS"] = PASS;
 	_commands["USER"] = user_cmd;
+	_commands["PING"] = PING;
 	// _commands["PRIVMSG"] = &PRIVMSG;
 
 	int on = 1;
@@ -167,16 +168,20 @@ const std::string	&socketRun::getHostname() {
 	return _hostname;
 }
 
-void	socketRun::setHostname(std::string name) {
+void			socketRun::setHostname(std::string name) {
 	_hostname = name;
 }
 
-const int		&socketRun::getCount() {
+const int			&socketRun::getCount() {
 	return _count;
 }
 
-std::map<int, User*> &socketRun::getUserMap() {
+std::map<int, User*> 	&socketRun::getUserMap() {
 	return _clients;
+}
+
+const std::string		&socketRun::getOpPwd() {
+	return _opPwd;
 }
 
 std::ostream& operator<<(std::ostream& output, const socketRun &sock) {

@@ -5,7 +5,7 @@ void	NICK(socketRun server, std::string nick, int id) {
 
 	std::map<int, User*> clients = server.getUserMap();
 
-	if (clients[id]->getRegister() == false)
+	if (clients[id]->getMode('r') == true)
 		return (send_message(server, id, ERR_RESTRICTED, ""));
 
 	if (!nick.size())

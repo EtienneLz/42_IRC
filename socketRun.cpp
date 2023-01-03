@@ -11,7 +11,7 @@ socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pw
 	_commands["NICK"] = NICK;
 	_commands["PASS"] = PASS;
 	_commands["USER"] = user_cmd;
-	// _commands["PRIVMSG"] = &PRIVMSG;
+	_commands["PRIVMSG"] = PRIVMSG;
 
 	int on = 1;
 	_addrlen = sizeof(_address);
@@ -57,7 +57,7 @@ void socketRun::selectLoop() {
 	int retval;
 	int sd_max;
 	int curr_sd;
-	std::string welcome = "Welcome on our IRC server!\n"; 
+	std::string welcome = "Welcome on our IRC server!\n";
 
 	// select() loop
 	while (TRUE) {
@@ -139,7 +139,7 @@ void socketRun::receiveMessage(std::string buf, int id) {
 		std::cout << "COMMAND RECEPTION --- "<< cmd << " " << args << std::endl;
 		if (_commands[cmd])
 			_commands[cmd](*this, args, id);
-		else 
+		else
 			std::cout << "Command does not exist...\n";
 	}
 

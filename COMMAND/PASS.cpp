@@ -3,7 +3,7 @@
 void	PASS(socketRun server, std::string pass, int id) {
 	std::map<int, User*> clients = server.getUserMap();
 
-	if (clients[id]->getRegister() == true)
+	if (clients[id]->getMode('r') == false)
 		return (send_message(server,id, ERR_ALREADYREGISTRED, ""));
 	else if (!pass.size())
 		return (send_message(server, id, ERR_NEEDMOREPARAMS, pass));

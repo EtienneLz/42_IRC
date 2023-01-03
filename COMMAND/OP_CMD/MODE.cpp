@@ -20,6 +20,9 @@ void    MODE(socketRun server, std::string params, int id) {
         return ;
     }
 
+    if (*parts.begin() == "*")
+        *parts.begin() = server.getUserMap()[id]->getNick();
+
     if (*parts.begin() != server.getUserMap()[id]->getNick()) {
         send_message(server, id, ERR_USERSDONTMATCH, "");
         return ;
@@ -45,5 +48,10 @@ void    MODE(socketRun server, std::string params, int id) {
             (void)it;
         else if (*it == 'r' && !positive)
             server.getUserMap()[id]->setMode('r', true);
+        else if (*it == 'i' && positive)
+            server.getUserMap()[id]->setMode('i', true);
+        else if (*it == 'i' && !positive)
+            server.getUserMap()[id]->setMode('i', false);
     }
+    send_message(server, id, RPL_UMODEIS, "");
 }

@@ -28,6 +28,8 @@ std::string mode_str(socketRun server, int id_cli) {
         ret += "r";
     if (server.getUserMap()[id_cli]->getMode('o'))
         ret += "o";
+    if (server.getUserMap()[id_cli]->getMode('i'))
+        ret += "i";
     return ret;
 }
 

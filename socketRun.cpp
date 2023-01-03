@@ -1,6 +1,6 @@
 #include "socketRun.hpp"
 
-socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("CHAT"), _opPwd("AUPP") {
+socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP") {
 	// _commands["KICK"] = &KICK();
 	// _commands["KILL"] = &KILL();
 	// _commands["QUIT"] = &QUIT();
@@ -11,6 +11,7 @@ socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pw
 	_commands["NICK"] = NICK;
 	_commands["PASS"] = PASS;
 	_commands["USER"] = user_cmd;
+	_commands["PING"] = PING;
 	// _commands["PRIVMSG"] = &PRIVMSG;
 
 	int on = 1;

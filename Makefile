@@ -9,8 +9,9 @@ SRCS = main1.cpp \
 		COMMAND/PING.cpp \
 		COMMAND/OP_CMD/MODE.cpp \
 		COMMAND/OP_CMD/OPER.cpp \
+		COMMAND/PRIVMSG.cpp \
 		utils.cpp \
-		
+
 
 OBJS = ${SRCS:.cpp=.o}
 
@@ -19,7 +20,7 @@ OBJS = ${SRCS:.cpp=.o}
 CXX = c++
 #CC = cc
 
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g3
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g3 #-fsanitize=address
 #CFLAGS = -Wall -Wextra -Werror
 
 all: ${NAME}

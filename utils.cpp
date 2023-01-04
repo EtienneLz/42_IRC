@@ -16,7 +16,7 @@ bool    isforbidenuser(char c)
 
 int     searchUsername(Server *server, std::string name) {
     for (std::map<int, User*>::iterator it = server->getUserMap().begin(); it != server->getUserMap().end(); it ++) {
-        if (name == (*it).second->getUsername())
+        if (name == (*it).second->getNick())
             return (*it).first;
     }
     return -1;
@@ -34,6 +34,19 @@ std::string mode_str(Server *server, int id_cli) {
 }
 
 void    send_message(Server *server, int id_cli, int code, std::string str) {
+    if (code == -1) {
+        std::string message = ":" + server->getHostname();
+        // if (server->getUserMap()[id_cli]->getNick().empty())
+        message += " * ";
+        // else
+        //     message += " :" + server->getUserMap()[id_cli]->getNick() + " ";
+        message += str;
+        message += "\r\n";
+        std::cout << "REPLY --- " << message << std::endl;
+        send(id_cli, message.c_str(), message.length(), MSG_DONTWAIT);
+        return;
+    }
+    
     std::string realCode;
     std::stringstream ss;
     ss << code;
@@ -53,6 +66,7 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
         message += " " + server->getUserMap()[id_cli]->getNick() + " ";
 
     switch (code) {
+
         // REPLIES
         case RPL_WELCOME:
             message += ":Welcome to our IRC server " + server->getUserMap()[id_cli]->getNick(); break;

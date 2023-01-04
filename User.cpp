@@ -65,7 +65,7 @@ bool const &User::getOperator(void) const {return (_operator);}
 
 std::ostream& operator<<(std::ostream& output, const User &user) {
 	output << "\n******************************INFO*********************************\n";
-	output << "USERNAME: " << user.getUsername() << "\nNICKNAME: " << user.getNick() << std::endl;
+	output << "USERNAME: " << user.getUsername() << "\nNICKNAME: " << user.getNick() << "\nHostname: " << user.getHost() << std::endl;
 	if (user.getMode('r') == true)
 		output << "Is restricted = yes" << std::endl;
 	else

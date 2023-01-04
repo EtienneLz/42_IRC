@@ -58,7 +58,10 @@ void socketRun::selectLoop() {
 	int retval;
 	int sd_max;
 	int curr_sd;
-	std::string welcome = "Welcome on our IRC server!\n";
+	sockaddr_in *cliAddress;
+	sockaddr_storage address;
+	socklen_t addrlen = sizeof(address);
+	
 
 	// select() loop
 	while (TRUE) {
@@ -84,11 +87,13 @@ void socketRun::selectLoop() {
 	//check if fds are register and so, active
 	if (FD_ISSET(_sd, &rfds)) {
 		int fdcl;
-		if ((fdcl = accept(_sd, (struct sockaddr *)&_address, (socklen_t*)&_addrlen)) < 0)
+		if ((fdcl = accept(_sd, (sockaddr *)&address, (socklen_t*)&addrlen)) < 0)
 			socketError("accept() failed\n");
 
 		//adding a new user
+		cliAddress = (sockaddr_in *) &address;
 		_clients[fdcl] = new User;
+		_clients[fdcl]->setHost(std::string(inet_ntoa(cliAddress->sin_addr)));
 		_count++;
 		std::cout << "\nAdding new user with fd: " << fdcl << "\nNumber of users: " << _count << std::endl;
 	}

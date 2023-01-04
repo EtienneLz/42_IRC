@@ -14,7 +14,7 @@ void    user_cmd(socketRun server, std::string params, int id) {
     while (std::getline(ss, s, ' '))
         parts.push_back(s);
 
-    if (parts.size() < 5 || parts[3][0] != ':') {
+    if (parts.size() < 4 || parts[3][0] != ':') {
         send_message(server, id, ERR_NEEDMOREPARAMS, "");
         return ;
     }
@@ -33,7 +33,6 @@ void    user_cmd(socketRun server, std::string params, int id) {
     std::string realname = name;
 
     server.getUserMap()[id]->setUsername(username);
-    server.getUserMap()[id]->setHost(host);
     server.getUserMap()[id]->setRealname(realname);
 
     server.getUserMap()[id]->setRegistered();

@@ -24,7 +24,12 @@ void    OPER(Server *server, std::string params, int id) {
         send_message(server, id, ERR_PASSWDMISMATCH, "");
         return ;
     }
-    int idDest = searchUsername(server, *parts.begin());
+    std::string dest;
+    if (parts[0][0] == '*')
+        dest = server->getUserMap()[id]->getNick();
+    else
+        dest = *parts.begin();
+    int idDest = searchNick(server, dest);
     if (idDest < 0)
         return ;
     server->getUserMap()[idDest]->setMode('o', true);

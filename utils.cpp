@@ -14,9 +14,9 @@ bool    isforbidenuser(char c)
     return (false);
 }
 
-int     searchUsername(Server *server, std::string name) {
+int     searchNick(Server *server, std::string name) {
     for (std::map<int, User*>::iterator it = server->getUserMap().begin(); it != server->getUserMap().end(); it ++) {
-        if (name == (*it).second->getUsername())
+        if (name == (*it).second->getNick())
             return (*it).first;
     }
     return -1;
@@ -61,7 +61,7 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
         case RPL_CREATED:
             message += ":This server was created \"coder temps ecoule\""; break;
         case RPL_MYINFO:
-            message += server->getHostname() + " Alpha 0.1 " + " Trucs a rajouter"; break;
+            message += server->getHostname() + " Alpha 0.4 " + " Trucs a rajouter"; break;
         case RPL_UMODEIS:
             message += mode_str(server, id_cli); break;
         case RPL_YOUREOPER:

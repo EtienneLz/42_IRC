@@ -2,7 +2,7 @@
 
 socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP") {
 	_commands["KICK"] = KICK;
-	// _commands["KILL"] = &KILL;
+	//_commands["KILL"] = KILL;
 	// _commands["QUIT"] = &QUIT();
 	_commands["MODE"] = MODE;
 	_commands["OPER"] = OPER;
@@ -108,7 +108,13 @@ void socketRun::selectLoop() {
 			}
 			else {
 				buf[valread] = '\0';
+				_killed = -1;
 				receiveMessage(buf, curr_sd);
+				if (_killed != -1) {
+					close(_killed); // not curr but nick
+					_clients.erase(_killed);
+					break;
+				}
 				std::cout << *_clients[curr_sd];
 				//sending msg back
 				// send(curr_sd, buf, strlen(buf), 0);
@@ -138,8 +144,11 @@ void socketRun::receiveMessage(std::string buf, int id) {
 			cmd = s;
 		}
 		std::cout << "COMMAND RECEPTION --- "<< cmd << " " << args << std::endl;
-		if (_commands[cmd])
+		if (cmd == "KILL")
+				KILL(this, args, id);
+		else if (_commands[cmd]) {
 			_commands[cmd](*this, args, id);
+		}
 		else
 			std::cout << "Command does not exist...\n";
 	}
@@ -186,6 +195,12 @@ const std::string		&socketRun::getOpPwd() {
 
 std::map<std::string, Channel*> &socketRun::getChannelMap() {
 	return _channels;
+}
+
+int socketRun::getKilled(void) const {return (_killed);}
+
+void		socketRun::setKilled(int dead) {
+	_killed = dead;
 }
 
 std::ostream& operator<<(std::ostream& output, const socketRun &sock) {

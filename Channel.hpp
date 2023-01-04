@@ -3,13 +3,13 @@
 
 # include "User.hpp"
 # include <vector>
-class socketRun;
+class Server;
 
 class Channel {
 	
 	typedef std::vector<User *>::iterator iter;
 public:
-	Channel(User &creator, std::string name, socketRun &server);
+	Channel(User &creator, std::string name, Server &server);
 	~Channel();
 
 	// GETTER
@@ -33,6 +33,6 @@ private:
 	
 };
 
-# include "socketRun.hpp"
+# include "Server.hpp"
 
 #endif

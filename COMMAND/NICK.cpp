@@ -1,9 +1,9 @@
 #include "command.hpp"
 
 
-void	NICK(socketRun server, std::string nick, int id) {
+void	NICK(Server *server, std::string nick, int id) {
 
-	std::map<int, User*> clients = server.getUserMap();
+	std::map<int, User*> clients = server->getUserMap();
 
 	if (clients[id]->getMode('r') == true)
 		return (send_message(server, id, ERR_RESTRICTED, ""));
@@ -20,5 +20,5 @@ void	NICK(socketRun server, std::string nick, int id) {
 	for (std::map<int, User*>::iterator it = clients.begin(); it != clients.end(); ++it)
 		if ((*it->second).getNick() == nick)
 			return (send_message(server, id, ERR_NICKNAMEINUSE, nick));
-	server.getUserMap()[id]->setNick(nick);
+	server->getUserMap()[id]->setNick(nick);
 }

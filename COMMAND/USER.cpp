@@ -1,14 +1,14 @@
 #include "command.hpp"
 
-void    user_cmd(socketRun server, std::string params, int id) {
+void    user_cmd(Server *server, std::string params, int id) {
     std::vector<std::string> parts;
     std::stringstream ss(params);
     std::string s;
 
-    if (server.getUserMap()[id]->getMode('r') == true)
+    if (server->getUserMap()[id]->getMode('r') == true)
 		return (send_message(server, id, ERR_RESTRICTED, ""));
     
-    if (server.getUserMap()[id]->getRegistered() == true)
+    if (server->getUserMap()[id]->getRegistered() == true)
 		return (send_message(server, id, ERR_ALREADYREGISTRED, ""));
 
     while (std::getline(ss, s, ' '))
@@ -32,10 +32,10 @@ void    user_cmd(socketRun server, std::string params, int id) {
     std::string host = parts[2];
     std::string realname = name;
 
-    server.getUserMap()[id]->setUsername(username);
-    server.getUserMap()[id]->setRealname(realname);
+    server->getUserMap()[id]->setUsername(username);
+    server->getUserMap()[id]->setRealname(realname);
 
-    server.getUserMap()[id]->setRegistered();
+    server->getUserMap()[id]->setRegistered();
     send_message(server, id, RPL_WELCOME, "");
     send_message(server, id, RPL_YOURHOST, "");
     send_message(server, id, RPL_CREATED, "");

@@ -1,5 +1,5 @@
-#ifndef SOCKETRUN_HPP
-# define SOCKETRUN_HPP
+#ifndef SERVER_HPP
+# define SERVER_HPP
 
 
 
@@ -27,14 +27,14 @@
 #define FALSE 0
 #define INACTIVE -1
 
-class socketRun {
+class Server {
 public:
 	typedef std::map<int, User*> 	mClient;
 	typedef std::pair<int, User*>	pClient;
 	typedef mClient::iterator		iterator;
 	typedef std::pair<std::string, Channel*>	pChannel;
 	typedef std::map<std::string, Channel*> mChannel;
-	// typedef void (*FPTR)(socketRun, std::string, int);
+	// typedef void (*FPTR)(Server, std::string, int);
 
 private:
 	struct sockaddr_in	_address;	// sd address
@@ -47,13 +47,13 @@ private:
 	mClient				_clients;	// array of users
 	std::string			_hostname;	//name of server
 	std::string			_opPwd;
-	std::map<std::string, void(*)(socketRun, std::string, int)> _commands;
+	std::map<std::string, void(*)(Server*, std::string, int)> _commands;
 	mChannel			_channels;
 	
-	socketRun();
+	Server();
 public:
-	socketRun(int port, std::string pwd);
-	~socketRun();
+	Server(int port, std::string pwd);
+	~Server();
 
 	// CREATE SOCKET
 	// void setSocket();
@@ -81,6 +81,6 @@ public:
     int		 			getKilled(void) const;
 };
 
-std::ostream& operator<<(std::ostream& output, const socketRun &sock);
+std::ostream& operator<<(std::ostream& output, const Server &sock);
 
 #endif

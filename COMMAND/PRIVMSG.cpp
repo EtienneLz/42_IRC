@@ -1,7 +1,7 @@
 #include "command.hpp"
 
-void	PRIVMSG(socketRun server, std::string params, int id) {
-	if (server.getUserMap()[id]->getMode('r') == true)
+void	PRIVMSG(Server *server, std::string params, int id) {
+	if (server->getUserMap()[id]->getMode('r') == true)
 		return (send_message(server, id, ERR_RESTRICTED, ""));
 	else if (!params.size())
 		return (send_message(server, id, ERR_NEEDMOREPARAMS, params));
@@ -40,8 +40,8 @@ void	PRIVMSG(socketRun server, std::string params, int id) {
 				size_t pos = msgTargets[0].find('.');
 				msgTargets[0] = msgTargets[0].substr(pos + 1);
 			}
-			std::map<int, User*>::iterator it = server.getUserMap().begin();
-			for (; it != server.getUserMap().end(); it++)
+			std::map<int, User*>::iterator it = server->getUserMap().begin();
+			for (; it != server->getUserMap().end(); it++)
 			{
 				if (it->second->getNick() == *itm)
 				{

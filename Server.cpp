@@ -1,8 +1,9 @@
-#include "socketRun.hpp"
+#include "Server.hpp"
 
-socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP") {
+Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP") {
 	_commands["KICK"] = KICK;
-	//_commands["KILL"] = KILL;
+	_commands["KILL"] = KILL;
+	_commands["kill"] = KILL;
 	// _commands["QUIT"] = &QUIT();
 	_commands["MODE"] = MODE;
 	_commands["OPER"] = OPER;
@@ -48,11 +49,11 @@ socketRun::socketRun(int port, std::string pwd) :_port(port), _count(0), _pwd(pw
 
 }
 
-socketRun::~socketRun() {
+Server::~Server() {
 
 }
 
-void socketRun::selectLoop() {
+void Server::selectLoop() {
 	fd_set rfds;
 	struct timeval tv;
 	int retval;
@@ -130,7 +131,7 @@ void socketRun::selectLoop() {
 	}
 }
 
-void socketRun::receiveMessage(std::string buf, int id) {
+void Server::receiveMessage(std::string buf, int id) {
 	std::string s;
 	std::string cmd;
 	std::string args;
@@ -152,7 +153,7 @@ void socketRun::receiveMessage(std::string buf, int id) {
 		if (cmd == "KILL")
 				KILL(this, args, id);
 		else if (_commands[cmd]) {
-			_commands[cmd](*this, args, id);
+			_commands[cmd](this, args, id);
 		}
 		else
 			std::cout << "Command does not exist...\n";
@@ -160,55 +161,55 @@ void socketRun::receiveMessage(std::string buf, int id) {
 
 }
 
-void socketRun::readData() {
+void Server::readData() {
 
 }
 
-void socketRun::socketError(std::string str) {
+void Server::socketError(std::string str) {
 	perror(str.c_str());
 	close(_sd);
 	exit(EXIT_FAILURE);
 }
 
-int socketRun::getPort() const {
+int Server::getPort() const {
 	return _port;
 }
 
-const std::string &socketRun::getPwd() const {
+const std::string &Server::getPwd() const {
 	return _pwd;
 }
 
-const std::string	&socketRun::getHostname() {
+const std::string	&Server::getHostname() {
 	return _hostname;
 }
 
-void			socketRun::setHostname(std::string name) {
+void			Server::setHostname(std::string name) {
 	_hostname = name;
 }
 
-const int			&socketRun::getCount() {
+const int			&Server::getCount() {
 	return _count;
 }
 
-std::map<int, User*> 	&socketRun::getUserMap() {
+std::map<int, User*> 	&Server::getUserMap() {
 	return _clients;
 }
 
-const std::string		&socketRun::getOpPwd() {
+const std::string		&Server::getOpPwd() {
 	return _opPwd;
 }
 
-std::map<std::string, Channel*> &socketRun::getChannelMap() {
+std::map<std::string, Channel*> &Server::getChannelMap() {
 	return _channels;
 }
 
-int socketRun::getKilled(void) const {return (_killed);}
+int Server::getKilled(void) const {return (_killed);}
 
-void		socketRun::setKilled(int dead) {
+void		Server::setKilled(int dead) {
 	_killed = dead;
 }
 
-std::ostream& operator<<(std::ostream& output, const socketRun &sock) {
+std::ostream& operator<<(std::ostream& output, const Server &sock) {
 	output << "port = " << sock.getPort() << std::endl;
 	output << "password = " << sock.getPwd() << std::endl;
 	return (output);

@@ -1,11 +1,11 @@
 #include "../command.hpp"
 
-void    MODE(socketRun server, std::string params, int id) {
+void    MODE(Server *server, std::string params, int id) {
     std::vector<std::string> parts;
     std::stringstream ss(params);
     std::string s;
 
-    if (server.getUserMap()[id]->getMode('r') == true)
+    if (server->getUserMap()[id]->getMode('r') == true)
 		return (send_message(server, id, ERR_RESTRICTED, ""));
 
     while (std::getline(ss, s, ' '))
@@ -21,9 +21,9 @@ void    MODE(socketRun server, std::string params, int id) {
     }
 
     if (*parts.begin() == "*")
-        *parts.begin() = server.getUserMap()[id]->getNick();
+        *parts.begin() = server->getUserMap()[id]->getNick();
 
-    if (*parts.begin() != server.getUserMap()[id]->getNick()) {
+    if (*parts.begin() != server->getUserMap()[id]->getNick()) {
         send_message(server, id, ERR_USERSDONTMATCH, "");
         return ;
     }
@@ -43,15 +43,15 @@ void    MODE(socketRun server, std::string params, int id) {
         if (*it == 'o' && positive)
             (void)it;
         else if (*it == 'o' && !positive)
-            server.getUserMap()[id]->setMode('o', false);
+            server->getUserMap()[id]->setMode('o', false);
         else if (*it == 'r' && positive)
             (void)it;
         else if (*it == 'r' && !positive)
-            server.getUserMap()[id]->setMode('r', true);
+            server->getUserMap()[id]->setMode('r', true);
         else if (*it == 'i' && positive)
-            server.getUserMap()[id]->setMode('i', true);
+            server->getUserMap()[id]->setMode('i', true);
         else if (*it == 'i' && !positive)
-            server.getUserMap()[id]->setMode('i', false);
+            server->getUserMap()[id]->setMode('i', false);
     }
     send_message(server, id, RPL_UMODEIS, "");
 }

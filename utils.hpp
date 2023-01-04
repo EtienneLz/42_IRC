@@ -4,12 +4,12 @@
 # include "RepliesCodeDef.hpp"
 # include <sstream>
 
-class socketRun;
+class Server;
 
 bool    isspecial(char c);
 bool    isforbidenuser(char c);
-int     searchUsername(socketRun server, std::string name);
-void    send_message(socketRun server, int id_cli, int code, std::string str);
+int     searchUsername(Server *server, std::string name);
+void    send_message(Server *server, int id_cli, int code, std::string str);
 
-# include "socketRun.hpp"
+# include "Server.hpp"
 #endif

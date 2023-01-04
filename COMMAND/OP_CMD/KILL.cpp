@@ -1,7 +1,7 @@
 # include "../command.hpp"
 
 
-bool	isUser (socketRun *serv, std::string user) {
+bool	isUser (Server *serv, std::string user) {
 	for (std::map<int, User*>::iterator it = serv->getUserMap().begin(); it!= serv->getUserMap().end(); it++) {
 		if (user.compare(it->second->getNick()) == 0) {
 			// send_message() to user killed and operator ?
@@ -26,7 +26,7 @@ std::vector<std::string> splitArgsKill(std::string params, size_t end_pos) {
 	return args;
 }
 
-void KILL(socketRun *serv, std::string params, int id) {
+void KILL(Server *serv, std::string params, int id) {
 	User *oper;
 	if (serv->getUserMap()[id])
 		oper = serv->getUserMap()[id];
@@ -39,13 +39,13 @@ void KILL(socketRun *serv, std::string params, int id) {
 	else
 		args = splitArgsKill(params, std::string::npos);
 	if (args.size() != 2)
-		return (send_message(*serv, id, ERR_NEEDMOREPARAMS, ""));
+		return (send_message(serv, id, ERR_NEEDMOREPARAMS, ""));
 	if (oper->getMode('r') == true)
-		return (send_message(*serv, id, ERR_RESTRICTED, ""));
+		return (send_message(serv, id, ERR_RESTRICTED, ""));
 	if (oper->getMode('o') == false)
-	 	return (send_message(*serv, id, ERR_NOPRIVILEGES, ""));
+	 	return (send_message(serv, id, ERR_NOPRIVILEGES, ""));
 	if (isUser(serv, args[0]) != TRUE) {
-		return (send_message(*serv, id, ERR_NOSUCHNICK, ""));
+		return (send_message(serv, id, ERR_NOSUCHNICK, ""));
 	}
 	return;
 	

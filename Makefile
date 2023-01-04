@@ -1,7 +1,7 @@
 NAME = ircserv
 
 SRCS = main1.cpp \
-		socketRun.cpp \
+		Server.cpp \
 		User.cpp \
 		COMMAND/USER.cpp \
 		COMMAND/PASS.cpp \

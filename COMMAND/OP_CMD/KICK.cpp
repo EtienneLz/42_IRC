@@ -22,7 +22,7 @@ bool	isChanop(User oper, Channel chan) {
 	return FALSE;
 }
 
-Channel *getChan(socketRun::mChannel mchan, std::string str) {
+Channel *getChan(Server::mChannel mchan, std::string str) {
 	if (str[0] == '#')
 		str.erase(0, 1);
 	for (std::map<std::string, Channel*>::iterator it = mchan.begin(); it != mchan.end(); it++) {
@@ -49,10 +49,10 @@ std::vector<std::string> splitArgs(std::string params, size_t end_pos) {
 	return args;
 }
 
-void KICK(socketRun serv, std::string params, int id) {
+void KICK(Server *serv, std::string params, int id) {
 	User *oper;
-	if (serv.getUserMap()[id])
-		oper = serv.getUserMap()[id];
+	if (serv->getUserMap()[id])
+		oper = serv->getUserMap()[id];
 	else
 		return; //error
 	if (oper->getMode('r') == true)
@@ -68,7 +68,7 @@ void KICK(socketRun serv, std::string params, int id) {
 		return (send_message(serv, id, ERR_NEEDMOREPARAMS, ""));
 
 	Channel	*chan = NULL;
-	chan = getChan(serv.getChannelMap(), args[0]);
+	chan = getChan(serv->getChannelMap(), args[0]);
 	
 	if (!chan) {
 		return (send_message(serv, id, ERR_NOSUCHCHANNEL, ""));

@@ -1,6 +1,6 @@
 # include "Channel.hpp"
 
-Channel::Channel (User &creator, std::string name, socketRun &server) :_name(name) {
+Channel::Channel (User &creator, std::string name, Server &server) :_name(name) {
 	_owner = creator;
 	(void)server;
 }

@@ -14,26 +14,26 @@ bool    isforbidenuser(char c)
     return (false);
 }
 
-int     searchUsername(socketRun server, std::string name) {
-    for (std::map<int, User*>::iterator it = server.getUserMap().begin(); it != server.getUserMap().end(); it ++) {
+int     searchUsername(Server *server, std::string name) {
+    for (std::map<int, User*>::iterator it = server->getUserMap().begin(); it != server->getUserMap().end(); it ++) {
         if (name == (*it).second->getUsername())
             return (*it).first;
     }
     return -1;
 }
 
-std::string mode_str(socketRun server, int id_cli) {
+std::string mode_str(Server *server, int id_cli) {
     std::string ret = "";
-    if (server.getUserMap()[id_cli]->getMode('r'))
+    if (server->getUserMap()[id_cli]->getMode('r'))
         ret += "r";
-    if (server.getUserMap()[id_cli]->getMode('o'))
+    if (server->getUserMap()[id_cli]->getMode('o'))
         ret += "o";
-    if (server.getUserMap()[id_cli]->getMode('i'))
+    if (server->getUserMap()[id_cli]->getMode('i'))
         ret += "i";
     return ret;
 }
 
-void    send_message(socketRun server, int id_cli, int code, std::string str) {
+void    send_message(Server *server, int id_cli, int code, std::string str) {
     std::string realCode;
     std::stringstream ss;
     ss << code;
@@ -46,22 +46,22 @@ void    send_message(socketRun server, int id_cli, int code, std::string str) {
     else
         realCode = codeStr;
 
-    std::string message = ":" + server.getHostname() + " " + realCode;
-    if (server.getUserMap()[id_cli]->getNick().empty())
+    std::string message = ":" + server->getHostname() + " " + realCode;
+    if (server->getUserMap()[id_cli]->getNick().empty())
         message += " * ";
     else
-        message += " " + server.getUserMap()[id_cli]->getNick() + " ";
+        message += " " + server->getUserMap()[id_cli]->getNick() + " ";
 
     switch (code) {
         // REPLIES
         case RPL_WELCOME:
-            message += ":Welcome to our IRC server " + server.getUserMap()[id_cli]->getNick(); break;
+            message += ":Welcome to our IRC server " + server->getUserMap()[id_cli]->getNick(); break;
         case RPL_YOURHOST:
-            message += ":Your host is " + server.getHostname() + ", running version Alpha 0.1"; break;
+            message += ":Your host is " + server->getHostname() + ", running version Alpha 0.1"; break;
         case RPL_CREATED:
             message += ":This server was created \"coder temps ecoule\""; break;
         case RPL_MYINFO:
-            message += server.getHostname() + " Alpha 0.1 " + " Trucs a rajouter"; break;
+            message += server->getHostname() + " Alpha 0.1 " + " Trucs a rajouter"; break;
         case RPL_UMODEIS:
             message += mode_str(server, id_cli); break;
         case RPL_YOUREOPER:

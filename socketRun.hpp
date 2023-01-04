@@ -41,6 +41,7 @@ private:
 	int					_addrlen;	//= sizeof(_address);
 	int					_port;		// port used for connection
 	int					_count;		// number of users
+	int					_killed;
 	std::string			_pwd;		// password
 	mClient				_clients;	// array of users
 	std::string			_hostname;	//name of server
@@ -75,6 +76,8 @@ public:
 	mClient 			&getUserMap();
 	const std::string	&getOpPwd();
 	mChannel			&getChannelMap();
+	void        		setKilled(int dead);
+    int		 			getKilled(void) const;
 };
 
 std::ostream& operator<<(std::ostream& output, const socketRun &sock);

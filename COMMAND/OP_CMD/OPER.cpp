@@ -28,6 +28,10 @@ void    OPER(Server *server, std::string params, int id) {
     if (idDest < 0)
         return ;
     server->getUserMap()[idDest]->setMode('o', true);
+    if (server->getUserMap()[idDest]->getMode('o'))
+        std::cout << "MODE : true" << std::endl;
+    else
+       std::cout << "MODE : false" << std::endl;
     send_message(server, idDest, RPL_YOUREOPER, "");
     send_message(server, idDest, RPL_UMODEIS, "");
 }

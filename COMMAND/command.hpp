@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <cctype>
+#include <unistd.h>
 #include "../RepliesCodeDef.hpp"
 #include "../utils.hpp"
 

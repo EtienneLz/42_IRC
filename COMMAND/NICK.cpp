@@ -22,8 +22,8 @@ void	NICK(Server *server, std::string nick, int id) {
 			return (send_message(server, id, ERR_NICKNAMEINUSE, nick));
 
 	std::string old_nick = server->getUserMap()[id]->getNick();
-	if (old == "")
-		old = "*";
+	if (old_nick == "")
+		old_nick = "*";
 	server->getUserMap()[id]->setNick(nick);
 	std::string new_nick = server->getUserMap()[id]->getNick();
 	std::string message = ":" + old_nick + "!" + old_nick  + "@" + clients[id]->getHost() + " NICK " + new_nick + "\r\n";

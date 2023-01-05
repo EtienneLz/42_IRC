@@ -10,8 +10,14 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 	std::string message;
 
 	size_t pos = params.find_first_of(':');
-	targets = params.substr(0, pos - 1);
-	message = params.substr(pos);
+	if (pos != std::string::npos)
+	{
+		targets = params.substr(0, pos - 1);
+		message = params.substr(pos);
+	}
+	else
+		return (send_message(server, id, ERR_NORECIPIENT, message));
+
 
 	if (targets.size() == 0)
 		return (send_message(server, id, ERR_NORECIPIENT, params));
@@ -32,7 +38,7 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 
 		size_t users = 0;
 		size_t messages = 0;
-		for (std::vector<std::string>::iterator itm = msgTargets.begin(); itm != msgTargets.end(); itm++)
+		for (std::vector<std::string>::iterator itT = msgTargets.begin(); itT != msgTargets.end(); itT++)
 		{
 			++users;
 			if (targets[0] == '#' && targets.find('.') != std::string::npos)
@@ -40,24 +46,44 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 				size_t pos = msgTargets[0].find('.');
 				msgTargets[0] = msgTargets[0].substr(pos + 1);
 			}
-			std::map<int, User*>::iterator it = server->getUserMap().begin();
-			for (; it != server->getUserMap().end(); it++)
+			for (std::map<int, User*>::iterator it = server->getUserMap().begin(); it != server->getUserMap().end(); it++)
 			{
-				if (it->second->getNick() == *itm)
+				if (it->second->getNick() == *itT)
 				{
 					if (message[0] == ':')
 					{
-						send(it->first, message.c_str(), message.size(), MSG_DONTWAIT);
+						std::string reply = ":" + server->getUserMap()[id]->getNick() + "!"
+						+ server->getUserMap()[id]->getNick() + "@"
+						+ server->getUserMap()[id]->getHost() + " PRIVMSG " + *itT + " "
+						+ message + "\r\n";
+						send(it->first, reply.c_str(), reply.size(), MSG_DONTWAIT);
 						++messages;
 					}
 					else
-						++messages;//error no ':' in the message text
+						return (send_message(server, id, ERR_NORECIPIENT, *itT));
 				}
 			}
-			//do the same for Channel
-			// std::cout << "message = " << messages << std::endl;
+			if (server->getChannelMap()[*itT])
+			{
+				Channel *chan = server->getChannelMap()[*itT];
+				std::vector<User*> users = chan->getUsers();
+				for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
+				{
+					if ((*it)->getUsername() == server->getUserMap()[id]->getUsername())
+					{
+						for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
+						{
+							if ((*it)->getUsername() == server->getUserMap()[id]->getUsername())
+								;
+							else
+								send((*it)->fd, message.c_str(), message.size(), MSG_DONTWAIT);
+						}
+						++messages;
+					}
+				}
+			}
 			if (users != messages)
-				return (send_message(server, id, ERR_NOSUCHNICK, *itm));
+				return (send_message(server, id, ERR_NOSUCHNICK, *itT));
 		}
 	}
 }

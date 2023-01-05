@@ -18,12 +18,15 @@ void	NICK(Server *server, std::string nick, int id) {
 			return (send_message(server, id, ERR_ERRONEUSNICKNAME, nick));
 
 	for (std::map<int, User*>::iterator it = clients.begin(); it != clients.end(); ++it)
-		if ((*it->second).getNick() == nick) {
-			while (clients[id]->getRegistered() != true)
-				sleep(5);
+		if ((*it->second).getNick() == nick)
 			return (send_message(server, id, ERR_NICKNAMEINUSE, nick));
-		}
-			// return (send_message(server, id, ERR_NICKNAMEINUSE, nick));
+
+	std::string old_nick = server->getUserMap()[id]->getNick();
+	if (old == "")
+		old = "*";
 	server->getUserMap()[id]->setNick(nick);
-	//return (send_message(server, id, -1, nick));
+	std::string new_nick = server->getUserMap()[id]->getNick();
+	std::string message = ":" + old_nick + "!" + old_nick  + "@" + clients[id]->getHost() + " NICK " + new_nick + "\r\n";
+	std::cout << "REPLY --- " << message;
+	send(id, message.c_str(), message.length(), MSG_DONTWAIT);
 }

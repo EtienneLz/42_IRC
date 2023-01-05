@@ -34,12 +34,12 @@ std::string mode_str(Server *server, int id_cli) {
 }
 
 void    send_message(Server *server, int id_cli, int code, std::string str) {
-    if (code == -1) {
+    if (code < 0) {
         std::string message = ":" + server->getHostname();
-        // if (server->getUserMap()[id_cli]->getNick().empty())
-        message += " * ";
-        // else
-        //     message += " :" + server->getUserMap()[id_cli]->getNick() + " ";
+        if (server->getUserMap()[id_cli]->getNick().empty())
+            message += " * ";
+        else
+            message += " :" + server->getUserMap()[id_cli]->getNick() + " ";
         message += str;
         message += "\r\n";
         std::cout << "REPLY --- " << message << std::endl;

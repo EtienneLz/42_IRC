@@ -34,18 +34,15 @@ std::string mode_str(Server *server, int id_cli) {
 }
 
 void    send_message(Server *server, int id_cli, int code, std::string str) {
-    if (code < 0) {
-        std::string message = ":" + server->getHostname();
-        if (server->getUserMap()[id_cli]->getNick().empty())
-            message += " * ";
-        else
-            message += " :" + server->getUserMap()[id_cli]->getNick() + " ";
-        message += str;
-        message += "\r\n";
-        std::cout << "REPLY --- " << message << std::endl;
-        send(id_cli, message.c_str(), message.length(), MSG_DONTWAIT);
-        return;
-    }
+    // if (code < 0) {
+    //     std::string nick = server->getUserMap()[id_cli]->getNick();
+    //     if (nick.empty())
+    //         nick = "*";
+    //     std::string message = ":" + nick + "!" + nick  + "@" + server->getUserMap()[id_cli]->getHost() + " NICK " + str + "\r\n";
+    //     std::cout << "REPLY --- " << message << std::endl;
+    //     send(id_cli, message.c_str(), message.length(), MSG_DONTWAIT);
+    //     return;
+    // }
     
     std::string realCode;
     std::stringstream ss;

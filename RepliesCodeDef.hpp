@@ -1,7 +1,6 @@
 #ifndef REPLIES_CODE_DEF_HPP
 # define REPLIES_CODE_DEF_HPP
 
-
 # define RPL_WELCOME 1
 # define RPL_YOURHOST 2
 # define RPL_CREATED 3

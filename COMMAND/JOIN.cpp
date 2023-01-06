@@ -29,31 +29,31 @@ void    JOIN(Server *server, std::string params, int id) {
             break ;
         }
 
-        for (mChannel::iterator iter = chanMap.begin(); iter != chanMap.end(); iter++)
-            if (iter->first.compare(name))
+        for (mChannel::iterator iter = server->getChannelMap().begin(); iter != server->getChannelMap().end(); iter++)
+            if (iter->first == name)
                 exist = true;
 
         if (exist) {
             std::cout << "IM HERE" << std::endl;
-            chanMap[name]->joinChan(*server->getUserMap()[id]);
-            std::vector<User *> chanUsers = chanMap[name]->getUsers();
+            server->getChannelMap()[name]->joinChan(*server->getUserMap()[id]);
+            std::vector<User *> chanUsers = server->getChannelMap()[name]->getUsers();
             std::string message = ":" + clients[id]->getNick() + "!" + clients[id]->getNick()  + "@" + clients[id]->getHost() + "JOIN " + ":" + name + "\r\n";
             for (std::vector<User *>::iterator it2 = chanUsers.begin(); it2 != chanUsers.end(); it2++) {
                 std::cout << "REPLY CHAN --- " << message << std::endl;
                 send((*it2)->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
             }
             send_chan_message(server, id, RPL_TOPIC, server->getChannelMap()[name]->getTopic(), name);
-	        
+
         }
         else {
             std::cout << "TA MERE" << std::endl;
-            chanMap[name] = new Channel();
-            chanMap[name]->setOwner(*server->getUserMap()[id]);
-            chanMap[name]->setName(name);
-            chanMap[name]->joinChan(*server->getUserMap()[id]);
-            chanMap[name]->setTopic("default");
+            server->getChannelMap()[name] = new Channel();
+            server->getChannelMap()[name]->setOwner(*server->getUserMap()[id]);
+            server->getChannelMap()[name]->setName(name);
+            server->getChannelMap()[name]->joinChan(*server->getUserMap()[id]);
+            server->getChannelMap()[name]->setTopic("default");
             std::string message = ":" + clients[id]->getNick() + "!" + clients[id]->getNick()  + "@" + clients[id]->getHost() + "JOIN " + ":" + name + "\r\n";
-            send_chan_message(server, id, RPL_TOPIC, chanMap[name]->getTopic(), name);
+            send_chan_message(server, id, RPL_TOPIC, server->getChannelMap()[name]->getTopic(), name);
         }
     }
     return ;

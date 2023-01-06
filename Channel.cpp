@@ -1,12 +1,6 @@
 # include "Channel.hpp"
 
-Channel::Channel (User &creator, std::string name, Server &server) :_name(name) {
-	_owner = creator;
-	(void)server;
-}
-
-Channel::Channel () {
-}
+Channel::Channel () {}
 
 Channel::~Channel () {
 	// if (!_chanops.empty()) {
@@ -21,23 +15,32 @@ Channel::~Channel () {
 	// }
 }
 
-void	Channel::joinChan(User newUser) {
+void	Channel::joinChan(User *newUser) {
 	iter toFind;
-	for (iter it = _chanUsers.begin(); it != _chanUsers.end(); it++)
-		if ((*it)->getNick() == newUser.getNick()) {
+	bool found = false;
+	for (iter it = _chanUsers.begin(); it != _chanUsers.end(); it++) {
+		std::cout << "NIQUE NAME --- " << (*it)->getNick() << std::endl;
+		if ((*it)->getNick() == newUser->getNick()) {
 			toFind = it;
+			found = true;
 			break ;
 		}
-	if (toFind == _chanUsers.end())
-		_chanUsers.push_back(&newUser);
+	}
+	if (!found)
+		_chanUsers.push_back(newUser);
 }
 
 void	Channel::leaveChan(std::string oldUser) {
 	iter toFind;
+	bool found = false;
 	for (iter it = _chanUsers.begin(); it != _chanUsers.end(); it++)
-		if ((*it)->getNick() == oldUser)
+		if ((*it)->getNick() == oldUser) {
 			toFind = it;
-	_chanUsers.erase(toFind);
+			found = true;
+			break ;
+		}
+	if (found)
+		_chanUsers.erase(toFind);
 }
 
 std::string			Channel::userList(void) {
@@ -47,11 +50,11 @@ std::string			Channel::userList(void) {
 	return ret;
 }
 
-std::vector<User *> Channel::getUsers() {
+std::vector<User *> &Channel::getUsers() {
 	return _chanUsers;
 }
 
-std::vector<User *> Channel::getChanops() {
+std::vector<User *> &Channel::getChanops() {
 	return _chanops;
 }
 
@@ -67,7 +70,7 @@ void		Channel::setName(std::string name) {
 	_name = name;
 }
 
-void		Channel::setOwner(User owner) {
+void		Channel::setOwner(User *owner) {
 	_owner = owner;
 }
 

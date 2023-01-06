@@ -18,8 +18,9 @@
 #include <map>
 #include <vector>
 #include "User.hpp"
-#include "COMMAND/command.hpp"
 #include "Channel.hpp"
+#include "COMMAND/command.hpp"
+
 
 
 //#define PORT 12345

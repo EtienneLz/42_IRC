@@ -8,7 +8,7 @@ Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _h
 	_commands["MODE"] = MODE;
 	_commands["OPER"] = OPER;
 	// _commands["CAP"] = &CAP;
-	// _commands["JOIN"] = &JOIN;
+	_commands["JOIN"] = JOIN;
 	_commands["NICK"] = NICK;
 	_commands["PASS"] = PASS;
 	_commands["USER"] = user_cmd;

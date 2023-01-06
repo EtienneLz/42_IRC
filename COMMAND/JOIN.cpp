@@ -45,7 +45,7 @@ void    JOIN(Server *server, std::string params, int id) {
                 send((*it2)->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
             }
             send_chan_message(server, id, RPL_TOPIC, server->getChannelMap()[name]->getTopic(), name);
-	        
+
         }
         else {
             std::cout << "TA MERE" << std::endl;

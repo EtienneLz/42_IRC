@@ -41,20 +41,19 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 		for (std::vector<std::string>::iterator itT = msgTargets.begin(); itT != msgTargets.end(); itT++)
 		{
 			++targetCount;
-			if (targets[0] == '#')
+			if (itT.base()->find('#') != std::string::npos)
 			{
-				msgTargets[0] = msgTargets[0].substr(0);
 				if (server->getChannelMap()[*itT])
 				{
 					Channel *chan = server->getChannelMap()[*itT];
 					std::vector<User*> users = chan->getUsers();
 					for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
 					{
-						if ((*it)->getUsername() == server->getUserMap()[id]->getUsername())
+						if ((*it)->getNick() == server->getUserMap()[id]->getNick())
 						{
 							for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
 							{
-								if ((*it)->getUsername() == server->getUserMap()[id]->getUsername())
+								if ((*it)->getNick() == server->getUserMap()[id]->getNick())
 									;
 								else
 								{

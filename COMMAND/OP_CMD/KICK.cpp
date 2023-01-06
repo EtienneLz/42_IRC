@@ -10,7 +10,7 @@ int		isUser (Channel chan, std::string user, int *op) {
 			}
 			i++;
 		}
-	int i = 0;
+	i = 0;
 	for (std::vector<User*>::iterator it = vec_chanops.begin(); it!= vec_chanops.end(); it++) {
 		if (user.compare((*it)->getNick()) == 0) {
 			*op = 1;
@@ -30,16 +30,17 @@ User	*isChanop(User oper, Channel chan) {
 	return NULL;
 }
 
-Channel *getChan(Server::mChannel mchan, std::string str) {
-	if (str[0] == '#')
-		str.erase(0, 1);
-	for (std::map<std::string, Channel*>::iterator it = mchan.begin(); it != mchan.end(); it++) {
-		if (str.compare((*it).second->getName()) == 0) {
-			return(*it).second;
-		}
-	}
-	return NULL;
-}
+// Channel *getChan(Server::mChannel mchan, std::string str) {
+// 	if (str[0] == '#')
+// 		str.erase(0, 1);
+// 	if mchan[str]
+// 	for (std::map<std::string, Channel*>::iterator it = mchan.begin(); it != mchan.end(); it++) {
+// 		if (str.compare((*it).second->getName()) == 0) {
+// 			return(*it).second;
+// 		}
+// 	}
+// 	return NULL;
+// }
 
 std::vector<std::string> splitArgs(std::string params, size_t end_pos) {
 	std::size_t pos;
@@ -54,6 +55,8 @@ std::vector<std::string> splitArgs(std::string params, size_t end_pos) {
 		args[0].erase(0, 1);
 	if (args[args.size() - 1][0] == ':')
 		args[args.size() - 1].erase(0, 1);
+	for (std::vector<std::string>::iterator it = args.begin(); it!= args.end(); it++)
+		std::cout << "\nARGS = " << *it << std::endl;
 	return args;
 }
 
@@ -100,11 +103,16 @@ void KICK(Server *serv, std::string params, int id) {
 	int kicked = -1;
 	int op = 0;
 	
-	chan = getChan(serv->getChannelMap(), args[0]);
-	
-	if (!chan) {
+	if (args[1][0] == '#')
+		args[1].erase(0, 1);
+	if ((chan = serv->getChannelMap()[args[1]]) == NULL)
 		return (send_message(serv, id, ERR_NOSUCHCHANNEL, ""));
-	}
+
+	//chan = getChan(serv->getChannelMap(), args[0]);
+	
+	// if (!chan) {
+	// 	return (send_message(serv, id, ERR_NOSUCHCHANNEL, ""));
+	// }
 	else if ((chanoper = isChanop(*exec, *chan)) == NULL) {
 		return (send_message(serv, id, ERR_CHANOPRIVSNEEDED, ""));
 	}

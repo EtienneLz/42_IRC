@@ -12,6 +12,7 @@ SRCS = main1.cpp \
 		COMMAND/OP_CMD/MODE.cpp \
 		COMMAND/OP_CMD/OPER.cpp \
 		COMMAND/OP_CMD/KILL.cpp \
+		COMMAND/OP_CMD/KICK.cpp \
 		utils.cpp \
 		Channel.cpp
 		

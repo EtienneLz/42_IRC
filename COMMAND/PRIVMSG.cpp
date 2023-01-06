@@ -49,11 +49,11 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 					std::vector<User*> users = chan->getUsers();
 					for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
 					{
-						if ((*it) != NULL && (*it)->getNick() == server->getUserMap()[id]->getNick())
+						if ((*it)->getNick() == server->getUserMap()[id]->getNick())
 						{
 							for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
 							{
-								if ((*it) != NULL && (*it)->getNick() == server->getUserMap()[id]->getNick())
+								if ((*it)->getNick() == server->getUserMap()[id]->getNick())
 									;
 								else
 								{

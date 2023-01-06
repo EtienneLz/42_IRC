@@ -1,10 +1,29 @@
 # include "../command.hpp"
 
+void	send_chan() {
 
-bool	isUser (Channel chan, std::string user) {
-	std::vector<User*> vec = chan.getUsers();
-	for (std::vector<User*>::iterator it = vec.begin(); it!= vec.end(); it++) {
+}
+
+bool	isUser (Channel chan, std::vector<std::string> args, int id) {
+	std::vector<User*> vec_users = chan.getUsers();
+	std::vector<User*> vec_chanops = chan.getChanops();
+	std::string user = args[1];
+	std::string why;
+	if (args.back() != user)
+		why = args[2];
+	else
+		why ="";
+	for (std::vector<User*>::iterator it = vec_users.begin(); it!= vec_users.end(); it++) {
 		if (user.compare((*it)->getNick()) == 0) {
+			for (std::vector<User*>::iterator it = vec_chanops.begin(); it!= vec_chanops.end(); it++) {
+				if ((*it).fd == id)
+				std::string exec = (*it)->getNick();
+			}
+			std::string exec = serv->getUserMap()[id_exec]->getNick();
+			std::string message = ":" + exec + "!" +  exec + "@" + serv->getUserMap()[id_exec]->getHost() +
+			" KILL " + user + " :" + why + "\r\n";
+			std::cout << "REPLY --- " << message;
+			send(it->first, message.c_str(), message.length(), MSG_DONTWAIT);
 			// send user kicked msg ?
 			vec.erase(it);
 			return TRUE;
@@ -13,13 +32,13 @@ bool	isUser (Channel chan, std::string user) {
 	return FALSE;
 }
 
-bool	isChanop(User oper, Channel chan) {
+User	*isChanop(User oper, Channel chan) {
 	std::vector<User*> vec = chan.getChanops();
 	for (std::vector<User*>::iterator it = vec.begin(); it!= vec.end(); it++) {
 		if (oper.getNick().compare((*it)->getNick()) == 0)
-			return TRUE;
+			return *it;
 	}
-	return FALSE;
+	return NULL;
 }
 
 Channel *getChan(Server::mChannel mchan, std::string str) {
@@ -68,15 +87,16 @@ void KICK(Server *serv, std::string params, int id) {
 		return (send_message(serv, id, ERR_NEEDMOREPARAMS, ""));
 
 	Channel	*chan = NULL;
+	User *chanoper = NULL;
 	chan = getChan(serv->getChannelMap(), args[0]);
 	
 	if (!chan) {
 		return (send_message(serv, id, ERR_NOSUCHCHANNEL, ""));
 	}
-	else if (isChanop(*oper, *chan) != TRUE) {
+	else if ((chanoper = isChanop(*oper, *chan)) == NULL) {
 		return (send_message(serv, id, ERR_CHANOPRIVSNEEDED, ""));
 	}
-	else if (isUser(*chan, args[1]) != TRUE) {
+	else if (isUser(*chan, args, id) != TRUE) {
 		return (send_message(serv, id, ERR_NOTONCHANNEL, ""));
 	}
 	//if (args.size() == 3 )

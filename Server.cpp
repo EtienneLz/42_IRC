@@ -95,6 +95,7 @@ void Server::selectLoop() {
 		cliAddress = (sockaddr_in *) &address;
 		_clients[fdcl] = new User;
 		_clients[fdcl]->setHost(std::string(inet_ntoa(cliAddress->sin_addr)));
+		_clients[fdcl]->setId(fdcl);
 		_count++;
 		std::cout << "\nAdding new user with fd: " << fdcl << "\nNumber of users: " << _count << std::endl;
 	}

@@ -46,7 +46,7 @@ void	Channel::leaveChan(std::string oldUser) {
 std::string			Channel::userList(void) {
 	std::string ret = "";
 	for (std::vector<User *>::iterator it = _chanUsers.begin(); it != _chanUsers.end(); it++)
-		ret += (*it)->getNick() + " ";
+		ret += " ~" + (*it)->getNick();
 	return ret;
 }
 

@@ -44,8 +44,16 @@ void    JOIN(Server *server, std::string params, int id) {
                 std::cout << "REPLY CHAN --- " << message << std::endl;
                 send((*it2)->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
             }
-            send_chan_message(server, id, RPL_TOPIC, server->getChannelMap()[name]->getTopic(), name);
+            
+            if (server->getChannelMap()[name]->getTopic() != "")
+                send_chan_message(server, id, RPL_TOPIC, server->getChannelMap()[name]->getTopic(), name);
+            else
+                send_chan_message(server, id, RPL_NOTOPIC, "", name);
 
+            message = ":" + server->getHostname() + " 353 " + server->getUserMap()[id]->getNick() + " ";
+            message += "= " + name + ":" + server->getChannelMap()[name]->userList();
+            send(id, message.c_str(), message.length(), MSG_DONTWAIT);
+            send_chan_message(server, id, RPL_ENDOFNAMES, "", name);
         }
         else {
             std::cout << "TA MERE" << std::endl;
@@ -53,10 +61,10 @@ void    JOIN(Server *server, std::string params, int id) {
             server->getChannelMap()[name]->setOwner(server->getUserMap()[id]);
             server->getChannelMap()[name]->setName(name);
             server->getChannelMap()[name]->joinChan(server->getUserMap()[id]);
-            server->getChannelMap()[name]->setTopic("default");
+            server->getChannelMap()[name]->setTopic("");
             std::cout << "map chan size --- " << server->getChannelMap()[name]->userList() << std::endl;
             std::string message = ":" + clients[id]->getNick() + "!" + clients[id]->getNick()  + "@" + clients[id]->getHost() + "JOIN " + ":" + name + "\r\n";
-            send_chan_message(server, id, RPL_TOPIC, server->getChannelMap()[name]->getTopic(), name);
+            send_chan_message(server, id, RPL_NOTOPIC, "", name);
         }
     }
     return ;

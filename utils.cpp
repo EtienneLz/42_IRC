@@ -136,6 +136,10 @@ void    send_chan_message(Server *server, int id_cli, int code, std::string str,
             message += chan + " :No topic is set"; break;
         case RPL_TOPIC:
             message += chan + " :" + str; break;
+        case RPL_NAMREPLY:
+            message += chan; break;
+        case RPL_ENDOFNAMES:
+            message += chan + " :End of /NAMES list";
 
         // ERRORS
         case ERR_NOSUCHCHANNEL:

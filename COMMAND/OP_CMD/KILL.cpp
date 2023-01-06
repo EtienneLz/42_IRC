@@ -1,10 +1,15 @@
 # include "../command.hpp"
 
 
-bool	isUser (Server *serv, std::string user) {
+bool	isUser (Server *serv, std::string user, std::string why, int id_exec) {
 	for (std::map<int, User*>::iterator it = serv->getUserMap().begin(); it!= serv->getUserMap().end(); it++) {
 		if (user.compare(it->second->getNick()) == 0) {
-			// send_message() to user killed and operator ?
+			std::string exec = serv->getUserMap()[id_exec]->getNick();
+			std::string message = ":" + exec + "!" +  exec + "@" + serv->getUserMap()[id_exec]->getHost() +
+			" KILL " + user + " :" + why + "\r\n";
+			std::cout << "REPLY --- " << message;
+			send(it->first, message.c_str(), message.length(), MSG_DONTWAIT);
+			// send_message() to operator ?
 			serv->setKilled(it->first);
 			return TRUE;
 		}
@@ -44,7 +49,7 @@ void KILL(Server *serv, std::string params, int id) {
 		return (send_message(serv, id, ERR_RESTRICTED, ""));
 	if (oper->getMode('o') == false)
 	 	return (send_message(serv, id, ERR_NOPRIVILEGES, ""));
-	if (isUser(serv, args[0]) != TRUE) {
+	if (isUser(serv, args[0], args[1], id) != TRUE) {
 		return (send_message(serv, id, ERR_NOSUCHNICK, ""));
 	}
 	return;

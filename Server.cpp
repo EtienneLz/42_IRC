@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
 Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP") {
-	_commands["KICK"] = KICK;
+	//_commands["KICK"] = KICK;
 	_commands["KILL"] = KILL;
 	_commands["kill"] = KILL;
 	// _commands["QUIT"] = &QUIT();

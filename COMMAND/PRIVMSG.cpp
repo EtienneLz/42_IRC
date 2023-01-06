@@ -36,53 +36,61 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 		else
 			msgTargets.push_back(targets);
 
-		size_t users = 0;
-		size_t messages = 0;
+		size_t targetCount = 0;
+		size_t messageCount = 0;
 		for (std::vector<std::string>::iterator itT = msgTargets.begin(); itT != msgTargets.end(); itT++)
 		{
-			++users;
-			if (targets[0] == '#' && targets.find('.') != std::string::npos)
+			++targetCount;
+			if (targets[0] == '#')
 			{
-				size_t pos = msgTargets[0].find('.');
-				msgTargets[0] = msgTargets[0].substr(pos + 1);
-			}
-			for (std::map<int, User*>::iterator it = server->getUserMap().begin(); it != server->getUserMap().end(); it++)
-			{
-				if (it->second->getNick() == *itT)
+				msgTargets[0] = msgTargets[0].substr(0);
+				if (server->getChannelMap()[*itT])
 				{
-					if (message[0] == ':')
+					Channel *chan = server->getChannelMap()[*itT];
+					std::vector<User*> users = chan->getUsers();
+					for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
 					{
-						std::string reply = ":" + server->getUserMap()[id]->getNick() + "!"
-						+ server->getUserMap()[id]->getNick() + "@"
-						+ server->getUserMap()[id]->getHost() + " PRIVMSG " + *itT + " "
-						+ message + "\r\n";
-						send(it->first, reply.c_str(), reply.size(), MSG_DONTWAIT);
-						++messages;
-					}
-					else
-						return (send_message(server, id, ERR_NORECIPIENT, *itT));
-				}
-			}
-			if (server->getChannelMap()[*itT])
-			{
-				Channel *chan = server->getChannelMap()[*itT];
-				std::vector<User*> users = chan->getUsers();
-				for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
-				{
-					if ((*it)->getUsername() == server->getUserMap()[id]->getUsername())
-					{
-						for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
+						if ((*it)->getUsername() == server->getUserMap()[id]->getUsername())
 						{
-							if ((*it)->getUsername() == server->getUserMap()[id]->getUsername())
-								;
-							else
-								send((*it)->fd, message.c_str(), message.size(), MSG_DONTWAIT);
+							for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
+							{
+								if ((*it)->getUsername() == server->getUserMap()[id]->getUsername())
+									;
+								else
+								{
+									std::string reply =  ":" + server->getUserMap()[id]->getNick() + "!"
+									+ server->getUserMap()[id]->getNick() + "@"
+									+ server->getUserMap()[id]->getHost() + " PRIVMSG " + "#" + *itT
+									+ " " + message + "\r\n";
+									send((*it)->fd, reply.c_str(), reply.size(), MSG_DONTWAIT);
+								}
+							}
+							++messageCount;
 						}
-						++messages;
 					}
 				}
 			}
-			if (users != messages)
+			else
+			{
+				for (std::map<int, User*>::iterator it = server->getUserMap().begin(); it != server->getUserMap().end(); it++)
+				{
+					if (it->second->getNick() == *itT)
+					{
+						if (message[0] == ':')
+						{
+							std::string reply = ":" + server->getUserMap()[id]->getNick() + "!"
+							+ server->getUserMap()[id]->getNick() + "@"
+							+ server->getUserMap()[id]->getHost() + " PRIVMSG " + *itT + " "
+							+ message + "\r\n";
+							send(it->first, reply.c_str(), reply.size(), MSG_DONTWAIT);
+							++messageCount;
+						}
+						else
+							return (send_message(server, id, ERR_NORECIPIENT, *itT));
+					}
+				}
+			}
+			if (targetCount != messageCount)
 				return (send_message(server, id, ERR_NOSUCHNICK, *itT));
 		}
 	}

@@ -51,8 +51,6 @@ std::vector<std::string> splitArgs(std::string params, size_t end_pos) {
 			params = params.substr(pos + 1);
 		}
 		args.push_back(params);
-	if (args[0][0] == '#')
-		args[0].erase(0, 1);
 	if (args[args.size() - 1][0] == ':')
 		args[args.size() - 1].erase(0, 1);
 	for (std::vector<std::string>::iterator it = args.begin(); it!= args.end(); it++)
@@ -103,16 +101,8 @@ void KICK(Server *serv, std::string params, int id) {
 	int kicked = -1;
 	int op = 0;
 	
-	if (args[1][0] == '#')
-		args[1].erase(0, 1);
-	if ((chan = serv->getChannelMap()[args[1]]) == NULL)
+	if ((chan = serv->getChannelMap()[args[0]]) == NULL)
 		return (send_message(serv, id, ERR_NOSUCHCHANNEL, ""));
-
-	//chan = getChan(serv->getChannelMap(), args[0]);
-	
-	// if (!chan) {
-	// 	return (send_message(serv, id, ERR_NOSUCHCHANNEL, ""));
-	// }
 	else if ((chanoper = isChanop(*exec, *chan)) == NULL) {
 		return (send_message(serv, id, ERR_CHANOPRIVSNEEDED, ""));
 	}
@@ -121,13 +111,14 @@ void KICK(Server *serv, std::string params, int id) {
 	}
 
 	std::string message = ":" + exec->getNick() + "!" +  exec->getNick() + "@" +
-	exec->getHost() + " KICK " + args[1] + " :" + why + "\r\n";
+	exec->getHost() + " KICK " + args[0] + " :" + why + "\r\n";
 	std::cout << "REPLY --- " << message;
 	sendToChan(message, *chan);
 	if (op == 0)
-		chan->getUsers()[kicked] = NULL;
+		chan->getUsers().erase(chan->getUsers().begin() + kicked);
 	else
-		chan->getChanops()[kicked] = NULL;
+		chan->getChanops().erase(chan->getChanops().begin() + kicked);
+	
 	return;
 	
 }

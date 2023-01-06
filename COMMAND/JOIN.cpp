@@ -54,6 +54,7 @@ void    JOIN(Server *server, std::string params, int id) {
             server->getChannelMap()[name]->setName(name);
             server->getChannelMap()[name]->joinChan(server->getUserMap()[id]);
             server->getChannelMap()[name]->setTopic("default");
+            server->getChannelMap()[name]->getChanops().push_back(server->getUserMap()[id]);
             std::cout << "map chan size --- " << server->getChannelMap()[name]->userList() << std::endl;
             std::string message = ":" + clients[id]->getNick() + "!" + clients[id]->getNick()  + "@" + clients[id]->getHost() + "JOIN " + ":" + name + "\r\n";
             send_chan_message(server, id, RPL_TOPIC, server->getChannelMap()[name]->getTopic(), name);

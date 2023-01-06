@@ -49,19 +49,19 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 					std::vector<User*> users = chan->getUsers();
 					for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
 					{
-						if ((*it)->getNick() == server->getUserMap()[id]->getNick())
+						if ((*it) != NULL && (*it)->getNick() == server->getUserMap()[id]->getNick())
 						{
 							for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
 							{
-								if ((*it)->getNick() == server->getUserMap()[id]->getNick())
+								if ((*it) != NULL && (*it)->getNick() == server->getUserMap()[id]->getNick())
 									;
 								else
 								{
 									std::string reply =  ":" + server->getUserMap()[id]->getNick() + "!"
 									+ server->getUserMap()[id]->getNick() + "@"
-									+ server->getUserMap()[id]->getHost() + " PRIVMSG " + "#" + *itT
+									+ server->getUserMap()[id]->getHost() + " PRIVMSG " + *itT
 									+ " " + message + "\r\n";
-									send((*it)->fd, reply.c_str(), reply.size(), MSG_DONTWAIT);
+									send((*it)->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
 								}
 							}
 							++messageCount;

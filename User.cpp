@@ -31,6 +31,10 @@ bool const &User::getRegistered(void) const {return (_registered);}
 
 void		User::setRegistered(void) {_registered = true;}
 
+void        User::setId(int id) {_id = id;}
+
+int const   &User::getId(void) const {return _id;}
+
 void        User::setMode(char flag, bool add){
 	if (add) {
 		if (flag == 'o')

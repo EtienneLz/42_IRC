@@ -40,6 +40,13 @@ void	Channel::leaveChan(std::string oldUser) {
 	_chanUsers.erase(toFind);
 }
 
+std::string			Channel::userList(void) {
+	std::string ret = "";
+	for (std::vector<User *>::iterator it = _chanUsers.begin(); it != _chanUsers.end(); it++)
+		ret += (*it)->getNick() + " ";
+	return ret;
+}
+
 std::vector<User *> Channel::getUsers() {
 	return _chanUsers;
 }

@@ -40,4 +40,6 @@ void    user_cmd(Server *server, std::string params, int id) {
     send_message(server, id, RPL_YOURHOST, "");
     send_message(server, id, RPL_CREATED, "");
     send_message(server, id, RPL_MYINFO, "");
+    // std::string message = ":0.0.0.0 433 * plouf :Nickname is already in use\r\n";
+    // send(id, message.c_str(), message.length(), MSG_DONTWAIT);
 }

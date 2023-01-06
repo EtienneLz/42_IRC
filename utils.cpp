@@ -33,7 +33,7 @@ std::string mode_str(Server *server, int id_cli) {
     return ret;
 }
 
-void    send_message(Server *server, int id_cli, int code, std::string str) {
+void    send_message(Server *server, int id_cli, int code, std::string str) {    
     std::string realCode;
     std::stringstream ss;
     ss << code;
@@ -53,6 +53,7 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
         message += " " + server->getUserMap()[id_cli]->getNick() + " ";
 
     switch (code) {
+
         // REPLIES
         case RPL_WELCOME:
             message += ":Welcome to our IRC server " + server->getUserMap()[id_cli]->getNick(); break;
@@ -66,6 +67,10 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
             message += mode_str(server, id_cli); break;
         case RPL_YOUREOPER:
             message += ":You are now an IRC operator"; break;
+        case RPL_NOTOPIC:
+            message += str + " :No topic is set"; break;
+        case RPL_TOPIC:
+            message += str + " :" /*+ <topic>*/; break;
 
         // ERRORS
         case ERR_NONICKNAMEGIVEN:
@@ -92,12 +97,49 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
             message += ":The user is not on the channel"; break;
         case ERR_CHANOPRIVSNEEDED:
             message += ":You need channel operator privileges to use this command"; break;
-        case ERR_NOSUCHCHANNEL:
-            message += ":This channel doesn't exist"; break;
         case ERR_NOPRIVILEGES:
             message += ":You need operator privileges to use this command"; break;
         case ERR_NOSUCHNICK:
             message += ":This nickname doesn exist"; break;
+        case ERR_NOSUCHCHANNEL:
+            message += str + " :No such channel"; break;
+    }
+
+    message += "\r\n";
+    std::cout << "REPLY --- " << message << std::endl;
+    send(id_cli, message.c_str(), message.length(), MSG_DONTWAIT);
+}
+
+void    send_chan_message(Server *server, int id_cli, int code, std::string str, std::string chan) {    
+    std::string realCode;
+    std::stringstream ss;
+    ss << code;
+    std::string codeStr = ss.str();
+
+    if (code < 10)
+        realCode = std::string(2, '0').append(codeStr);
+    else if (code < 100)
+        realCode = std::string(1, '0').append(codeStr);
+    else
+        realCode = codeStr;
+
+    std::string message = ":" + server->getHostname() + " " + realCode;
+    if (server->getUserMap()[id_cli]->getNick().empty())
+        message += " * ";
+    else
+        message += " " + server->getUserMap()[id_cli]->getNick() + " ";
+
+    switch (code) {
+
+        // REPLIES
+        case RPL_NOTOPIC:
+            message += chan + " :No topic is set"; break;
+        case RPL_TOPIC:
+            message += chan + " :" + str; break;
+
+        // ERRORS
+        case ERR_NOSUCHCHANNEL:
+            message += chan + " :No such channel"; break;
     }
 
     message += "\r\n";

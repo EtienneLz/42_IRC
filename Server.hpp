@@ -18,8 +18,9 @@
 #include <map>
 #include <vector>
 #include "User.hpp"
-#include "COMMAND/command.hpp"
 #include "Channel.hpp"
+#include "COMMAND/command.hpp"
+
 
 
 //#define PORT 12345
@@ -33,7 +34,7 @@ public:
 	typedef std::pair<int, User*>	pClient;
 	typedef mClient::iterator		iterator;
 	typedef std::pair<std::string, Channel*>	pChannel;
-	typedef std::map<std::string, Channel*> mChannel;
+	typedef std::map<std::string, Channel*>		mChannel;
 	// typedef void (*FPTR)(Server, std::string, int);
 
 private:
@@ -49,7 +50,7 @@ private:
 	std::string			_opPwd;
 	std::map<std::string, void(*)(Server*, std::string, int)> _commands;
 	mChannel			_channels;
-	
+
 	Server();
 public:
 	Server(int port, std::string pwd);

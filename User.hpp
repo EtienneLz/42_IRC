@@ -19,6 +19,7 @@ protected:
     std::string _host;
     bool        _operator;
     bool        _registered;
+    int         _id;
     t_mode      _mode;
 	
 public:
@@ -48,6 +49,9 @@ public:
 
     void        setMode(char flag, bool add);
     bool const  &getMode(char flag) const;
+
+    void        setId(int id);
+    int const   &getId(void) const;
 };
 
 std::ostream& operator<<(std::ostream& output, const User &user);

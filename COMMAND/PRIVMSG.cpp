@@ -41,7 +41,7 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 		for (std::vector<std::string>::iterator itT = msgTargets.begin(); itT != msgTargets.end(); itT++)
 		{
 			++targetCount;
-			if (itT.base()->find('#') != std::string::npos)
+			if (itT.base()->find('#', 0) != std::string::npos)
 			{
 				if (server->getChannelMap()[*itT])
 				{

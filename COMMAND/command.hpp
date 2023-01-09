@@ -20,6 +20,7 @@ void	PRIVMSG(Server *server, std::string params, int id);
 void	KICK(Server *serv, std::string params, int id);
 void	KILL(Server *serv, std::string params, int id);
 void    JOIN(Server *server, std::string params, int id);
+void	PART(Server *server, std::string params, int id);
 
 // void	EXIT(Server server, std::string params, int id) { QUIT(Server server, std::string params, int id); }
 

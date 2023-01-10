@@ -14,6 +14,10 @@ Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _h
 	_commands["USER"] = user_cmd;
 	_commands["PING"] = PING;
 	_commands["PRIVMSG"] = PRIVMSG;
+	_commands["TOPIC"] = TOPIC;
+	_commands["NAMES"] = NAMES;
+
+	_channels["init"] = new Channel;
 
 	int on = 1;
 	_addrlen = sizeof(_address);

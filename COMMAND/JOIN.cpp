@@ -28,15 +28,12 @@ void    JOIN(Server *server, std::string params, int id) {
         }
 
         for (mChannel::iterator iter = server->getChannelMap().begin(); iter != server->getChannelMap().end(); iter++) {
-            std::cout << "ITER" << std::endl;
             if (iter->first == name) {
-                std::cout << "COUSCOUS" << std::endl;
                 exist = true;
             }
         }
 
         if (exist) {
-            std::cout << "IM HERE" << std::endl;
             server->getChannelMap()[name]->joinChan(server->getUserMap()[id]);
             std::vector<User *> chanUsers = server->getChannelMap()[name]->getUsers();
             std::string message = ":" + clients[id]->getNick() + "!" + clients[id]->getNick()  + "@" + clients[id]->getHost() + " JOIN " + ":" + name + "\r\n";
@@ -53,15 +50,14 @@ void    JOIN(Server *server, std::string params, int id) {
             message = ":" + server->getHostname() + " 353 " + server->getUserMap()[id]->getNick() + " ";
             message += "= " + name + ":" + server->getChannelMap()[name]->userList();
             send(id, message.c_str(), message.length(), MSG_DONTWAIT);
+            NAMES(server, name, id);
             send_chan_message(server, id, RPL_ENDOFNAMES, "", name);
         }
         else {
-            std::cout << "TA MERE" << std::endl;
             server->getChannelMap()[name] = new Channel;
             server->getChannelMap()[name]->setOwner(server->getUserMap()[id]);
             server->getChannelMap()[name]->setName(name);
             server->getChannelMap()[name]->joinChan(server->getUserMap()[id]);
-            server->getChannelMap()[name]->setTopic("");
             std::cout << "map chan size --- " << server->getChannelMap()[name]->userList() << std::endl;
             std::string message = ":" + clients[id]->getNick() + "!" + clients[id]->getNick()  + "@" + clients[id]->getHost() + "JOIN " + ":" + name + "\r\n";
             send_chan_message(server, id, RPL_NOTOPIC, "", name);

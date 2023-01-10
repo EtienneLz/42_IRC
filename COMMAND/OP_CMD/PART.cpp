@@ -40,22 +40,17 @@ void	PART(Server *server, std::string params, int id) {
 			{
 				if ((*itU)->getNick() == server->getUserMap()[id]->getNick())
 				{
+					server->getChannelMap()[name]->leaveChan((*itU)->getNick());
 					for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
 					{
-						if ((*it)->getNick() == server->getUserMap()[id]->getNick())
-							;
-						else
-						{
-							if (message.size() == 0)
-								message = "Bye evryone !";
-							std::string reply = ":" + server->getUserMap()[id]->getNick() + "!"
-								+ server->getUserMap()[id]->getNick() + "@"
-								+ server->getUserMap()[id]->getHost() + " PART " + name + " "
-								+ message + "\r\n";
-							send((*it)->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
-						}
+						if (message.size() == 0)
+							message = "Bye evryone !";
+						std::string reply = ":" + server->getUserMap()[id]->getNick() + "!"
+							+ server->getUserMap()[id]->getNick() + "@"
+							+ server->getUserMap()[id]->getHost() + " PART " + name + " "
+							+ message + "\r\n";
+						send((*it)->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
 					}
-					server->getChannelMap()[name]->leaveChan((*itU)->getNick());
 				}
 			}
 			if (itU == users.end())

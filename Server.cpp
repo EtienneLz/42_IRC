@@ -16,6 +16,7 @@ Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _h
 	_commands["PRIVMSG"] = PRIVMSG;
 	_commands["TOPIC"] = TOPIC;
 	_commands["NAMES"] = NAMES;
+	_commands["PART"] = PART;
 
 	_channels["init"] = new Channel;
 
@@ -66,7 +67,7 @@ void Server::selectLoop() {
 	sockaddr_in *cliAddress;
 	sockaddr_storage address;
 	socklen_t addrlen = sizeof(address);
-	
+
 
 	// select() loop
 	while (TRUE) {

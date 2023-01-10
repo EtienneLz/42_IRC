@@ -11,12 +11,13 @@ SRCS = main1.cpp \
 		COMMAND/JOIN.cpp \
 		COMMAND/TOPIC.cpp \
 		COMMAND/NAMES.cpp \
+		COMMAND/OP_CMD/PART.cpp \
 		COMMAND/OP_CMD/MODE.cpp \
 		COMMAND/OP_CMD/OPER.cpp \
 		COMMAND/OP_CMD/KILL.cpp \
 		utils.cpp \
 		Channel.cpp
-		
+
 
 OBJS = ${SRCS:.cpp=.o}
 

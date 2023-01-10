@@ -22,17 +22,20 @@ public:
 
 	std::string			getName();
 	std::string			getTopic();
+	std::string			getLastTopicChanger();
 	std::string			getOwner();
 
 	//SETTER
 	void				setName(std::string name);
 	void				setTopic(std::string title);
+	void				setLastTopicChanger(std::string nick);
 	void				setOwner(User *owner);
 	
 
 private:
 	std::string			_name;
 	std::string			_topic;
+	std::string			_lastTopicChanger;
 	User				*_owner;
 
 	std::vector<User *>	_chanops;

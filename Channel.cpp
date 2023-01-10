@@ -1,19 +1,12 @@
 # include "Channel.hpp"
 
-Channel::Channel () {}
-
-Channel::~Channel () {
-	// if (!_chanops.empty()) {
-	// 	for (iter it = _chanops.begin(); it != _chanops.end(); it ++) {
-	// 		it
-	// 	}
-	// }
-	// if (!_users.empty()) {
-	// 	for (iter it = _users.begin(); it != _users.end(); it ++) {
-	// 		it->erase();
-	// 	}
-	// }
+Channel::Channel () {
+	_topic = "";
+	_name = "";
+	_lastTopicChanger = "";
 }
+
+Channel::~Channel () {}
 
 void	Channel::joinChan(User *newUser) {
 	iter toFind;
@@ -46,7 +39,7 @@ void	Channel::leaveChan(std::string oldUser) {
 std::string			Channel::userList(void) {
 	std::string ret = "";
 	for (std::vector<User *>::iterator it = _chanUsers.begin(); it != _chanUsers.end(); it++)
-		ret += (*it)->getNick() + " ";
+		ret += " ~" + (*it)->getNick();
 	return ret;
 }
 
@@ -66,6 +59,10 @@ std::string Channel::getTopic() {
 	return _topic;
 }
 
+std::string Channel::getLastTopicChanger() {
+	return _lastTopicChanger;
+}
+
 void		Channel::setName(std::string name) {
 	_name = name;
 }
@@ -76,4 +73,8 @@ void		Channel::setOwner(User *owner) {
 
 void	Channel::setTopic(std::string title) {
 	_topic = title;
+}
+
+void	Channel::setLastTopicChanger(std::string nick) {
+	_lastTopicChanger = nick;
 }

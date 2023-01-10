@@ -67,10 +67,6 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
             message += mode_str(server, id_cli); break;
         case RPL_YOUREOPER:
             message += ":You are now an IRC operator"; break;
-        case RPL_NOTOPIC:
-            message += str + " :No topic is set"; break;
-        case RPL_TOPIC:
-            message += str + " :" /*+ <topic>*/; break;
 
         // ERRORS
         case ERR_NONICKNAMEGIVEN:
@@ -136,10 +132,18 @@ void    send_chan_message(Server *server, int id_cli, int code, std::string str,
             message += chan + " :No topic is set"; break;
         case RPL_TOPIC:
             message += chan + " :" + str; break;
+        case RPL_TOPICWHOTIME:
+            message += chan + " " + str; break;
+        case RPL_NAMREPLY:
+            message += " = " + chan + " " + str; break;
+        case RPL_ENDOFNAMES:
+            message += chan + " :End of /NAMES list"; break;
 
         // ERRORS
         case ERR_NOSUCHCHANNEL:
             message += chan + " :No such channel"; break;
+        case ERR_NOTONCHANNEL:
+            message += chan + " :You're not on that channel"; break;
     }
 
     message += "\r\n";

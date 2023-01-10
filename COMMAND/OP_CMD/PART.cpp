@@ -1,4 +1,4 @@
-#include "command.hpp"
+#include "../command.hpp"
 
 void	PART(Server *server, std::string params, int id) {
 	if (server->getUserMap()[id]->getMode('r') == true)

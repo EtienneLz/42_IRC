@@ -99,6 +99,8 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
             message += ":This nickname doesn exist"; break;
         case ERR_NOSUCHCHANNEL:
             message += str + " :No such channel"; break;
+        case RPL_KILLDONE:
+            message += str + " :has been killed"; break;
     }
 
     message += "\r\n";

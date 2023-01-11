@@ -35,25 +35,22 @@ void	PART(Server *server, std::string params, int id) {
 		if (chan)
 		{
 			std::vector<User*> users = chan->getUsers();
-			std::vector<User*>::iterator itU = users.begin();
-			for (; itU != users.end(); itU++)
+			User *user = chan->getMapUser()[id];
+			if (user)
 			{
-				if ((*itU)->getNick() == server->getUserMap()[id]->getNick())
+				for (std::vector<User*>::iterator it = users.begin();
+					(user->getNick() == server->getUserMap()[id]->getNick())
+					&& it != users.end(); it++)
 				{
-					server->getChannelMap()[name]->leaveChan((*itU)->getNick());
-					for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
-					{
-						if (message.size() == 0)
-							message = "Bye evryone !";
-						std::string reply = ":" + server->getUserMap()[id]->getNick() + "!"
-							+ server->getUserMap()[id]->getNick() + "@"
-							+ server->getUserMap()[id]->getHost() + " PART " + name + " "
-							+ message + "\r\n";
-						send((*it)->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
-					}
+					std::string reply = ":" + server->getUserMap()[id]->getNick() + "!"
+						+ server->getUserMap()[id]->getNick() + "@"
+						+ server->getUserMap()[id]->getHost() + " PART " + name + " "
+						+ message + "\r\n";
+					send((*it)->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
 				}
+				server->getChannelMap()[name]->leaveChan(user->getNick());
 			}
-			if (itU == users.end())
+			else
 				send_message(server, id, ERR_NOTONCHANNEL, server->getUserMap()[id]->getNick());
 		}
 		else

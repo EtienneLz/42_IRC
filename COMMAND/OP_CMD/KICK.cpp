@@ -59,18 +59,18 @@ std::vector<std::string> splitArgs(std::string params, size_t end_pos) {
 }
 
 
-void	sendToChan(std::string message, Channel chan) {
-	std::vector<User*> vec_users = chan.getUsers();
-	std::vector<User*> vec_chanops = chan.getChanops();
-	for (std::vector<User*>::iterator it = vec_users.begin(); it!= vec_users.end(); it++) {
-		if ((*it) != NULL)
-			send((*it)->fd, message.c_str(), message.length(), MSG_DONTWAIT);
-	}
-	for (std::vector<User*>::iterator it = vec_chanops.begin(); it!= vec_chanops.end(); it++) {
-		if ((*it) != NULL)
-			send((*it)->fd, message.c_str(), message.length(), MSG_DONTWAIT);
-		}
-}
+// void	sendToChan(std::string message, Channel chan) {
+// 	std::vector<User*> vec_users = chan.getUsers();
+// 	std::vector<User*> vec_chanops = chan.getChanops();
+// 	for (std::vector<User*>::iterator it = vec_users.begin(); it!= vec_users.end(); it++) {
+// 		if ((*it) != NULL)
+// 			send((*it)->fd, message.c_str(), message.length(), MSG_DONTWAIT);
+// 	}
+// 	for (std::vector<User*>::iterator it = vec_chanops.begin(); it!= vec_chanops.end(); it++) {
+// 		if ((*it) != NULL)
+// 			send((*it)->fd, message.c_str(), message.length(), MSG_DONTWAIT);
+// 		}
+// }
 
 void KICK(Server *serv, std::string params, int id) {
 	User *exec;
@@ -90,11 +90,6 @@ void KICK(Server *serv, std::string params, int id) {
 	if (args.size() < 2)
 		return (send_message(serv, id, ERR_NEEDMOREPARAMS, ""));
 
-	std::string why = "";
-	if (args.size() == 3)
-		why = args[2];
-	else
-		why = "";
 
 	Channel	*chan = NULL;
 	User *chanoper = NULL;
@@ -110,15 +105,35 @@ void KICK(Server *serv, std::string params, int id) {
 		return (send_message(serv, id, ERR_NOTONCHANNEL, ""));
 	}
 
-	std::string message = ":" + exec->getNick() + "!" +  exec->getNick() + "@" +
-	exec->getHost() + " KICK " + args[0] + " :" + why + "\r\n";
-	std::cout << "REPLY --- " << message;
-	sendToChan(message, *chan);
-	if (op == 0)
-		chan->getUsers().erase(chan->getUsers().begin() + kicked);
+	std::string why = "";
+	if (args.size() == 3)
+		why = args[2];
 	else
-		chan->getChanops().erase(chan->getChanops().begin() + kicked);
+		why = "";
+	int id_kick;
+	if (op == 0)
+		id_kick = chan->getUsers()[kicked]->getId();
+	else
+		id_kick = chan->getChanops()[kicked]->getId();
+	std::cout << "ID KICK = " << id_kick << std::endl;
+
+	std::string parts = args[0];
+	if (!why.empty())
+		parts = parts + " :" + why;
+
+
+	// std::string message = ":" + exec->getNick() + "!" +  exec->getNick() + "@" +
+	// exec->getHost() + " KICK " + args[1] + " :" + why + "\r\n";
+	// std::cout << "REPLY --- " << message;
+	// sendToChan(message, *chan);
+
+	PART(serv, parts, id_kick);
+
+	// if (op == 0)
+	// 	chan->getUsers().erase(chan->getUsers().begin() + kicked);
+	// else
+	// 	chan->getChanops().erase(chan->getChanops().begin() + kicked);
 	
-	return;
+	// return;
 	
 }

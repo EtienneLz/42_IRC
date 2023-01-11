@@ -47,27 +47,27 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 				{
 					Channel *chan = server->getChannelMap()[*itT];
 					std::vector<User*> users = chan->getUsers();
-					for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
+					if (chan->getMapUser()[id])
 					{
-						if ((*it)->getNick() == server->getUserMap()[id]->getNick())
+						for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
 						{
-							for (std::vector<User*>::iterator it = users.begin(); it != users.end(); it++)
+							if ((*it)->getNick() == server->getUserMap()[id]->getNick())
+								;
+							else
 							{
-								if ((*it)->getNick() == server->getUserMap()[id]->getNick())
-									;
-								else
-								{
-									std::string reply =  ":" + server->getUserMap()[id]->getNick() + "!"
-									+ server->getUserMap()[id]->getNick() + "@"
-									+ server->getUserMap()[id]->getHost() + " PRIVMSG " + *itT
-									+ " " + message + "\r\n";
-									send((*it)->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
-								}
+								std::string reply =  ":" + server->getUserMap()[id]->getNick() + "!"
+								+ server->getUserMap()[id]->getNick() + "@"
+								+ server->getUserMap()[id]->getHost() + " PRIVMSG " + *itT
+								+ " " + message + "\r\n";
+								send((*it)->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
 							}
-							++messageCount;
 						}
+						++messageCount;
 					}
+					send_message(server, id, ERR_CANNOTSENDTOCHAN, server->getUserMap()[id]->getNick());
 				}
+				else
+					send_message(server, id, ERR_CANNOTSENDTOCHAN, *itT);
 			}
 			else
 			{
@@ -75,7 +75,7 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 				{
 					if (it->second->getNick() == *itT)
 					{
-						if (message[0] == ':')
+						if (message.size() > 1)
 						{
 							std::string reply = ":" + server->getUserMap()[id]->getNick() + "!"
 							+ server->getUserMap()[id]->getNick() + "@"

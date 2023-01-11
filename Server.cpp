@@ -17,8 +17,10 @@ Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _h
 	_commands["TOPIC"] = TOPIC;
 	_commands["NAMES"] = NAMES;
 	_commands["PART"] = PART;
-
 	_channels["init"] = new Channel;
+
+	time_t now = time(0);
+	_date = ctime(&now);
 
 	int on = 1;
 	_addrlen = sizeof(_address);
@@ -211,6 +213,8 @@ int Server::getKilled(void) const {return (_killed);}
 void		Server::setKilled(int dead) {
 	_killed = dead;
 }
+
+const std::string &Server::getDate() const {return (_date);}
 
 std::ostream& operator<<(std::ostream& output, const Server &sock) {
 	output << "port = " << sock.getPort() << std::endl;

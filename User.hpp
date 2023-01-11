@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <ctime>
 
 typedef struct      s_mode {
     bool    o;
@@ -17,11 +18,12 @@ protected:
 	std::string _username;
     std::string _realname;
     std::string _host;
+    std::string _date;
     bool        _operator;
     bool        _registered;
     int         _id;
     t_mode      _mode;
-	
+
 public:
     User();
     ~User();
@@ -52,6 +54,8 @@ public:
 
     void        setId(int id);
     int const   &getId(void) const;
+
+    const std::string	&getDate() const;
 };
 
 std::ostream& operator<<(std::ostream& output, const User &user);

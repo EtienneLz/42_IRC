@@ -20,8 +20,7 @@
 #include "User.hpp"
 #include "Channel.hpp"
 #include "COMMAND/command.hpp"
-
-
+#include <ctime>
 
 //#define PORT 12345
 #define TRUE 1
@@ -39,6 +38,7 @@ public:
 
 private:
 	struct sockaddr_in	_address;	// sd address
+	std::string			_date; // date of creation of the server
 	int					_sd;		// server socket descriptor
 	int					_addrlen;	//= sizeof(_address);
 	int					_port;		// port used for connection
@@ -69,17 +69,17 @@ public:
 	void checkCmd();
 
 	// GET
-	int getPort() const;
-	const std::string 	&getPwd() const;
-
+	int					getPort() const;
+	const std::string	&getPwd() const;
+	const std::string	&getDate() const;
 	const std::string	&getHostname();
 	void				setHostname(std::string name);
 	const int			&getCount();
-	mClient 			&getUserMap();
+	mClient				&getUserMap();
 	const std::string	&getOpPwd();
 	mChannel			&getChannelMap();
-	void        		setKilled(int dead);
-    int		 			getKilled(void) const;
+	void				setKilled(int dead);
+	int					getKilled(void) const;
 };
 
 std::ostream& operator<<(std::ostream& output, const Server &sock);

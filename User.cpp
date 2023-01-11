@@ -6,6 +6,8 @@ User::User(): _registered(false) {
 	_mode.o = false;
 	_mode.r = true;
 	_mode.i = false;
+	time_t now = time(0);
+	_date = ctime(&now);
 }
 
 User::~User() {}
@@ -65,6 +67,8 @@ bool const	&User::getMode(char flag) const {
 	}
 
 bool const &User::getOperator(void) const {return (_operator);}
+
+const std::string &User::getDate() const {return (_date);}
 
 std::ostream& operator<<(std::ostream& output, const User &user) {
 	output << "\n******************************INFO*********************************\n";

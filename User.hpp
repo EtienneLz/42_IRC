@@ -25,7 +25,7 @@ protected:
 public:
     User();
     ~User();
-    int fd;
+
 	int num_conn;
 	int count;
 

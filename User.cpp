@@ -1,7 +1,6 @@
 #include "User.hpp"
 
 User::User(): _registered(false) {
-	fd = -1;
 	num_conn = 0;
 	count = -1;
 	_mode.o = false;

@@ -32,14 +32,27 @@ void	Channel::leaveChan(std::string oldUser) {
 			found = true;
 			break ;
 		}
-	if (found)
+	if (found) {
 		_chanUsers.erase(toFind);
+		for (std::vector<User *>::iterator iter = _chanops.begin(); iter != _chanops.end(); iter++) {
+        	if ((*iter)->getNick() == oldUser)
+            	_chanops.erase(iter);
+    }
+	}
 }
 
 std::string			Channel::userList(void) {
 	std::string ret = "";
-	for (std::vector<User *>::iterator it = _chanUsers.begin(); it != _chanUsers.end(); it++) {
-		ret += (*it)->getNick() + " ";
+	bool op;
+	for (std::vector<User *>::iterator iter = _chanUsers.begin(); iter != _chanUsers.end(); iter++) {
+		op = false;
+		for (std::vector<User *>::iterator it = _chanops.begin(); it != _chanops.end(); it++) {
+			if ((*it)->getNick() == (*iter)->getNick() || (*iter)->getOperator())
+				op = true;
+		}
+		if (op)
+			ret += "@";
+		ret += (*iter)->getNick() + " ";
 	}
 	ret = ret.substr(0, ret.size() - 1);
 	return ret;
@@ -86,8 +99,6 @@ std::map<int, User *>	Channel::getMapUser()
 	std::map<int, User *> map;
 
 	for (std::vector<User*>::iterator it = _chanUsers.begin(); it != _chanUsers.end(); ++it)
-	{
 		map.insert(std::make_pair((*it)->getId(), *it));
-	}
 	return (map);
 }

@@ -13,7 +13,7 @@ void	PING(Server *server, std::string params, int id) {
     while (std::getline(ss, s, ' '))
         parts.push_back(s);
 
-    std::string ret = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getNick()  + "@" + server->getUserMap()[id]->getHost() + " PONG " + ":"  + parts[0] + " \r\n";
+    std::string ret = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " PONG " + ":"  + parts[0] + " \r\n";
     std::cout << "REPLY --- " << ret << std::endl;
     send(id, ret.c_str(), ret.length(), MSG_DONTWAIT);
 }

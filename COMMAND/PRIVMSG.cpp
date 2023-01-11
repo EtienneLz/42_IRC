@@ -78,7 +78,7 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 						if (message[0] == ':')
 						{
 							std::string reply = ":" + server->getUserMap()[id]->getNick() + "!"
-							+ server->getUserMap()[id]->getNick() + "@"
+							+ server->getUserMap()[id]->getUsername() + "@"
 							+ server->getUserMap()[id]->getHost() + " PRIVMSG " + *itT + " "
 							+ message + "\r\n";
 							send(it->first, reply.c_str(), reply.size(), MSG_DONTWAIT);

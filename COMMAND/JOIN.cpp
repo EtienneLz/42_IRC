@@ -47,9 +47,7 @@ void    JOIN(Server *server, std::string params, int id) {
             else
                 send_chan_message(server, id, RPL_NOTOPIC, "", name);
 
-            message = ":" + server->getHostname() + " 353 " + server->getUserMap()[id]->getNick() + " ";
-            message += "= " + name + " :" + server->getChannelMap()[name]->userList() + "\r\n";
-            send(id, message.c_str(), message.length(), MSG_DONTWAIT);
+            NAMES(server, name, id);
         
             send_chan_message(server, id, RPL_ENDOFNAMES, "", name);
         }
@@ -66,11 +64,9 @@ void    JOIN(Server *server, std::string params, int id) {
             
             send_chan_message(server, id, RPL_NOTOPIC, "", name);
 
-            message = ":" + server->getHostname() + " 353 " + server->getUserMap()[id]->getNick() + " ";
-            message += "= " + name + " :" + server->getChannelMap()[name]->userList() + "\r\n";
-            send(id, message.c_str(), message.length(), MSG_DONTWAIT);
+            NAMES(server, name, id);
 
-            send_message(server, id, RPL_ENDOFNAMES, "");
+            send_chan_message(server, id, RPL_ENDOFNAMES, "", name);
         }
     }
     return ;

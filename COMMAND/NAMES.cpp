@@ -31,15 +31,11 @@ void    NAMES(Server *server, std::string params, int id) {
         if (!exist)
             send_message(server, id, RPL_ENDOFNAMES, "");
         else if (!check) {
-            std::string message = ":" + server->getHostname() + " 353 " + server->getUserMap()[id]->getNick() + " " + *ite + " :";
-            message += server->getChannelMap()[parts[0]]->userList();
+            std::string message = ":" + server->getHostname() + " 353 " + server->getUserMap()[id]->getNick() + " ";
+            message += "= " + *ite + " :" + server->getChannelMap()[parts[0]]->userList() + "\r\n";
+            send(id, message.c_str(), message.length(), MSG_DONTWAIT);
             send(id, message.c_str(), message.length(), MSG_DONTWAIT);
             send_message(server, id, RPL_ENDOFNAMES, "");
-            // for (std::vector<User*>::iterator it = server->getChannelMap()[parts[0]]->getUsers().begin(); it != server->getChannelMap()[parts[0]]->getUsers().end(); ++it) {
-            //     message =  ":" + server->getHostname() + " 353 " + server->getUserMap()[id]->getNick() + " " + *ite + " :" + (*it)->getNick();
-            //     std::cout << "DEBUG ----- " << message << std::endl;
-            //     send(id, message.c_str(), message.length(), MSG_DONTWAIT);
-            // }
         }
     }
 }

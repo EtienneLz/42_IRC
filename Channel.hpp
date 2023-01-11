@@ -3,10 +3,12 @@
 
 # include "User.hpp"
 # include <vector>
+# include <map>
+
 class Server;
 
 class Channel {
-	
+
 	typedef std::vector<User*>::iterator iter;
 public:
 	Channel ();
@@ -17,20 +19,21 @@ public:
 	std::string			userList(void);
 
 	// GETTER
-	std::vector<User *> &getUsers();
-	std::vector<User *> &getChanops();
+	std::vector<User *>		&getUsers();
+	std::vector<User *>		&getChanops();
+	std::map<int, User *>	getMapUser();
 
-	std::string			getName();
-	std::string			getTopic();
-	std::string			getLastTopicChanger();
-	std::string			getOwner();
+	std::string				getName();
+	std::string				getTopic();
+	std::string				getLastTopicChanger();
+	std::string				getOwner();
 
 	//SETTER
-	void				setName(std::string name);
-	void				setTopic(std::string title);
-	void				setLastTopicChanger(std::string nick);
-	void				setOwner(User *owner);
-	
+	void					setName(std::string name);
+	void					setTopic(std::string title);
+	void					setLastTopicChanger(std::string nick);
+	void					setOwner(User *owner);
+
 
 private:
 	std::string			_name;
@@ -41,7 +44,7 @@ private:
 	std::vector<User *>	_chanops;
 	std::vector<User *>	_chanUsers;
 	// std::vector<char>			_modes;
-	
+
 };
 
 # include "Server.hpp"

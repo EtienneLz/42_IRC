@@ -46,6 +46,7 @@ void	PART(Server *server, std::string params, int id) {
 						+ server->getUserMap()[id]->getNick() + "@"
 						+ server->getUserMap()[id]->getHost() + " PART " + name + " "
 						+ message + "\r\n";
+					std::cout << "REPLY --- " << reply << std::endl;
 					send((*it)->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
 				}
 				server->getChannelMap()[name]->leaveChan(user->getNick());

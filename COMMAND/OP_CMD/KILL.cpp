@@ -4,12 +4,12 @@
 bool	isUser (Server *serv, std::string user, std::string why, int id_exec) {
 	for (std::map<int, User*>::iterator it = serv->getUserMap().begin(); it!= serv->getUserMap().end(); it++) {
 		if (user.compare(it->second->getNick()) == 0) {
-			std::string exec = serv->getUserMap()[id_exec]->getNick();
-			std::string message = ":" + exec + "!" +  exec + "@" + serv->getUserMap()[id_exec]->getHost() +
-			" KILL " + user + " :" + why + "\r\n";
+			User *exec = serv->getUserMap()[id_exec];
+			std::string message = ":" + exec->getNick() + "!" +  exec->getUsername() + "@" + serv->getUserMap()[id_exec]->getHost() +
+			" KILL " + user + " " + why + "\r\n";
 			std::cout << "REPLY --- " << message;
 			send(it->first, message.c_str(), message.length(), MSG_DONTWAIT);
-			// send_message() to operator ?
+			send_message(serv, exec->getId(), RPL_KILLDONE, user);
 			serv->setKilled(it->first);
 			return TRUE;
 		}
@@ -24,10 +24,9 @@ std::vector<std::string> splitArgsKill(std::string params, size_t end_pos) {
 	while ((pos = params.find(' ')) < end_pos) {
 			args.push_back(params.substr(0, pos));
 			params = params.substr(pos + 1);
+			end_pos -= (pos + 1);
 		}
 		args.push_back(params);
-	if (args[args.size() - 1][0] == ':')
-		args[args.size() - 1].erase(0, 1);
 	return args;
 }
 
@@ -53,5 +52,4 @@ void KILL(Server *serv, std::string params, int id) {
 		return (send_message(serv, id, ERR_NOSUCHNICK, ""));
 	}
 	return;
-	
 }

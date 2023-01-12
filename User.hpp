@@ -19,7 +19,6 @@ protected:
     std::string _realname;
     std::string _host;
     std::string _date;
-    bool        _operator;
     bool        _registered;
     int         _id;
     t_mode      _mode;
@@ -45,9 +44,6 @@ public:
 
     void        setRegistered(void);
     bool const &getRegistered(void) const;
-
-    void        setOperator(void);
-    bool const &getOperator(void) const;
 
     void        setMode(char flag, bool add);
     bool const  &getMode(char flag) const;

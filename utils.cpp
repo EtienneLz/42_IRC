@@ -60,9 +60,7 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
         case RPL_YOURHOST:
             message += ":Your host is " + server->getHostname() + ", running version Alpha 0.1"; break;
         case RPL_CREATED:
-        {
             message += ":This server was created " + server->getDate(); break;
-        }
         case RPL_MYINFO:
             message += server->getHostname() + " Alpha 0.4 " + " Trucs a rajouter"; break;
         case RPL_UMODEIS:
@@ -146,8 +144,12 @@ void    send_chan_message(Server *server, int id_cli, int code, std::string str,
         // ERRORS
         case ERR_NOSUCHCHANNEL:
             message += chan + " :No such channel"; break;
+        case ERR_USERNOTINCHANNEL:
+            message += str + " " + chan + " :They aren't on that channel"; break;
         case ERR_NOTONCHANNEL:
             message += chan + " :You're not on that channel"; break;
+        case ERR_UNKNOWNMODE:
+            message += str + " :is unknown mode char to me for " + chan; break;
     }
 
     message += "\r\n";

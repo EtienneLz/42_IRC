@@ -66,8 +66,6 @@ bool const	&User::getMode(char flag) const {
 			return _mode.r;
 	}
 
-bool const &User::getOperator(void) const {return (_operator);}
-
 const std::string &User::getDate() const {return (_date);}
 
 std::ostream& operator<<(std::ostream& output, const User &user) {

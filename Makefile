@@ -9,6 +9,7 @@ SRCS = main1.cpp \
 		COMMAND/PING.cpp \
 		COMMAND/PRIVMSG.cpp \
 		COMMAND/JOIN.cpp \
+		COMMAND/QUIT.cpp \
 		COMMAND/TOPIC.cpp \
 		COMMAND/NAMES.cpp \
 		COMMAND/OP_CMD/PART.cpp \

@@ -23,6 +23,7 @@ void    JOIN(Server *server, std::string params, int id);
 void    TOPIC(Server *server, std::string params, int id);
 void    NAMES(Server *server, std::string params, int id);
 void	PART(Server *server, std::string params, int id);
+void	QUIT(Server *server, std::string params, int id);
 
 // void	EXIT(Server server, std::string params, int id) { QUIT(Server server, std::string params, int id); }
 

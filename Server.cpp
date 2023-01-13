@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP") {
+Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP"), _keep("") {
 	_commands["KICK"] = KICK;
 	_commands["KILL"] = KILL;
 	_commands["kill"] = KILL;
@@ -132,9 +132,6 @@ void Server::selectLoop() {
 					break;
 				}
 				std::cout << *_clients[curr_sd];
-				//sending msg back
-				// send(curr_sd, buf, strlen(buf), 0);
-				//send(curr_sd, buf, strlen(buf), MSG_DONTWAIT);
 			}
 		}
 	}
@@ -143,14 +140,16 @@ void Server::selectLoop() {
 
 void Server::receiveMessage(std::string buf, int id) {
 	std::string s;
-	std::string cmd;
+	std::string cmd; 
 	std::string args;
 	std::size_t pos;
 	std::size_t poscmd;
+	
+	_keep += buf;
 
-	while ((pos = buf.find("\r\n")) != std::string::npos) {
-		s = buf.substr(0, pos);
-		buf.erase(0, pos + 2);
+	while ((pos = _keep.find("\r\n")) != std::string::npos) {
+		s = _keep.substr(0, pos);
+		_keep.erase(0, pos + 2);
 		if ((poscmd = s.find(' ')) != std::string::npos) {
 			cmd = s.substr(0, poscmd);
 			args = s.substr(poscmd + 1);
@@ -165,7 +164,6 @@ void Server::receiveMessage(std::string buf, int id) {
 		else
 			std::cout << "Command does not exist...\n";
 	}
-
 }
 
 void Server::readData() {

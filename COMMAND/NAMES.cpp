@@ -34,7 +34,6 @@ void    NAMES(Server *server, std::string params, int id) {
             std::string message = ":" + server->getHostname() + " 353 " + server->getUserMap()[id]->getNick() + " ";
             message += "= " + *ite + " :" + server->getChannelMap()[parts[0]]->userList() + "\r\n";
             send(id, message.c_str(), message.length(), MSG_DONTWAIT);
-            send(id, message.c_str(), message.length(), MSG_DONTWAIT);
             send_message(server, id, RPL_ENDOFNAMES, "");
         }
     }

@@ -1,5 +1,93 @@
 #include "../command.hpp"
 
+void    MODE_CHAN(Server *server, std::vector<std::string> parts, int id, int nbUser) {
+    std::string message;
+    User *targetPtr;
+
+    Channel *chan = server->getChannelMap()[parts[0]];
+    if (!chan)
+        return send_chan_message(server, id, ERR_NOSUCHCHANNEL, "", parts[0]);
+
+    if ((nbUser == 1 && parts.size() < 3) || (nbUser == 2 && parts.size() < 4) || (nbUser == 3 && parts.size() < 5))
+        return send_message(server, id, ERR_NEEDMOREPARAMS, "");
+    std::map<int, User *> usermap = chan->getMapUser();
+
+    for (int i = 0; i < nbUser; i++) {
+        int target = 0;
+        for (std::map<int, User *>::iterator iter = usermap.begin(); iter != usermap.end(); iter++) {
+            if ((*iter).second->getNick() == parts[2 + i]) {
+                target = (*iter).second->getId();
+                targetPtr = (*iter).second;
+            }
+        }
+        if (target == 0)
+            return send_chan_message(server, id, ERR_USERNOTINCHANNEL, parts[2 + i], chan->getName());
+        
+        if (parts[1][2 * i] == '+') {
+            chan->getChanops().push_back(server->getUserMap()[target]);
+            message = ":" + targetPtr->getNick() + "!" + targetPtr->getUsername()  + "@" + targetPtr->getHost() + " MODE " + parts[0] + " " + targetPtr->getNick() + " +o\n\r";
+            send(targetPtr->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
+            std::cout << "REPLY CHAN --- " << message << std::endl;;
+            continue ;
+        }
+
+        else {
+            std::cout << "YOOOOO" << std::endl;
+            for (std::vector<User *>::iterator iter = chan->getChanops().begin(); iter != chan->getChanops().end(); iter++) {
+                
+                if ((*iter)->getNick() == parts[2 + i]) {
+                    chan->getChanops().erase(iter);
+                    message = ":" + targetPtr->getNick() + "!" + targetPtr->getUsername()  + "@" + targetPtr->getHost() + " MODE " + parts[0] + " " + targetPtr->getNick() + " -o\n\r";
+                    send(targetPtr->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
+                    std::cout << "REPLY CHAN --- " << message << std::endl;
+                    continue ;
+                }
+            }
+        }
+    }
+}
+
+void    MODE_USER(Server *server, std::vector<std::string> parts, int id) {
+    std::string message;
+    bool positive;
+    std::string flags;
+    
+    flags = parts[1];
+    if (flags.at(0) == '+')
+        positive = true;
+    else if (flags.at(0) == '-')
+        positive = false;
+    else {
+        send_message(server, id, ERR_UMODEUNKNOWNFLAG, "");
+        return ;
+    }
+
+    if (*parts.begin() == "*")
+        *parts.begin() = server->getUserMap()[id]->getNick();    
+
+    if (*parts.begin() != server->getUserMap()[id]->getNick()) {
+        send_message(server, id, ERR_USERSDONTMATCH, "");
+        return ;
+    }
+
+    for (std::string::iterator it = flags.begin(); it != flags.end(); it++) {
+        if (*it == 'o' && positive)
+            (void)it;
+        else if (*it == 'o' && !positive) {
+            server->getUserMap()[id]->setMode('o', false);
+        }
+        else if (*it == 'r' && positive)
+            (void)it;
+        else if (*it == 'r' && !positive)
+            server->getUserMap()[id]->setMode('r', true);
+        else if (*it == 'i' && positive)
+            server->getUserMap()[id]->setMode('i', true);
+        else if (*it == 'i' && !positive)
+            server->getUserMap()[id]->setMode('i', false);
+    }
+    send_message(server, id, RPL_UMODEIS, "");
+}
+
 void    MODE(Server *server, std::string params, int id) {
     std::vector<std::string> parts;
     std::stringstream ss(params);
@@ -15,79 +103,41 @@ void    MODE(Server *server, std::string params, int id) {
         return ;
     }
 
-    if (parts.size() == 1) {
+    if (parts.size() == 1 && parts[0][0] != '#') {
         send_message(server, id, RPL_UMODEIS, "");
         return ;
     }
-
-    bool positive;
-    std::string flags;
-    flags = *(parts.begin() + 1);
-    if (flags.at(0) == '+')
-        positive = true;
-    else if (flags.at(0) == '-')
-        positive = false;
-    else {
-        send_message(server, id, ERR_UMODEUNKNOWNFLAG, "");
+    else if (parts.size() == 1 && parts[0][0] == '#') {
         return ;
     }
 
-    Channel *chan;
-
-    if (parts[0][0] == '#') {
-        chan = server->getChannelMap()[parts[0]];
-
-    
-
-    if (chan) {
-        if (parts.size() < 3)
-            return send_message(server, id, ERR_NEEDMOREPARAMS, "");
-        std::map<int, User *> usermap = chan->getMapUser();
-        for (std::string::iterator it = flags.begin(); it != flags.end(); it++) {
-            int target = 0;
-            for (std::map<int, User *>::iterator iter = usermap.begin(); iter != usermap.end(); iter++) {
-                if ((*iter).second->getNick() == parts[2])
-                    target = (*iter).second->getId();
-            }
-            if (target == 0)
-                return send_message(server, id, ERR_UMODEUNKNOWNFLAG, "");
-            if (*it == 'o' && positive)
-                chan->getChanops().push_back(server->getUserMap()[target]);
-            else if (*it == 'o' && !positive) {
-                bool found = false;
-                for (std::vector<User *>::iterator iter = chan->getChanops().begin(); iter != chan->getChanops().end(); iter++) {
-                    if ((*iter)->getNick() == parts[2]) {
-                        found = true;
-                        chan->getChanops().erase(iter);
-                    }
+    if (parts[0][0] == '#'){
+        Channel *chan = server->getChannelMap()[parts[0]];
+        switch(parts[1].size()) {
+            case 2: {
+                if ((parts[1][0] != '+' && parts[1][0] != '-') || parts[1][1] != 'o') {
+                    std::cout << parts[1] << std::endl;
+                    return send_chan_message(server, id, ERR_UNKNOWNMODE, parts[1], chan->getName());
                 }
+                MODE_CHAN(server, parts, id, 1); break;
+            }
+            case 4:{
+                if (((parts[1][0] != '+' && parts[1][0] != '-') || parts[1][1] != 'o') || ((parts[1][2] != '+' && parts[1][2] != '-') || parts[1][3] != 'o'))
+                    return send_chan_message(server, id, ERR_UNKNOWNMODE, parts[1], chan->getName());
+                MODE_CHAN(server, parts, id, 2); break;
+            }
+            case 6: {
+                if (((parts[1][0] != '+' && parts[1][0] != '-') || parts[1][1] != 'o') || ((parts[1][2] != '+' && parts[1][2] != '-') || parts[1][3] != 'o') || ((parts[1][4] != '+' && parts[1][4] != '-') || parts[1][5] != 'o'))
+                    return send_chan_message(server, id, ERR_UNKNOWNMODE, parts[1], chan->getName());
+                MODE_CHAN(server, parts, id, 3); break;
+            }
+            default: {
+                return send_chan_message(server, id, ERR_UNKNOWNMODE, parts[1], chan->getName()); break;
             }
         }
     }
+
     else {
-    }
-    if (*parts.begin() == "*")
-        *parts.begin() = server->getUserMap()[id]->getNick();    
-
-    if (*parts.begin() != server->getUserMap()[id]->getNick()) {
-        send_message(server, id, ERR_USERSDONTMATCH, "");
-        return ;
-    }
-
-    for (std::string::iterator it = flags.begin(); it != flags.end(); it++) {
-        if (*it == 'o' && positive)
-            (void)it;
-        else if (*it == 'o' && !positive)
-            server->getUserMap()[id]->setMode('o', false);
-        else if (*it == 'r' && positive)
-            (void)it;
-        else if (*it == 'r' && !positive)
-            server->getUserMap()[id]->setMode('r', true);
-        else if (*it == 'i' && positive)
-            server->getUserMap()[id]->setMode('i', true);
-        else if (*it == 'i' && !positive)
-            server->getUserMap()[id]->setMode('i', false);
-    }
-    send_message(server, id, RPL_UMODEIS, "");
+        MODE_USER(server, parts, id);
     }
 }

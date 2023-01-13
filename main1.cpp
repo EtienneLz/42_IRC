@@ -1,7 +1,6 @@
 #include "Server.hpp"
 #include <iostream>
 
-
 int main (int argc, char **argv) {
 	if (argc != 3) {
 		std::cout << "Wrong number of argument, please do ./ircserv <port> <password>\n";

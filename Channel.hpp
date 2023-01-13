@@ -17,6 +17,7 @@ public:
 	void				joinChan(User *newUser);
 	void				leaveChan(std::string oldUser);
 	std::string			userList(void);
+	bool				isOp(int id);
 
 	// GETTER
 	std::vector<User *>		&getUsers();

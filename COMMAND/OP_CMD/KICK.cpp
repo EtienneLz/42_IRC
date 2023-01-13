@@ -24,7 +24,7 @@ User	*isChanop(User oper, Channel chan) {
 std::vector<std::string> splitArgs(std::string params, size_t end_pos) {
 	std::size_t pos;
 	std::vector<std::string> args;
-	
+
 	while ((pos = params.find(' ')) < end_pos) {
 			args.push_back(params.substr(0, pos));
 			params = params.substr(pos + 1);
@@ -66,7 +66,7 @@ void KICK(Server *serv, std::string params, int id) {
 	Channel	*chan = NULL;
 	User *chanoper = NULL;
 	int kicked = -1;
-	
+
 	if ((chan = serv->getChannelMap()[args[0]]) == NULL)
 		return (send_message(serv, id, ERR_NOSUCHCHANNEL, ""));
 	else if ((chanoper = isChanop(*exec, *chan)) == NULL) {
@@ -87,5 +87,5 @@ void KICK(Server *serv, std::string params, int id) {
 	std::cout << "REPLY --- " << message;
 
 	sendToChan(message, *chan);
-	chan->leaveChan(args[1]);	
+	chan->leaveChan(args[1]);
 }

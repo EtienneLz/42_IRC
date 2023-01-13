@@ -17,6 +17,8 @@ Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _h
 	_commands["TOPIC"] = TOPIC;
 	_commands["NAMES"] = NAMES;
 	_commands["PART"] = PART;
+	_commands["QUIT"] = QUIT;
+	_commands["INVITE"] = INVITE;
 	_channels["init"] = new Channel;
 
 	time_t now = time(0);
@@ -196,8 +198,17 @@ const int			&Server::getCount() {
 	return _count;
 }
 
-std::map<int, User*> 	&Server::getUserMap() {
+std::map<int, User*>	&Server::getUserMap() {
 	return _clients;
+}
+
+std::map<std::string, User*>	Server::getUserMapName()
+{
+	mUser map;
+
+	for (mClient::iterator it = _clients.begin(); it != _clients.end(); ++it)
+		map[(*it).second->getNick()] = (*it).second;
+	return (map);
 }
 
 const std::string		&Server::getOpPwd() {

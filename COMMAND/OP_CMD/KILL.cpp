@@ -1,12 +1,27 @@
 # include "../command.hpp"
 
+static void	leaveChan(Server *serv, std::string message, int id, User *user)
+{
+	std::string reply = ":" + serv->getUserMap()[id]->getNick() + "!" + serv->getUserMap()[id]->getUsername() + "@"
+						+ serv->getUserMap()[id]->getHost() + " QUIT " + message + " kiled by "
+						+ user->getNick() + "\r\n";
+	for (mChannel::iterator itC = serv->getChannelMap().begin();
+		 itC != serv->getChannelMap().end(); ++itC)
+	{
+		itC->second->leaveChan(serv->getUserMap()[id]->getNick());
+		for (std::vector<User*>::iterator itU = itC->second->getUsers().begin();
+			 itU != itC->second->getUsers().end(); ++itU)
+			send((*itU)->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
+	}
+}
 
 bool	isUser (Server *serv, std::string user, std::string why, int id_exec) {
 	for (std::map<int, User*>::iterator it = serv->getUserMap().begin(); it!= serv->getUserMap().end(); it++) {
 		if (user.compare(it->second->getNick()) == 0) {
 			User *exec = serv->getUserMap()[id_exec];
-			std::string message = ":" + exec->getNick() + "!" +  exec->getUsername() + "@" + serv->getUserMap()[id_exec]->getHost() +
+			std::string message = ":" + exec->getNick() + "!" + exec->getUsername() + "@" + serv->getUserMap()[id_exec]->getHost() +
 			" KILL " + user + " " + why + "\r\n";
+			leaveChan(serv, why, it->first, exec);
 			std::cout << "REPLY --- " << message;
 			send(it->first, message.c_str(), message.length(), MSG_DONTWAIT);
 			send_message(serv, exec->getId(), RPL_KILLDONE, user);

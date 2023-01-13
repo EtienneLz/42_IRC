@@ -27,7 +27,7 @@ void    NAMES(Server *server, std::string params, int id) {
         for (mChannel::iterator iter = server->getChannelMap().begin(); iter != server->getChannelMap().end(); iter++)
             if (iter->first == parts[0])
                 exist = true;
-    
+
         if (!exist)
             send_message(server, id, RPL_ENDOFNAMES, "");
         else if (!check) {

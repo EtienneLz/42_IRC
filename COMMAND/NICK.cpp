@@ -26,7 +26,17 @@ void	NICK(Server *server, std::string nick, int id) {
 		old_nick = "*";
 	server->getUserMap()[id]->setNick(nick);
 	std::string new_nick = server->getUserMap()[id]->getNick();
-	std::string message = ":" + old_nick + "!" + old_nick  + "@" + clients[id]->getHost() + " NICK " + new_nick + "\r\n";
+	std::string name = server->getUserMap()[id]->getUsername();
+	std::string message = ":" + old_nick + "!" + name  + "@" + clients[id]->getHost() + " NICK " + new_nick + "\r\n";
 	std::cout << "REPLY --- " << message;
 	send(id, message.c_str(), message.length(), MSG_DONTWAIT);
+
+	for (mChannel::iterator itC = server->getChannelMap().begin();
+		 itC != server->getChannelMap().end(); ++itC)
+		for (std::vector<User*>::iterator itU = itC->second->getUsers().begin();
+			 itU != itC->second->getUsers().end(); ++itU)
+		{
+			if (nick != (*itU)->getNick())
+				send((*itU)->getId(), message.c_str(), message.size(), MSG_DONTWAIT);
+		}
 }

@@ -102,3 +102,11 @@ std::map<int, User *>	Channel::getMapUser()
 		map.insert(std::make_pair((*it)->getId(), *it));
 	return (map);
 }
+
+bool	Channel::isOp(int id)
+{
+	for (std::vector<User *>::iterator it = _chanops.begin(); it != _chanops.end(); ++it)
+		if ((*it)->getId() == id)
+			return (true);
+	return (false);
+}

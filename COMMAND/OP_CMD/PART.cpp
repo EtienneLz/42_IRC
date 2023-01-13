@@ -43,7 +43,7 @@ void	PART(Server *server, std::string params, int id) {
 					&& it != users.end(); it++)
 				{
 					std::string reply = ":" + server->getUserMap()[id]->getNick() + "!"
-						+ server->getUserMap()[id]->getNick() + "@"
+						+ server->getUserMap()[id]->getUsername() + "@"
 						+ server->getUserMap()[id]->getHost() + " PART " + name + " "
 						+ message + "\r\n";
 					std::cout << "REPLY --- " << reply << std::endl;

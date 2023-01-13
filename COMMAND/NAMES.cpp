@@ -27,13 +27,12 @@ void    NAMES(Server *server, std::string params, int id) {
         for (mChannel::iterator iter = server->getChannelMap().begin(); iter != server->getChannelMap().end(); iter++)
             if (iter->first == parts[0])
                 exist = true;
-    
+
         if (!exist)
             send_message(server, id, RPL_ENDOFNAMES, "");
         else if (!check) {
             std::string message = ":" + server->getHostname() + " 353 " + server->getUserMap()[id]->getNick() + " ";
             message += "= " + *ite + " :" + server->getChannelMap()[parts[0]]->userList() + "\r\n";
-            send(id, message.c_str(), message.length(), MSG_DONTWAIT);
             send(id, message.c_str(), message.length(), MSG_DONTWAIT);
             send_message(server, id, RPL_ENDOFNAMES, "");
         }

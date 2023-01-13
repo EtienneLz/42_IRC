@@ -29,11 +29,12 @@
 
 class Server {
 public:
-	typedef std::map<int, User*> 	mClient;
+	typedef std::map<int, User*>	mClient;
 	typedef std::pair<int, User*>	pClient;
 	typedef mClient::iterator		iterator;
 	typedef std::map<std::string, Channel*>		mChannel;
 	typedef std::pair<std::string, Channel*>	pChannel;
+	typedef std::map<std::string, User*>		mUser;
 	// typedef void (*FPTR)(Server, std::string, int);
 
 private:
@@ -76,6 +77,7 @@ public:
 	void				setHostname(std::string name);
 	const int			&getCount();
 	mClient				&getUserMap();
+	mUser				getUserMapName();
 	const std::string	&getOpPwd();
 	mChannel			&getChannelMap();
 	void				setKilled(int dead);

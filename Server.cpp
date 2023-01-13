@@ -106,7 +106,7 @@ void Server::selectLoop() {
 		_clients[fdcl]->setHost(std::string(inet_ntoa(cliAddress->sin_addr)));
 		_clients[fdcl]->setId(fdcl);
 		_count++;
-		std::cout << "\nAdding new user with fd: " << fdcl << "\nNumber of users: " << _count << std::endl;
+		std::cout << "\nAdding new user with fd: " << fdcl << "\nNumber of users: " << _count << std::endl << std::endl;
 	}
 
 	for (iterator it = _clients.begin(); it != _clients.end(); it++) {
@@ -116,17 +116,32 @@ void Server::selectLoop() {
 			int valread;
 			if ((valread = read(curr_sd, buf, 1024)) == 0) {
 				_count--;
-				std::cout << "User " << it->second->getUsername() << " with fd " << curr_sd << " disconnected\n";
+				std::cout << "User " << it->second->getNick() << " with fd " << curr_sd << " disconnected\n";
 				std::cout << "Number of users: " << _count << std::endl;
 				close(curr_sd);
 				_clients.erase(curr_sd);
+				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it ++) {
+					if ((*it).second->getMapUser().empty()) {
+						_channels.erase(it);
+						break;
+					}
+				}
 				break;
 			}
 			else {
 				buf[valread] = '\0';
 				_killed = -1;
 				receiveMessage(buf, curr_sd);
+				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it ++) {
+						if ((*it).second->getMapUser().empty()) {
+							_channels.erase(it);
+							break;
+						}
+					}
 				if (_killed != -1) {
+					_count--;
+					std::cout << "User " << _clients[_killed]->getNick() << " with fd " << _killed << " disconnected\n";
+					std::cout << "Number of users: " << _count << std::endl;
 					close(_killed); // not curr but nick
 					_clients.erase(_killed);
 					break;
@@ -159,6 +174,10 @@ void Server::receiveMessage(std::string buf, int id) {
 			cmd = s;
 		}
 		std::cout << "COMMAND RECEPTION --- "<< cmd << " " << args << std::endl;
+		// if (_clients[id]->getNick().empty() && cmd.compare("NICK") != 0) {
+		// 	send();
+		// 	return;
+		// }
 		if (_commands[cmd])
 			_commands[cmd](this, args, id);
 		else

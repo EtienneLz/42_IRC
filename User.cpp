@@ -40,10 +40,6 @@ void        User::setId(int id) {_id = id;}
 
 int const   &User::getId(void) const {return _id;}
 
-void		User::setBot() {}
-
-bool		User::getBot() const {return false;}
-
 void        User::setMode(char flag, bool add){
 	if (add) {
 		if (flag == 'o')

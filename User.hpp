@@ -61,9 +61,6 @@ public:
     int const   &getId(void) const;
 
     const std::string	&getDate() const;
-
-    void        setBot();
-    bool        getBot() const;
 };
 
 std::ostream& operator<<(std::ostream& output, const User &user);

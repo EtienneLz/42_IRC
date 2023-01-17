@@ -19,6 +19,7 @@ Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _h
 	_commands["PART"] = PART;
 	_commands["QUIT"] = QUIT;
 	_commands["INVITE"] = INVITE;
+	_commands["NOTICE"] = NOTICE;
 	_channels["init"] = new Channel;
 
 	time_t now = time(0);

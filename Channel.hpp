@@ -17,13 +17,13 @@ public:
 	void				joinChan(User *newUser);
 	void				leaveChan(std::string oldUser);
 	std::string			userList(void);
-	bool				isOp(int id);
 
 	// GETTER
 	std::vector<User *>		&getUsers();
 	std::vector<User *>		&getChanops();
 	std::map<int, User *>	getMapUser();
 
+	bool					getOp(int id);
 	std::string				getName();
 	std::string				getTopic();
 	std::string				getLastTopicChanger();

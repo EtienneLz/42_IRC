@@ -39,7 +39,7 @@ void	Channel::leaveChan(std::string oldUser) {
 				break ;
 			}
 		}
-		_chanUsers.erase(toFind);		
+		_chanUsers.erase(toFind);
 	}
 }
 
@@ -105,7 +105,7 @@ std::map<int, User *>	Channel::getMapUser()
 	return (map);
 }
 
-bool	Channel::isOp(int id)
+bool	Channel::getOp(int id)
 {
 	for (std::vector<User *>::iterator it = _chanops.begin(); it != _chanops.end(); ++it)
 		if ((*it)->getId() == id)

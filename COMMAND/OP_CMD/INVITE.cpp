@@ -23,12 +23,17 @@ void INVITE(Server *server, std::string params, int id)
 		return (send_message(server, id, ERR_NOSUCHCHANNEL, channel));
 	}
 
-	if (!chan->isOp(id)) {
+	if (!chan->getMapUser()[id]) {
+		return (send_message(server, id, ERR_NOTONCHANNEL, channel));
+	}
+	
+	if (!chan->getOp(id)) {
 		return (send_message(server, id, ERR_CHANOPRIVSNEEDED, channel));
 	}
 
-	std::string reply = ":" + server->getUserMap()[id]->getNick() + " INVITE " + target + " " + channel + "\r\n";
-	send(user->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
-
-	JOIN(server, channel, user->getId());
+	if (!chan->getMapUser()[user->getId()]) {
+		std::string reply = ":" + server->getUserMap()[id]->getNick() + " INVITE " + target + " " + channel + "\r\n";
+		send(user->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
+		JOIN(server, channel, user->getId());
+	}
 }

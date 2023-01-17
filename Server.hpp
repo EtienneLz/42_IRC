@@ -49,6 +49,7 @@ private:
 	mClient				_clients;	// array of users
 	std::string			_hostname;	//name of server
 	std::string			_opPwd;
+	std::string 		_keep;
 	std::map<std::string, void(*)(Server*, std::string, int)> _commands;
 	mChannel			_channels;
 

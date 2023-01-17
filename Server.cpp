@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP") {
+Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP"), _keep("") {
 	_commands["KICK"] = KICK;
 	_commands["KILL"] = KILL;
 	_commands["kill"] = KILL;
@@ -107,7 +107,7 @@ void Server::selectLoop() {
 		_clients[fdcl]->setHost(std::string(inet_ntoa(cliAddress->sin_addr)));
 		_clients[fdcl]->setId(fdcl);
 		_count++;
-		std::cout << "\nAdding new user with fd: " << fdcl << "\nNumber of users: " << _count << std::endl;
+		std::cout << "\nAdding new user with fd: " << fdcl << "\nNumber of users: " << _count << std::endl << std::endl;
 	}
 
 	for (iterator it = _clients.begin(); it != _clients.end(); it++) {
@@ -117,25 +117,37 @@ void Server::selectLoop() {
 			int valread;
 			if ((valread = read(curr_sd, buf, 1024)) == 0) {
 				_count--;
-				std::cout << "User " << it->second->getUsername() << " with fd " << curr_sd << " disconnected\n";
+				std::cout << "User " << it->second->getNick() << " with fd " << curr_sd << " disconnected\n";
 				std::cout << "Number of users: " << _count << std::endl;
 				close(curr_sd);
 				_clients.erase(curr_sd);
+				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it ++) {
+					if ((*it).second->getMapUser().empty()) {
+						_channels.erase(it);
+						break;
+					}
+				}
 				break;
 			}
 			else {
 				buf[valread] = '\0';
 				_killed = -1;
 				receiveMessage(buf, curr_sd);
+				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it ++) {
+						if ((*it).second->getMapUser().empty()) {
+							_channels.erase(it);
+							break;
+						}
+					}
 				if (_killed != -1) {
+					_count--;
+					std::cout << "User " << _clients[_killed]->getNick() << " with fd " << _killed << " disconnected\n";
+					std::cout << "Number of users: " << _count << std::endl;
 					close(_killed); // not curr but nick
 					_clients.erase(_killed);
 					break;
 				}
 				std::cout << *_clients[curr_sd];
-				//sending msg back
-				// send(curr_sd, buf, strlen(buf), 0);
-				//send(curr_sd, buf, strlen(buf), MSG_DONTWAIT);
 			}
 		}
 	}
@@ -144,14 +156,16 @@ void Server::selectLoop() {
 
 void Server::receiveMessage(std::string buf, int id) {
 	std::string s;
-	std::string cmd;
+	std::string cmd; 
 	std::string args;
 	std::size_t pos;
 	std::size_t poscmd;
+	
+	_keep += buf;
 
-	while ((pos = buf.find("\r\n")) != std::string::npos) {
-		s = buf.substr(0, pos);
-		buf.erase(0, pos + 2);
+	while ((pos = _keep.find("\r\n")) != std::string::npos) {
+		s = _keep.substr(0, pos);
+		_keep.erase(0, pos + 2);
 		if ((poscmd = s.find(' ')) != std::string::npos) {
 			cmd = s.substr(0, poscmd);
 			args = s.substr(poscmd + 1);
@@ -161,12 +175,15 @@ void Server::receiveMessage(std::string buf, int id) {
 			cmd = s;
 		}
 		std::cout << "COMMAND RECEPTION --- "<< cmd << " " << args << std::endl;
+		// if (_clients[id]->getNick().empty() && cmd.compare("NICK") != 0) {
+		// 	send();
+		// 	return;
+		// }
 		if (_commands[cmd])
 			_commands[cmd](this, args, id);
 		else
 			std::cout << "Command does not exist...\n";
 	}
-
 }
 
 void Server::readData() {

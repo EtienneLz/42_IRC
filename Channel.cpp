@@ -33,13 +33,13 @@ void	Channel::leaveChan(std::string oldUser) {
 			break ;
 		}
 	if (found) {
-		_chanUsers.erase(toFind);
 		for (std::vector<User *>::iterator iter = _chanops.begin(); iter != _chanops.end(); iter++) {
-			if ((*iter)->getNick() == oldUser) {
-				_chanops.erase(iter);
+         	if ((*iter)->getNick() == oldUser) {
+            	_chanops.erase(iter);
 				break ;
 			}
 		}
+		_chanUsers.erase(toFind);
 	}
 }
 
@@ -49,7 +49,7 @@ std::string			Channel::userList(void) {
 	for (std::vector<User *>::iterator iter = _chanUsers.begin(); iter != _chanUsers.end(); iter++) {
 		op = false;
 		for (std::vector<User *>::iterator it = _chanops.begin(); it != _chanops.end(); it++) {
-			if ((*it)->getNick() == (*iter)->getNick() || (*iter)->getOperator())
+			if ((*it)->getNick() == (*iter)->getNick() || (*iter)->getMode('o'))
 				op = true;
 		}
 		if (op)

@@ -50,6 +50,7 @@
 		"streambuf": "cpp",
 		"typeinfo": "cpp",
 		"map": "cpp",
-		"complex": "cpp"
+		"complex": "cpp",
+		"ctime": "cpp"
 	}
 }

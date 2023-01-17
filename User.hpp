@@ -21,6 +21,7 @@ protected:
     std::string _date;
     bool        _registered;
     bool        _complete;
+    bool        _isBot;
     int         _id;
     t_mode      _mode;
 
@@ -56,6 +57,9 @@ public:
     int const   &getId(void) const;
 
     const std::string	&getDate() const;
+
+    void        setBot();
+    bool        getBot() const;
 };
 
 std::ostream& operator<<(std::ostream& output, const User &user);

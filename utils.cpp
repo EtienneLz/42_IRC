@@ -56,7 +56,7 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
 
         // REPLIES
         case RPL_WELCOME:
-            message += ":Welcome to our IRC server " + server->getUserMap()[id_cli]->getNick(); break;
+            message += ":Welcome to our IRC server " + server->getUserMap()[id_cli]->getNick() + " !!"; break;
         case RPL_YOURHOST:
             message += ":Your host is " + server->getHostname() + ", running version Alpha 0.1"; break;
         case RPL_CREATED:
@@ -102,6 +102,9 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
             message += str + " :No such channel"; break;
         case RPL_KILLDONE:
             message += str + " :has been killed"; break;
+        case RPL_TRYAGAIN:
+            message.erase(message.find('*'));
+            message += str + " : Try again..."; break;
     }
 
     message += "\r\n";

@@ -23,7 +23,7 @@ bool	isUser (Server *serv, std::string user, std::string why, int id_exec) {
 			std::string message = ":" + exec->getNick() + "!" + exec->getUsername() + "@" +
 			 serv->getUserMap()[id_exec]->getHost() + "!Unknown@" + serv->getHostname() +  " KILL " + user + " " + why + "\r\n";
 			leaveChan(serv, why, it->first, exec);
-			// std::cout << "REPLY --- " << message;
+			std::cout << "REPLY --- " << message;
 			send(it->first, message.c_str(), message.length(), MSG_DONTWAIT);
 			send_message(serv, exec->getId(), RPL_KILLDONE, user);
 			serv->setKilled(it->first);

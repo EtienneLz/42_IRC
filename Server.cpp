@@ -77,7 +77,7 @@ void Server::selectLoop() {
 	// select() loop
 	while (TRUE) {
 
-	tv.tv_sec = 20;
+	tv.tv_sec = 2;
 	tv.tv_usec = 0;
 	FD_ZERO(&rfds);
 	FD_SET(_sd,&rfds);
@@ -119,10 +119,18 @@ void Server::selectLoop() {
 				_count--;
 				std::cout << "User " << it->second->getNick() << " with fd " << curr_sd << " disconnected\n";
 				std::cout << "Number of users: " << _count << std::endl;
+				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it++) {
+					it->second->leaveChan(_clients[curr_sd]->getNick());
+				}
 				close(curr_sd);
+				delete _clients[curr_sd];
 				_clients.erase(curr_sd);
 				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it ++) {
-					if ((*it).second->getMapUser().empty()) {
+					if ((*it).second->getMapUser().empty() || (it->second->getMapUser().size() == 1 &&
+						it->second->getMapUser().begin()->second->getBot() == true)) {
+						if (it->second->getMapUser().size() == 1)
+							PART(this, it->second->getName(), it->second->getMapUser().begin()->second->getId());
+						delete (*it).second;
 						_channels.erase(it);
 						break;
 					}
@@ -134,7 +142,11 @@ void Server::selectLoop() {
 				_killed = -1;
 				receiveMessage(buf, curr_sd);
 				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it ++) {
-						if ((*it).second->getMapUser().empty()) {
+						if (it->second->getMapUser().empty() || (it->second->getMapUser().size() == 1 &&
+							it->second->getMapUser().begin()->second->getBot() == true)) {
+							if (it->second->getMapUser().size() == 1)
+								PART(this, it->second->getName(), it->second->getMapUser().begin()->second->getId());
+							delete it->second;
 							_channels.erase(it);
 							break;
 						}
@@ -144,6 +156,7 @@ void Server::selectLoop() {
 					std::cout << "User " << _clients[_killed]->getNick() << " with fd " << _killed << " disconnected\n";
 					std::cout << "Number of users: " << _count << std::endl;
 					close(_killed); // not curr but nick
+					delete _clients[_killed];
 					_clients.erase(_killed);
 					break;
 				}
@@ -175,12 +188,9 @@ void Server::receiveMessage(std::string buf, int id) {
 			cmd = s;
 		}
 		std::cout << "COMMAND RECEPTION --- "<< cmd << " " << args << std::endl;
-		// if (_clients[id]->getNick().empty() && cmd.compare("NICK") != 0) {
-		// 	send();
-		// 	return;
-		// }
-		if (_commands[cmd])
+		if (_commands[cmd]) {
 			_commands[cmd](this, args, id);
+		}
 		else
 			std::cout << "Command does not exist...\n";
 	}

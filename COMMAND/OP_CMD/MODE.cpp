@@ -25,7 +25,7 @@ void    MODE_CHAN(Server *server, std::vector<std::string> parts, int id, int nb
         
         if (parts[1][2 * i] == '+') {
             chan->getChanops().push_back(server->getUserMap()[target]);
-            message = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " MODE " + parts[0] + " " + targetPtr->getNick() + " +o\n\r";
+            message = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " MODE " + parts[0] + " " + targetPtr->getNick() + " +o\r\n";
             send(targetPtr->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
             std::cout << "REPLY CHAN --- " << message << std::endl;
             continue ;
@@ -37,7 +37,7 @@ void    MODE_CHAN(Server *server, std::vector<std::string> parts, int id, int nb
                 
                 if ((*iter)->getNick() == parts[2 + i]) {
                     chan->getChanops().erase(iter);
-                    message = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " MODE " + parts[0] + " " + targetPtr->getNick() + " -o\n\r";
+                    message = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " MODE " + parts[0] + " " + targetPtr->getNick() + " -o\r\n";
                     send(targetPtr->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
                     std::cout << "REPLY CHAN --- " << message << std::endl;
                     continue ;

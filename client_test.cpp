@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string>
+#include <cstring>
 
 //#define PORT 12345
 
@@ -21,6 +22,10 @@ int main(int argc, char const* argv[])
     }
     int PORT = atoi(argv[1]);
     std::string pass = argv[2];
+    if (pass != "BOT"){
+        std::cout << "Wrong password" << std::endl;
+        return 1;
+    }
 
     int sock = 0, valread, client_fd;
     struct sockaddr_in serv_addr;
@@ -28,7 +33,7 @@ int main(int argc, char const* argv[])
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         std::cerr << "Socket creation error" << std::endl;
-        return -1;
+        return 1;
     }
 
     serv_addr.sin_family = AF_INET;
@@ -38,11 +43,11 @@ int main(int argc, char const* argv[])
     // form
     if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
         std::cerr << "\nInvalid address/ Address not supported" << std::endl;
-        return -1;
+        return 1;
     }
     if ((client_fd = connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr))) < 0) {
         std::cerr << "\nConnection Failed" << std::endl;
-        return -1;
+        return 1;
     }
     std::string passMsg = "PASS BOT\r\n";
     send(sock, passMsg.c_str(), passMsg.length(), 0);
@@ -59,18 +64,32 @@ int main(int argc, char const* argv[])
         int count = recv(sock, buffer, BUF_SIZE, 0);
         if (count < 0) {
             std::cout << "Error receiving message" << std::endl;
-            return 1;
+            break ;
         }
         if (count == 0) {
             std::cout << "Server closed connection" << std::endl;
-            return 0;
+            break ;
         }
         buffer[count] = '\0';
         std::cout << buffer << std::endl;
         std::string tmp = buffer;
-        size_t pos = tmp.find_first_of("!", 1);
-        if (pos != std::string::npos)
-            std::string cmd = tmp.substr(pos);
+        size_t pos = tmp.find_first_of(":", 1);
+        if (pos == std::string::npos)
+            continue;
+        std::string cmd = tmp.substr(pos + 1);
+        if (cmd[0] == '!' && std::strcmp(cmd.c_str() + 1, "meteo"))
+        {
+            pos = tmp.find_first_of("#");
+            if (pos == std::string::npos)
+                continue;
+            std::string chan = tmp.substr(pos);
+            pos = chan.find_first_of(" ");
+            if (pos == std::string::npos)
+                continue;
+            chan.erase(pos);
+            std::string reply = "PRIVMSG " + chan + " :CHE PAS\r\n";
+            send(sock, reply.c_str(), reply.size(), 0);
+        }
     }
     // closing the connected socket
     close(client_fd);

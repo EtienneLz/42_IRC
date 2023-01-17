@@ -27,7 +27,7 @@ void	NICK(Server *server, std::string nick, int id) {
 	std::string new_nick = server->getUserMap()[id]->getNick();
 	std::string name = server->getUserMap()[id]->getUsername();
 	std::string message = ":" + old_nick + "!" + name + "@" + clients[id]->getHost() + " NICK " + new_nick + "\r\n";
-	std::cout << "REPLY --- " << message;
+	// std::cout << "REPLY --- " << message;
 	send(id, message.c_str(), message.length(), MSG_DONTWAIT);
 
 	for (mChannel::iterator itC = server->getChannelMap().begin();
@@ -38,4 +38,11 @@ void	NICK(Server *server, std::string nick, int id) {
 			if (nick != (*itU)->getNick())
 				send((*itU)->getId(), message.c_str(), message.size(), MSG_DONTWAIT);
 		}
+	if (server->getUserMap()[id]->getRegistered() == true && server->getUserMap()[id]->getComplete() == false) {
+    	send_message(server, id, RPL_WELCOME, "");
+    	send_message(server, id, RPL_YOURHOST, "");
+    	send_message(server, id, RPL_CREATED, "");
+    	send_message(server, id, RPL_MYINFO, "");
+		server->getUserMap()[id]->setComplete();
+    }
 }

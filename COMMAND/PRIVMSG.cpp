@@ -1,7 +1,7 @@
 #include "command.hpp"
 
 void	PRIVMSG(Server *server, std::string params, int id) {
-	if (server->getUserMap()[id]->getMode('r') == true)
+	if (server->getUserMap()[id]->getMode('r') == true || server->getUserMap()[id]->getComplete() == false)
 		return (send_message(server, id, ERR_RESTRICTED, ""));
 	else if (!params.size())
 		return (send_message(server, id, ERR_NEEDMOREPARAMS, params));

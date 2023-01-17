@@ -1,6 +1,6 @@
 #include "User.hpp"
 
-User::User(): _registered(false) {
+User::User(): _registered(false), _complete(false) {
 	num_conn = 0;
 	count = -1;
 	_mode.o = false;
@@ -31,6 +31,10 @@ void		User::setNick(std::string nick) {_nickname = nick;}
 bool const &User::getRegistered(void) const {return (_registered);}
 
 void		User::setRegistered(void) {_registered = true;}
+
+bool const &User::getComplete(void) const {return (_complete);}
+
+void		User::setComplete(void) {_complete = true;}
 
 void        User::setId(int id) {_id = id;}
 

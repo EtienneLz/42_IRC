@@ -4,9 +4,6 @@ void    user_cmd(Server *server, std::string params, int id) {
     std::vector<std::string> parts;
     std::stringstream ss(params);
     std::string s;
-
-    if (server->getUserMap()[id]->getMode('r') == true)
-		return (send_message(server, id, ERR_RESTRICTED, ""));
     
     if (server->getUserMap()[id]->getRegistered() == true)
 		return (send_message(server, id, ERR_ALREADYREGISTRED, ""));
@@ -36,10 +33,13 @@ void    user_cmd(Server *server, std::string params, int id) {
     server->getUserMap()[id]->setRealname(realname);
 
     server->getUserMap()[id]->setRegistered();
-    send_message(server, id, RPL_WELCOME, "");
-    send_message(server, id, RPL_YOURHOST, "");
-    send_message(server, id, RPL_CREATED, "");
-    send_message(server, id, RPL_MYINFO, "");
+    if (server->getUserMap()[id]->getNick() != "" && server->getUserMap()[id]->getComplete() == false) {
+        send_message(server, id, RPL_WELCOME, "");
+        send_message(server, id, RPL_YOURHOST, "");
+        send_message(server, id, RPL_CREATED, "");
+        send_message(server, id, RPL_MYINFO, "");
+        server->getUserMap()[id]->setComplete();
+    }
     // std::string message = ":0.0.0.0 433 * plouf :Nickname is already in use\r\n";
     // send(id, message.c_str(), message.length(), MSG_DONTWAIT);
 }

@@ -16,9 +16,6 @@ void    OPER(Server *server, std::string params, int id) {
         return ;
     }
 
-    std::cout << "DEBUG --- " << *parts.begin() << " \"" << *(parts.begin() + 1) << "\"" << std::endl;
-    std::cout << server->getOpPwd() << std::endl;
-
     std::string pwd = *(parts.begin() + 1);
     if (pwd != server->getOpPwd()) {
         send_message(server, id, ERR_PASSWDMISMATCH, "");
@@ -36,7 +33,7 @@ void    OPER(Server *server, std::string params, int id) {
     if (server->getUserMap()[idDest]->getMode('o'))
         std::cout << "MODE : true" << std::endl;
     else
-       std::cout << "MODE : false" << std::endl;
+        std::cout << "MODE : false" << std::endl;
     send_message(server, idDest, RPL_YOUREOPER, "");
     send_message(server, idDest, RPL_UMODEIS, "");
 }

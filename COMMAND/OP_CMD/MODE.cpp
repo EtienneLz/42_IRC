@@ -25,21 +25,23 @@ void    MODE_CHAN(Server *server, std::vector<std::string> parts, int id, int nb
         
         if (parts[1][2 * i] == '+') {
             chan->getChanops().push_back(server->getUserMap()[target]);
-            message = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " MODE " + parts[0] + " " + targetPtr->getNick() + " +o\n\r";
-            send(targetPtr->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
-            std::cout << "REPLY CHAN --- " << message << std::endl;
+            message = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " MODE " + parts[0] + " +o " + targetPtr->getNick() + "\r\n";
+            for (std::vector<User *>::iterator it2 = server->getChannelMap()[chan->getName()]->getUsers().begin(); it2 != server->getChannelMap()[chan->getName()]->getUsers().end(); it2++) 
+                send((*it2)->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
+            // std::cout << "REPLY CHAN --- " << message << std::endl;
             continue ;
         }
 
         else {
-            std::cout << "YOOOOO" << std::endl;
+            // std::cout << "YOOOOO" << std::endl;
             for (std::vector<User *>::iterator iter = chan->getChanops().begin(); iter != chan->getChanops().end(); iter++) {
                 
                 if ((*iter)->getNick() == parts[2 + i]) {
                     chan->getChanops().erase(iter);
-                    message = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " MODE " + parts[0] + " " + targetPtr->getNick() + " -o\n\r";
-                    send(targetPtr->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
-                    std::cout << "REPLY CHAN --- " << message << std::endl;
+                    message = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " MODE " + parts[0] + " -o " + targetPtr->getNick() + "\r\n";
+                    for (std::vector<User *>::iterator it2 = server->getChannelMap()[chan->getName()]->getUsers().begin(); it2 != server->getChannelMap()[chan->getName()]->getUsers().end(); it2++) 
+                        send((*it2)->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
+                    // std::cout << "REPLY CHAN --- " << message << std::endl;
                     continue ;
                 }
             }
@@ -116,7 +118,7 @@ void    MODE(Server *server, std::string params, int id) {
         switch(parts[1].size()) {
             case 2: {
                 if ((parts[1][0] != '+' && parts[1][0] != '-') || parts[1][1] != 'o') {
-                    std::cout << parts[1] << std::endl;
+                    // std::cout << parts[1] << std::endl;
                     return send_chan_message(server, id, ERR_UNKNOWNMODE, parts[1], chan->getName());
                 }
                 MODE_CHAN(server, parts, id, 1); break;

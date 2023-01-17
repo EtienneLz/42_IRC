@@ -12,7 +12,7 @@ void	Channel::joinChan(User *newUser) {
 	iter toFind;
 	bool found = false;
 	for (iter it = _chanUsers.begin(); it != _chanUsers.end(); it++) {
-		std::cout << "NIQUE NAME --- " << (*it)->getNick() << std::endl;
+		// std::cout << "NIQUE NAME --- " << (*it)->getNick() << std::endl;
 		if ((*it)->getNick() == newUser->getNick()) {
 			toFind = it;
 			found = true;

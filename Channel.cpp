@@ -35,9 +35,11 @@ void	Channel::leaveChan(std::string oldUser) {
 	if (found) {
 		_chanUsers.erase(toFind);
 		for (std::vector<User *>::iterator iter = _chanops.begin(); iter != _chanops.end(); iter++) {
-        	if ((*iter)->getNick() == oldUser)
-            	_chanops.erase(iter);
-    }
+			if ((*iter)->getNick() == oldUser) {
+				_chanops.erase(iter);
+				break ;
+			}
+		}
 	}
 }
 
@@ -103,7 +105,7 @@ std::map<int, User *>	Channel::getMapUser()
 	return (map);
 }
 
-bool	Channel::isOp(int id)
+bool	Channel::getOp(int id)
 {
 	for (std::vector<User *>::iterator it = _chanops.begin(); it != _chanops.end(); ++it)
 		if ((*it)->getId() == id)

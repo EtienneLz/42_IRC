@@ -8,6 +8,7 @@ SRCS = main1.cpp \
 		COMMAND/NICK.cpp \
 		COMMAND/PING.cpp \
 		COMMAND/PRIVMSG.cpp \
+		COMMAND/NOTICE.cpp \
 		COMMAND/JOIN.cpp \
 		COMMAND/QUIT.cpp \
 		COMMAND/TOPIC.cpp \

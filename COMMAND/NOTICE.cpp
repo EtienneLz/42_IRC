@@ -1,10 +1,10 @@
 #include "command.hpp"
 
-void	PRIVMSG(Server *server, std::string params, int id) {
+void	NOTICE(Server *server, std::string params, int id) {
 	if (server->getUserMap()[id]->getMode('r') == true)
-		return (send_message(server, id, ERR_RESTRICTED, ""));
+		return ;
 	else if (!params.size())
-		return (send_message(server, id, ERR_NEEDMOREPARAMS, params));
+		return ;
 
 	std::string targets;
 	std::string message;
@@ -16,12 +16,12 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 		message = params.substr(pos);
 	}
 	else
-		return (send_message(server, id, ERR_NORECIPIENT, message));
+		return ;
 
 	if (targets.size() == 0)
-		return (send_message(server, id, ERR_NORECIPIENT, params));
+		return ;
 	else if (message.size() == 1)
-		return (send_message(server, id, ERR_NOTEXTTOSEND, params));
+		return ;
 
 	std::vector<std::string> msgTargets;
 	std::stringstream ss(targets);
@@ -51,17 +51,13 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 						{
 							std::string reply =  ":" + server->getUserMap()[id]->getNick() + "!"
 							+ server->getUserMap()[id]->getUsername() + "@"
-							+ server->getUserMap()[id]->getHost() + " PRIVMSG " + *itT
+							+ server->getUserMap()[id]->getHost() + " NOTICE " + *itT
 							+ " " + message + "\r\n";
 							send((*it)->getId(), reply.c_str(), reply.size(), MSG_DONTWAIT);
 						}
 					}
 				}
-				else
-					send_message(server, id, ERR_CANNOTSENDTOCHAN, server->getUserMap()[id]->getNick());
 			}
-			else
-				send_message(server, id, ERR_NOSUCHNICK, *itT);
 		}
 		else
 		{
@@ -74,16 +70,12 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 						{
 							std::string reply = ":" + server->getUserMap()[id]->getNick() + "!"
 							+ server->getUserMap()[id]->getUsername() + "@"
-							+ server->getUserMap()[id]->getHost() + " PRIVMSG " + *itT + " "
+							+ server->getUserMap()[id]->getHost() + " NOTICE " + *itT + " "
 							+ message + "\r\n";
 							send(it->first, reply.c_str(), reply.size(), MSG_DONTWAIT);
 						}
-						else
-							send_message(server, id, ERR_NORECIPIENT, *itT);
 					}
 				}
-			else
-				send_message(server, id, ERR_NOSUCHNICK, *itT);
 		}
 	}
 }

@@ -1,6 +1,5 @@
 #include "command.hpp"
 
-
 void	NICK(Server *server, std::string nick, int id) {
 
 	std::map<int, User*> clients = server->getUserMap();

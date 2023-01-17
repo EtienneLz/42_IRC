@@ -84,7 +84,7 @@ void KICK(Server *serv, std::string params, int id) {
 
 	std::string message = ":" + exec->getNick() + "!" +  exec->getUsername() + "@" +
 	exec->getHost() + " KICK " + args[0] + " " + args[1] + " " + why + "\r\n";
-	std::cout << "REPLY --- " << message;
+	// std::cout << "REPLY --- " << message;
 
 	sendToChan(message, *chan);
 	chan->leaveChan(args[1]);

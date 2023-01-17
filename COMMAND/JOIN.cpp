@@ -6,7 +6,7 @@ void    JOIN(Server *server, std::string params, int id) {
     std::string s;
     std::map<int, User*> clients = server->getUserMap();
 
-    if (server->getUserMap()[id]->getMode('r') == true)
+    if (server->getUserMap()[id]->getMode('r') == true || server->getUserMap()[id]->getComplete() == false)
 		return (send_message(server, id, ERR_RESTRICTED, ""));
 
     while (std::getline(ss, s, ' '))
@@ -58,7 +58,7 @@ void    JOIN(Server *server, std::string params, int id) {
             server->getChannelMap()[name]->joinChan(server->getUserMap()[id]);
             server->getChannelMap()[name]->setTopic("");
             server->getChannelMap()[name]->getChanops().push_back(server->getUserMap()[id]);
-            std::cout << "map chan size --- " << server->getChannelMap()[name]->userList() << std::endl;
+            // std::cout << "map chan size --- " << server->getChannelMap()[name]->userList() << std::endl;
             std::string message = ":" + clients[id]->getNick() + "!" + clients[id]->getUsername()  + "@" + clients[id]->getHost() + " JOIN " + ":" + name + "\r\n";
             send(id, message.c_str(), message.length(), MSG_DONTWAIT);
             

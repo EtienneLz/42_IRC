@@ -20,6 +20,7 @@ protected:
     std::string _host;
     std::string _date;
     bool        _registered;
+    bool        _complete;
     int         _id;
     t_mode      _mode;
 
@@ -44,6 +45,9 @@ public:
 
     void        setRegistered(void);
     bool const &getRegistered(void) const;
+
+    void        setComplete(void);
+    bool const &getComplete(void) const;
 
     void        setMode(char flag, bool add);
     bool const  &getMode(char flag) const;

@@ -26,6 +26,7 @@ void	NAMES(Server *server, std::string params, int id);
 void	PART(Server *server, std::string params, int id);
 void	QUIT(Server *server, std::string params, int id);
 void	INVITE(Server *server, std::string params, int id);
+void    WHO(Server *server, std::string params, int id);
 
 #include "../Server.hpp"
 #endif

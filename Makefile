@@ -13,6 +13,7 @@ SRCS = main1.cpp \
 		COMMAND/QUIT.cpp \
 		COMMAND/TOPIC.cpp \
 		COMMAND/NAMES.cpp \
+		COMMAND/WHO.cpp \
 		COMMAND/OP_CMD/PART.cpp \
 		COMMAND/OP_CMD/INVITE.cpp \
 		COMMAND/OP_CMD/MODE.cpp \

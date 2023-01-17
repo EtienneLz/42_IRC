@@ -4,7 +4,6 @@ Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _h
 	_commands["KICK"] = KICK;
 	_commands["KILL"] = KILL;
 	_commands["kill"] = KILL;
-	// _commands["QUIT"] = &QUIT();
 	_commands["MODE"] = MODE;
 	_commands["OPER"] = OPER;
 	// _commands["CAP"] = &CAP;
@@ -55,7 +54,7 @@ Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _h
 	// Sets the sd in a passive mode where it can accept incoming connections requests
 	if (listen(_sd, 3) < 0)
 		socketError("listen() failed");
-	std::cout << "Listening...\n";
+ 	std::cout << "Listening...\n";
 
 }
 
@@ -174,7 +173,7 @@ void Server::receiveMessage(std::string buf, int id) {
 			args = "";
 			cmd = s;
 		}
-		std::cout << "COMMAND RECEPTION --- "<< cmd << " " << args << std::endl;
+		std::cout << "COMMAND RECEPTION --- " << cmd << " " << args << std::endl;
 		// if (_clients[id]->getNick().empty() && cmd.compare("NICK") != 0) {
 		// 	send();
 		// 	return;

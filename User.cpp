@@ -1,6 +1,6 @@
 #include "User.hpp"
 
-User::User(): _registered(false) {
+User::User(): _registered(false), _isBot(false) {
 	num_conn = 0;
 	count = -1;
 	_mode.o = false;
@@ -67,6 +67,10 @@ bool const	&User::getMode(char flag) const {
 	}
 
 const std::string &User::getDate() const {return (_date);}
+
+void	User::setBot(void) {_isBot = true;}
+
+bool const	&User::getBot(void) const {return (_isBot);}
 
 std::ostream& operator<<(std::ostream& output, const User &user) {
 	output << "\n******************************INFO*********************************\n";

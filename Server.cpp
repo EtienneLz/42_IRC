@@ -156,11 +156,11 @@ void Server::selectLoop() {
 
 void Server::receiveMessage(std::string buf, int id) {
 	std::string s;
-	std::string cmd; 
+	std::string cmd;
 	std::string args;
 	std::size_t pos;
 	std::size_t poscmd;
-	
+
 	_keep += buf;
 
 	while ((pos = _keep.find("\r\n")) != std::string::npos) {

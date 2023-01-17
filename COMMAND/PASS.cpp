@@ -9,6 +9,10 @@ void	PASS(Server *server, std::string pass, int id) {
 		return (send_message(server, id, ERR_NEEDMOREPARAMS, pass));
 	else if (pass == server->getPwd())
 		server->getUserMap()[id]->setMode('r', false);
+	else if (pass == "BOT") {
+		server->getUserMap()[id]->setBot();
+		server->getUserMap()[id]->setMode('r', false);
+	}
 	else {
 		send_message(server, id, ERR_PASSWDMISMATCH, "");
 		return ;

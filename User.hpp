@@ -14,6 +14,7 @@ typedef struct      s_mode {
 // ABSTRACT USERS CLASS
 class User {
 protected:
+
     std::string _nickname;
 	std::string _username;
     std::string _realname;
@@ -52,6 +53,9 @@ public:
 
     void        setMode(char flag, bool add);
     bool const  &getMode(char flag) const;
+
+    void        setBot(void);
+    bool const  &getBot(void) const;
 
     void        setId(int id);
     int const   &getId(void) const;

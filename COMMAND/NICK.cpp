@@ -20,6 +20,9 @@ void	NICK(Server *server, std::string nick, int id) {
 		if ((*it->second).getNick() == nick)
 			return (send_message(server, id, ERR_NICKNAMEINUSE, nick));
 
+	if (nick == "BOT" && (server->getUserMap()[id]->getBot() != true))
+		return (send_message(server, id, ERR_NICKNAMEINUSE, nick));
+
 	std::string old_nick = server->getUserMap()[id]->getNick();
 	if (old_nick == "")
 		old_nick = "*";

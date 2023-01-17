@@ -22,7 +22,7 @@ void    MODE_CHAN(Server *server, std::vector<std::string> parts, int id, int nb
         }
         if (target == 0)
             return send_chan_message(server, id, ERR_USERNOTINCHANNEL, parts[2 + i], chan->getName());
-        
+
         if (parts[1][2 * i] == '+') {
             chan->getChanops().push_back(server->getUserMap()[target]);
             message = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " MODE " + parts[0] + " +o " + targetPtr->getNick() + "\r\n";
@@ -35,7 +35,7 @@ void    MODE_CHAN(Server *server, std::vector<std::string> parts, int id, int nb
         else {
             // std::cout << "YOOOOO" << std::endl;
             for (std::vector<User *>::iterator iter = chan->getChanops().begin(); iter != chan->getChanops().end(); iter++) {
-                
+
                 if ((*iter)->getNick() == parts[2 + i]) {
                     chan->getChanops().erase(iter);
                     message = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " MODE " + parts[0] + " -o " + targetPtr->getNick() + "\r\n";
@@ -53,7 +53,7 @@ void    MODE_USER(Server *server, std::vector<std::string> parts, int id) {
     std::string message;
     bool positive;
     std::string flags;
-    
+
     flags = parts[1];
     if (flags.at(0) == '+')
         positive = true;
@@ -65,7 +65,7 @@ void    MODE_USER(Server *server, std::vector<std::string> parts, int id) {
     }
 
     if (*parts.begin() == "*")
-        *parts.begin() = server->getUserMap()[id]->getNick();    
+        *parts.begin() = server->getUserMap()[id]->getNick();
 
     if (*parts.begin() != server->getUserMap()[id]->getNick()) {
         send_message(server, id, ERR_USERSDONTMATCH, "");

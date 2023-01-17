@@ -62,7 +62,8 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
         case RPL_CREATED:
             message += ":This server was created " + server->getDate(); break;
         case RPL_MYINFO:
-            message += server->getHostname() + " Alpha 0.4 " + " Trucs a rajouter"; break;
+            message += server->getHostname() + " Alpha 0.4 " +
+            "by a magnificent team composed of\n   *** MSELIGNA ***\n   *** CHDESPON ***\n   *** ELOUCHEZ ***"; break;
         case RPL_UMODEIS:
             message += mode_str(server, id_cli); break;
         case RPL_YOUREOPER:

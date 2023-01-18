@@ -93,11 +93,11 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
         case ERR_NOTONCHANNEL:
             message += ":The user is not on the channel"; break;
         case ERR_CHANOPRIVSNEEDED:
-            message += ":You need channel operator privileges to use this command"; break;
+            message += str + " :You need channel operator privileges to use this command"; break;
         case ERR_NOPRIVILEGES:
             message += ":You need operator privileges to use this command"; break;
         case ERR_NOSUCHNICK:
-            message += ":This nickname doesn exist"; break;
+            message += ":This nickname does not exist"; break;
         case ERR_NOSUCHCHANNEL:
             message += str + " :No such channel"; break;
         case RPL_KILLDONE:

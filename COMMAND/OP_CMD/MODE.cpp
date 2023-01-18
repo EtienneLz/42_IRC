@@ -7,6 +7,17 @@ void    MODE_CHAN(Server *server, std::vector<std::string> parts, int id, int nb
     Channel *chan = server->getChannelMap()[parts[0]];
     if (!chan)
         return send_chan_message(server, id, ERR_NOSUCHCHANNEL, "", parts[0]);
+    
+    bool op = false;
+    for (std::vector<User *>::iterator it = chan->getChanops().begin(); it != chan->getChanops().end(); it++) {
+		if ((*it)->getNick() == server->getUserMap()[id]->getNick() || server->getUserMap()[id]->getMode('o')) {
+			op = true;
+            break;
+        }
+	}
+
+    if (!op)
+        return send_message(server, id, ERR_CHANOPRIVSNEEDED, chan->getName());
 
     if ((nbUser == 1 && parts.size() < 3) || (nbUser == 2 && parts.size() < 4) || (nbUser == 3 && parts.size() < 5))
         return send_message(server, id, ERR_NEEDMOREPARAMS, "");
@@ -42,7 +53,7 @@ void    MODE_CHAN(Server *server, std::vector<std::string> parts, int id, int nb
                     for (std::vector<User *>::iterator it2 = server->getChannelMap()[chan->getName()]->getUsers().begin(); it2 != server->getChannelMap()[chan->getName()]->getUsers().end(); it2++) 
                         send((*it2)->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
                     // std::cout << "REPLY CHAN --- " << message << std::endl;
-                    continue ;
+                    break ;
                 }
             }
         }

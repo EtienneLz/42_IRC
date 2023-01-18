@@ -49,7 +49,7 @@ void    TOPIC(Server *server, std::string params, int id) {
             std::string message;
             for (std::vector<User*>::iterator it = server->getChannelMap()[parts[0]]->getUsers().begin(); it != server->getChannelMap()[parts[0]]->getUsers().end(); ++it) {
                 message = ":" + server->getUserMap()[id]->getNick() + "!" + server->getUserMap()[id]->getUsername()  + "@" + server->getUserMap()[id]->getHost() + " TOPIC " + parts[0] + " :" + topic + "\r\n";
-                // std::cout << "DEBUG ----- " << message << std::endl;
+                std::cout << "DEBUG ----- " << message << std::endl;
                 send((*it)->getId(), message.c_str(), message.length(), MSG_DONTWAIT);
             }
         }

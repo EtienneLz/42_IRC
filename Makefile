@@ -1,5 +1,9 @@
 NAME = ircserv
 
+BOT = ircbot
+
+SRCS_BOT = bot.cpp
+
 SRCS = main1.cpp \
 		Server.cpp \
 		User.cpp \
@@ -26,6 +30,8 @@ SRCS = main1.cpp \
 
 OBJS = ${SRCS:.cpp=.o}
 
+OBJS_BOT = ${SRCS_BOT:.cpp=.o}
+
 #INCLUDES=
 
 CXX = c++
@@ -39,10 +45,15 @@ all: ${NAME}
 ${NAME}: ${OBJS}
 	${CXX} ${CXXFLAGS} ${OBJS} -o ${NAME}
 
+irbot: ${BOT}
+
+${BOT}: ${OBJS_BOT}
+	${CXX} ${CXXFLAGS} ${OBJS_BOT} -o ${BOT}
+
 clean:
-	rm -f ${OBJS}
+	rm -f ${OBJS} *.o
 
 fclean: clean
-	rm -f ${NAME}
+	rm -f ${NAME} ${BOT}
 
 re: fclean all

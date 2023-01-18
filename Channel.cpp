@@ -99,6 +99,8 @@ void	Channel::setLastTopicChanger(std::string nick) {
 std::map<int, User *>	Channel::getMapUser()
 {
 	std::map<int, User *> map;
+	// if (_name == "init")
+	// 	return map;
 
 	for (std::vector<User*>::iterator it = _chanUsers.begin(); it != _chanUsers.end(); ++it)
 		map.insert(std::make_pair((*it)->getId(), *it));

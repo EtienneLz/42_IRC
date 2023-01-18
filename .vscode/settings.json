@@ -51,6 +51,7 @@
 		"typeinfo": "cpp",
 		"map": "cpp",
 		"complex": "cpp",
-		"ctime": "cpp"
+		"ctime": "cpp",
+		"span": "cpp"
 	}
 }

@@ -104,7 +104,7 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
             message += str + " :has been killed"; break;
         case RPL_TRYAGAIN:
             message.erase(message.find('*'));
-            message += str + " : Try again..."; break;
+            message += str + " :Try again..."; break;
     }
 
     message += "\r\n";

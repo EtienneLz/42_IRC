@@ -20,6 +20,7 @@ Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _h
 	_commands["INVITE"] = INVITE;
 	_commands["NOTICE"] = NOTICE;
 	_channels["init"] = new Channel;
+	_channels["init"]->setName("init");
 
 	time_t now = time(0);
 	_date = ctime(&now);
@@ -125,8 +126,8 @@ void Server::selectLoop() {
 				delete _clients[curr_sd];
 				_clients.erase(curr_sd);
 				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it ++) {
-					if ((*it).second->getMapUser().empty() || (it->second->getMapUser().size() == 1 &&
-						it->second->getMapUser().begin()->second->getBot() == true)) {
+					if (it->first.compare("init") != 0 && ((*it).second->getMapUser().empty() || (it->second->getMapUser().size() == 1 &&
+						it->second->getMapUser().begin()->second->getBot() == true))) {
 						if (it->second->getMapUser().size() == 1)
 							PART(this, it->second->getName(), it->second->getMapUser().begin()->second->getId());
 						delete (*it).second;
@@ -141,15 +142,15 @@ void Server::selectLoop() {
 				_killed = -1;
 				receiveMessage(buf, curr_sd);
 				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it ++) {
-						if (it->second->getMapUser().empty() || (it->second->getMapUser().size() == 1 &&
-							it->second->getMapUser().begin()->second->getBot() == true)) {
-							if (it->second->getMapUser().size() == 1)
-								PART(this, it->second->getName(), it->second->getMapUser().begin()->second->getId());
-							delete it->second;
-							_channels.erase(it);
-							break;
-						}
+					if (it->first.compare("init") != 0 && (it->second->getMapUser().empty() || (it->second->getMapUser().size() == 1 &&
+						it->second->getMapUser().begin()->second->getBot() == true))) {
+						if (it->second->getMapUser().size() == 1)
+							PART(this, it->second->getName(), it->second->getMapUser().begin()->second->getId());
+						delete it->second;
+						_channels.erase(it);
+						break;
 					}
+				}
 				if (_killed != -1) {
 					_count--;
 					std::cout << "User " << _clients[_killed]->getNick() << " with fd " << _killed << " disconnected\n";

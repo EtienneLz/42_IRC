@@ -37,7 +37,8 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 	{
 		if (itT.base()->find('#', 0) != std::string::npos)
 		{
-			if (server->getChannelMap()[*itT])
+			mChannel chanCp = server->getChannelMap();
+			if (chanCp[*itT])
 			{
 				Channel *chan = server->getChannelMap()[*itT];
 				std::vector<User*> users = chan->getUsers();
@@ -58,10 +59,10 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 					}
 				}
 				else
-					send_message(server, id, ERR_CANNOTSENDTOCHAN, server->getUserMap()[id]->getNick());
+					return send_message(server, id, ERR_CANNOTSENDTOCHAN, server->getUserMap()[id]->getNick());
 			}
 			else
-				send_message(server, id, ERR_NOSUCHNICK, *itT);
+				return send_message(server, id, ERR_NOSUCHCHANNEL, *itT);
 		}
 		else
 		{

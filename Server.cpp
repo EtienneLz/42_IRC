@@ -117,7 +117,11 @@ void Server::selectLoop() {
 			if ((valread = read(curr_sd, buf, 1024)) == 0) {
 				std::cout << "User " << it->second->getNick() << " with fd " << curr_sd << " disconnected\n";
 				std::cout << "Number of users: " << _clients.size() << std::endl;
+<<<<<<< HEAD
 				QUIT(this, ":Lost terminal", curr_sd);
+=======
+				QUIT(this, "", curr_sd);
+>>>>>>> Charles
 				close(curr_sd);
 				delete _clients[curr_sd];
 				_clients.erase(curr_sd);

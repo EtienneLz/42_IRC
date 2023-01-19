@@ -37,7 +37,7 @@ void	NOTICE(Server *server, std::string params, int id) {
 	{
 		if (itT.base()->find('#', 0) != std::string::npos)
 		{
-			if (server->getChannelMap()[*itT])
+			if (server->getChannelMap().find(*itT) != server->getChannelMap().end())
 			{
 				Channel *chan = server->getChannelMap()[*itT];
 				std::vector<User*> users = chan->getUsers();

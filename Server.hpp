@@ -43,7 +43,6 @@ private:
 	int					_sd;		// server socket descriptor
 	int					_addrlen;	//= sizeof(_address);
 	int					_port;		// port used for connection
-	int					_count;		// number of users
 	int					_killed;
 	std::string			_pwd;		// password
 	mClient				_clients;	// array of users

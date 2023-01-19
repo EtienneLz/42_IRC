@@ -6,7 +6,7 @@ Server::Server(int port, std::string pwd) :_port(port), _pwd(pwd), _hostname("0.
 	_commands["kill"] = KILL;
 	_commands["MODE"] = MODE;
 	_commands["OPER"] = OPER;
-	// _commands["CAP"] = &CAP;
+	_commands["CAP"] = 	CAP;
 	_commands["JOIN"] = JOIN;
 	_commands["NICK"] = NICK;
 	_commands["PASS"] = PASS;
@@ -117,9 +117,7 @@ void Server::selectLoop() {
 			if ((valread = read(curr_sd, buf, 1024)) == 0) {
 				std::cout << "User " << it->second->getNick() << " with fd " << curr_sd << " disconnected\n";
 				std::cout << "Number of users: " << _clients.size() << std::endl;
-				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it++) {
-					it->second->leaveChan(_clients[curr_sd]->getNick());
-				}
+				QUIT(this, ":Lost terminal", curr_sd);
 				close(curr_sd);
 				delete _clients[curr_sd];
 				_clients.erase(curr_sd);
@@ -190,7 +188,7 @@ void Server::receiveMessage(std::string buf, int id) {
 			_commands[cmd](this, args, id);
 		}
 		else
-			std::cout << "Command does not exist...\n";
+			send_message(this, id, ERR_UNKNOWNCOMMAND, cmd);
 	}
 }
 

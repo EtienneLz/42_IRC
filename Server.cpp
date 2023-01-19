@@ -192,7 +192,7 @@ void Server::receiveMessage(std::string buf, int id) {
 			_commands[cmd](this, args, id);
 		}
 		else
-			std::cout << "Command does not exist...\n";
+			send_message(this, id, ERR_UNKNOWNCOMMAND, cmd);
 	}
 }
 

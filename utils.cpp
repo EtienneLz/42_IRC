@@ -70,6 +70,8 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
             message += ":You are now an IRC operator"; break;
 
         // ERRORS
+        case ERR_UNKNOWNCOMMAND:
+            message += str + " :Unknown command"; break;
         case ERR_NONICKNAMEGIVEN:
             message += ":No nickname given"; break;
         case ERR_ERRONEUSNICKNAME:

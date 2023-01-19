@@ -10,6 +10,7 @@
 #include <cstring>
 #include <time.h>
 #include <sstream>
+#include <locale>
 
 //#define PORT 12345
 
@@ -86,23 +87,40 @@ int main(int argc, char const* argv[])
         chan.erase(pos);
 
         std::string message;
-        if (cmd == "!roll the dice\r\n")
+        if (cmd == "!roll\r\n")
         {
             int roll = rand() %6+1;
             std::stringstream ss;
             ss << roll;
             message = ss.str();
-            std::string reply = "PRIVMSG " + chan + " :" + message + "\r\n";
-            send(sock, reply.c_str(), reply.size(), 0);
-            std::cout << "Sent = " << reply << std::endl;
+        }
+        else if (cmd.find("!roll ") != std::string::npos)
+        {
+            std::locale loc;
+            std::string str;
+            str = cmd.substr(6);
+            std::string::iterator it = str.begin();
+            for (; it != str.end() -2; it++)
+                if (std::isalpha(*it, loc) != false)
+                    break;
+            if (it != str.end() -2)
+                continue;
+            std::stringstream ss;
+            ss << str;
+            int faces;
+            ss >> faces;
+            int roll = rand() %faces+1;
+            std::stringstream sstr;
+            sstr << roll;
+            message = sstr.str();
         }
         else if (cmd.find("!repeat ") != std::string::npos)
-        {
             message = cmd.substr(8);
-            std::string reply = "PRIVMSG " + chan + " :" + message + "\r\n";
-            send(sock, reply.c_str(), reply.size(), 0);
-            std::cout << "Sent: " << reply << std::endl;
-        }
+        else if (message.empty())
+            continue;
+        std::string reply = "PRIVMSG " + chan + " :" + message + "\r\n";
+        send(sock, reply.c_str(), reply.size(), 0);
+        std::cout << "Sent: " << reply << std::endl;
     }
     // closing the connected socket
     close(client_fd);

@@ -46,7 +46,7 @@ void	sendToChan(std::string message, Channel chan) {
 
 void KICK(Server *serv, std::string params, int id) {
 	User *exec;
-	if (serv->getUserMap()[id])
+	if (serv->getUserMap().find(id) != serv->getUserMap().end())
 		exec = serv->getUserMap()[id];
 	else
 		return; //error
@@ -67,9 +67,11 @@ void KICK(Server *serv, std::string params, int id) {
 	User *chanoper = NULL;
 	int kicked = -1;
 
-	if ((chan = serv->getChannelMap()[args[0]]) == NULL)
+	if ((serv->getChannelMap().find(args[0])) == serv->getChannelMap().end())
 		return (send_message(serv, id, ERR_NOSUCHCHANNEL, ""));
-	else if ((chanoper = isChanop(*exec, *chan)) == NULL) {
+	else
+		chan = serv->getChannelMap()[args[0]];
+	if ((chanoper = isChanop(*exec, *chan)) == NULL) {
 		return (send_message(serv, id, ERR_CHANOPRIVSNEEDED, chan->getName()));
 	}
 	else if ((kicked = isUser(*chan, args[1])) == -1) {

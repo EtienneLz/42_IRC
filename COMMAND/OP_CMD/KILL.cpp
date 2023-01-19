@@ -48,7 +48,7 @@ std::vector<std::string> splitArgsKill(std::string params, size_t end_pos) {
 
 void KILL(Server *serv, std::string params, int id) {
 	User *oper;
-	if (serv->getUserMap()[id])
+	if (serv->getUserMap().find(id) != serv->getUserMap().end())
 		oper = serv->getUserMap()[id];
 	else
 		return; //error

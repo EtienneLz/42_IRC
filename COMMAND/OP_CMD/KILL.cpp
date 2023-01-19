@@ -2,8 +2,7 @@
 
 static void	leaveChan(Server *serv, std::string message, int id, User *user)
 {
-	// if (message.empty())
-		message += " (killed by " + user->getNick() + ")";
+	message += " (killed by " + user->getNick() + ")";
 	std::string reply = ":" + serv->getUserMap()[id]->getNick() + "!" + serv->getUserMap()[id]->getUsername() + "@"
 						+ serv->getUserMap()[id]->getHost() + " QUIT " + message + "\r\n";
 	for (mChannel::iterator itC = serv->getChannelMap().begin();

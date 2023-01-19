@@ -116,11 +116,11 @@ void Server::selectLoop() {
 			int valread;
 			if ((valread = read(curr_sd, buf, 1024)) == 0) {
 				std::cout << "User " << it->second->getNick() << " with fd " << curr_sd << " disconnected\n";
-				std::cout << "Number of users: " << _clients.size() << std::endl;
 				QUIT(this, ":Lost terminal", curr_sd);
 				close(curr_sd);
 				delete _clients[curr_sd];
 				_clients.erase(curr_sd);
+				std::cout << "Number of users: " << _clients.size() << std::endl;
 				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it ++) {
 					if (it->first.compare("init") != 0 && ((*it).second->getMapUser().empty() || (it->second->getMapUser().size() == 1 &&
 						it->second->getMapUser().begin()->second->getBot() == true))) {
@@ -149,11 +149,11 @@ void Server::selectLoop() {
 				}
 				if (_killed != -1) {
 					std::cout << "User " << _clients[_killed]->getNick() << " with fd " << _killed << " disconnected\n";
-					std::cout << "Number of users: " << _clients.size() << std::endl;
 					_clients[_killed]->setNick("");
 					close(_killed); // not curr but nick
 					delete _clients[_killed];
 					_clients.erase(_killed);
+					std::cout << "Number of users: " << _clients.size() << std::endl;
 					break;
 				}
 				std::cout << *_clients[curr_sd];

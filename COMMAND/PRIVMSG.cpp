@@ -38,7 +38,7 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 		if (itT.base()->find('#', 0) != std::string::npos)
 		{
 			mChannel chanCp = server->getChannelMap();
-			if (chanCp[*itT])
+			if (server->getChannelMap().find(*itT) != server->getChannelMap().end())
 			{
 				Channel *chan = server->getChannelMap()[*itT];
 				std::vector<User*> users = chan->getUsers();

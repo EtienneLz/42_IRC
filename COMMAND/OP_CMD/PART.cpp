@@ -31,9 +31,9 @@ void	PART(Server *server, std::string params, int id) {
 	for (std::vector<std::string>::iterator itC = chans.begin(); itC != chans.end(); ++itC)
 	{
 		std::string name = *itC;
-		Channel *chan = server->getChannelMap()[name];
-		if (chan)
+		if (server->getChannelMap().find(name) != server->getChannelMap().end())
 		{
+			Channel *chan = server->getChannelMap()[name];
 			std::vector<User*> users = chan->getUsers();
 			User *user = chan->getMapUser()[id];
 			if (user)

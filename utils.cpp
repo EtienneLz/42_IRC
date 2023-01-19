@@ -105,6 +105,10 @@ void    send_message(Server *server, int id_cli, int code, std::string str) {
         case RPL_TRYAGAIN:
             message.erase(message.find('*'));
             message += str + " :Try again..."; break;
+        case ERR_NORECIPIENT:
+            message += ":No recipient given " + str; break;
+        case ERR_NOTEXTTOSEND:
+            message += ":No text to send"; break;
     }
 
     message += "\r\n";

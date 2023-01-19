@@ -16,12 +16,12 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 		message = params.substr(pos);
 	}
 	else
-		return (send_message(server, id, ERR_NORECIPIENT, message));
+		return (send_message(server, id, ERR_NORECIPIENT, "PRIVMSG"));
 
 	if (targets.size() == 0)
-		return (send_message(server, id, ERR_NORECIPIENT, params));
+		return (send_message(server, id, ERR_NORECIPIENT, "PRIVMSG"));
 	else if (message.size() == 1)
-		return (send_message(server, id, ERR_NOTEXTTOSEND, params));
+		return (send_message(server, id, ERR_NOTEXTTOSEND, ""));
 
 	std::vector<std::string> msgTargets;
 	std::stringstream ss(targets);
@@ -80,7 +80,7 @@ void	PRIVMSG(Server *server, std::string params, int id) {
 							send(it->first, reply.c_str(), reply.size(), MSG_DONTWAIT);
 						}
 						else
-							send_message(server, id, ERR_NORECIPIENT, *itT);
+							send_message(server, id, ERR_NORECIPIENT, "PRIVMSG");
 					}
 				}
 			else

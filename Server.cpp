@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server(int port, std::string pwd) :_port(port), _count(0), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP"), _keep("") {
+Server::Server(int port, std::string pwd) :_port(port), _pwd(pwd), _hostname("0.0.0.0"), _opPwd("AUPP"), _keep("") {
 	_commands["KICK"] = KICK;
 	_commands["KILL"] = KILL;
 	_commands["kill"] = KILL;
@@ -106,8 +106,7 @@ void Server::selectLoop() {
 		_clients[fdcl] = new User;
 		_clients[fdcl]->setHost(std::string(inet_ntoa(cliAddress->sin_addr)));
 		_clients[fdcl]->setId(fdcl);
-		_count++;
-		std::cout << "\nAdding new user with fd: " << fdcl << "\nNumber of users: " << _count << std::endl << std::endl;
+		std::cout << "\nAdding new user with fd: " << fdcl << "\nNumber of users: " << _clients.size() << std::endl << std::endl;
 	}
 
 	for (iterator it = _clients.begin(); it != _clients.end(); it++) {
@@ -116,9 +115,8 @@ void Server::selectLoop() {
 		if (FD_ISSET(curr_sd, &rfds)) {
 			int valread;
 			if ((valread = read(curr_sd, buf, 1024)) == 0) {
-				_count--;
 				std::cout << "User " << it->second->getNick() << " with fd " << curr_sd << " disconnected\n";
-				std::cout << "Number of users: " << _count << std::endl;
+				std::cout << "Number of users: " << _clients.size() << std::endl;
 				for (mChannel::iterator it = _channels.begin(); it != _channels.end(); it++) {
 					it->second->leaveChan(_clients[curr_sd]->getNick());
 				}
@@ -152,9 +150,9 @@ void Server::selectLoop() {
 					}
 				}
 				if (_killed != -1) {
-					_count--;
 					std::cout << "User " << _clients[_killed]->getNick() << " with fd " << _killed << " disconnected\n";
-					std::cout << "Number of users: " << _count << std::endl;
+					std::cout << "Number of users: " << _clients.size() << std::endl;
+					_clients[_killed]->setNick("");
 					close(_killed); // not curr but nick
 					delete _clients[_killed];
 					_clients.erase(_killed);
@@ -220,10 +218,6 @@ const std::string	&Server::getHostname() {
 
 void			Server::setHostname(std::string name) {
 	_hostname = name;
-}
-
-const int			&Server::getCount() {
-	return _count;
 }
 
 std::map<int, User*>	&Server::getUserMap() {

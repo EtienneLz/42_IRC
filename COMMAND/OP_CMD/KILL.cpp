@@ -2,8 +2,7 @@
 
 static void	leaveChan(Server *serv, std::string message, int id, User *user)
 {
-	// if (message.empty())
-		message += " (killed by " + user->getNick() + ")";
+	message += " (killed by " + user->getNick() + ")";
 	std::string reply = ":" + serv->getUserMap()[id]->getNick() + "!" + serv->getUserMap()[id]->getUsername() + "@"
 						+ serv->getUserMap()[id]->getHost() + " QUIT " + message + "\r\n";
 	for (mChannel::iterator itC = serv->getChannelMap().begin();
@@ -48,7 +47,7 @@ std::vector<std::string> splitArgsKill(std::string params, size_t end_pos) {
 
 void KILL(Server *serv, std::string params, int id) {
 	User *oper;
-	if (serv->getUserMap()[id])
+	if (serv->getUserMap().find(id) != serv->getUserMap().end())
 		oper = serv->getUserMap()[id];
 	else
 		return; //error

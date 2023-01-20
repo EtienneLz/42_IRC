@@ -71,7 +71,7 @@ void KICK(Server *serv, std::string params, int id) {
 		return (send_message(serv, id, ERR_NOSUCHCHANNEL, ""));
 	else
 		chan = serv->getChannelMap()[args[0]];
-	if ((chanoper = isChanop(*exec, *chan)) == NULL) {
+	if ((chanoper = isChanop(*exec, *chan)) == NULL && !serv->getUserMap()[id]->getMode('o')) {
 		return (send_message(serv, id, ERR_CHANOPRIVSNEEDED, chan->getName()));
 	}
 	else if ((kicked = isUser(*chan, args[1])) == -1) {

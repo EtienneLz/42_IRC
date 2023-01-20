@@ -13,7 +13,7 @@ void    MODE_CHAN(Server *server, std::vector<std::string> parts, int id, int nb
         }
 	}
 
-    if (!op)
+    if (!op && !server->getUserMap()[id]->getMode('o'))
         return send_message(server, id, ERR_CHANOPRIVSNEEDED, chan->getName());
 
     if ((nbUser == 1 && parts.size() < 3) || (nbUser == 2 && parts.size() < 4) || (nbUser == 3 && parts.size() < 5))
@@ -124,7 +124,7 @@ void    MODE(Server *server, std::string params, int id) {
     }
 
     if (parts[0][0] == '#'){
-        if (server->getChannelMap().find(parts[0]) != server->getChannelMap().end())
+        if (server->getChannelMap().find(parts[0]) == server->getChannelMap().end())
             return send_chan_message(server, id, ERR_NOSUCHCHANNEL, "", parts[0]);
 
         Channel *chan = server->getChannelMap()[parts[0]];

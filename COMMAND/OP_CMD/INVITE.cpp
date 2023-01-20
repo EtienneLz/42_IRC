@@ -27,7 +27,7 @@ void INVITE(Server *server, std::string params, int id)
 		return (send_message(server, id, ERR_NOTONCHANNEL, channel));
 	}
 	
-	if (!chan->getOp(id)) {
+	if (!chan->getOp(id)&& !server->getUserMap()[id]->getMode('o')) {
 		return (send_message(server, id, ERR_CHANOPRIVSNEEDED, channel));
 	}
 
